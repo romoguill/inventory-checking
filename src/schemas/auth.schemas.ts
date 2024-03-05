@@ -1,5 +1,9 @@
 import { z } from 'zod';
 
+export enum PROVIDERS {
+  GOOGLE = 'google',
+}
+
 export const LoginSchema = z.object({
   email: z.string().email(),
   password: z
