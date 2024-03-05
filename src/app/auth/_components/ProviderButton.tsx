@@ -5,9 +5,12 @@ import { cn } from '@/lib/utils';
 import { PROVIDERS } from '@/schemas/auth.schemas';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ProviderButtonProps {
   provider: PROVIDERS;
+  action: 'login' | 'register';
   className?: string;
 }
 
@@ -18,13 +21,28 @@ const providersData = {
   },
 };
 
-function ProviderButton({ provider, className }: ProviderButtonProps) {
+function ProviderButton({ provider, className, action }: ProviderButtonProps) {
+  const [isPending, setIsPending] = useState(false);
+
+  const providerLogin = async () => {
+    setIsPending(true);
+
+    const response = await signIn(provider, { callbackUrl: '/dashboard' });
+
+    if (response?.error) {
+      toast.error('Ups! There was a problem, try later');
+    }
+
+    setIsPending(false);
+  };
+
   return (
     <Button
       variant='secondary'
       className={cn('gap-2', className)}
       type='button'
-      onClick={() => signIn(provider)}
+      onClick={providerLogin}
+      disabled={isPending}
     >
       <Image
         src={providersData[provider].src}
@@ -33,7 +51,8 @@ function ProviderButton({ provider, className }: ProviderButtonProps) {
         height={22}
       />
       <p>
-        Sign up with <span className='capitalize'>{provider}</span>
+        <span>{action === 'login' ? 'Sign in ' : 'Sign up'}</span> with{' '}
+        <span className='capitalize'>{provider}</span>
       </p>
     </Button>
   );

@@ -4,12 +4,11 @@ import {
   CardDescription,
   CardHeader,
 } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import { PROVIDERS } from '@/schemas/auth.schemas';
+import Link from 'next/link';
 import LoginForm from './LoginForm';
 import ProviderButton from './ProviderButton';
-import { PROVIDERS } from '@/schemas/auth.schemas';
-import { Separator } from '@/components/ui/separator';
-import Link from 'next/link';
-import { buttonVariants } from '@/components/ui/button';
 import RegisterForm from './RegisterForm';
 
 interface AuthCardProps {
@@ -36,11 +35,11 @@ function AuthCard({ action }: AuthCardProps) {
 
         {action === 'login' && (
           <p className='text-sm mt-2'>
-            Don't have an account?
+            Don&apos;t have an account?
             <span className='ml-1'>
               <Link
                 href='/auth/register'
-                className='text-blue-700 font-semibold'
+                className='text-blue-700 font-semibold hover:text-blue-500'
               >
                 Sign up
               </Link>
@@ -52,7 +51,10 @@ function AuthCard({ action }: AuthCardProps) {
           <p className='text-sm mt-2'>
             Already have an account?
             <span className='ml-1'>
-              <Link href='/auth/login' className='text-blue-700 font-semibold'>
+              <Link
+                href='/auth/login'
+                className='text-blue-700 font-semibold hover:text-blue-500'
+              >
                 Sign in
               </Link>
             </span>
@@ -66,7 +68,11 @@ function AuthCard({ action }: AuthCardProps) {
           </span>
         </div>
 
-        <ProviderButton provider={PROVIDERS.GOOGLE} className='w-full' />
+        <ProviderButton
+          action={action}
+          provider={PROVIDERS.GOOGLE}
+          className='w-full'
+        />
       </CardContent>
     </Card>
   );
