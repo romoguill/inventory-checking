@@ -1,12 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
 import { PROVIDERS } from '@/schemas/auth.schemas';
 import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 
 interface ProviderButtonProps {
   provider: PROVIDERS;
+  className?: string;
 }
 
 const providersData = {
@@ -16,21 +18,23 @@ const providersData = {
   },
 };
 
-function ProviderButton({ provider }: ProviderButtonProps) {
+function ProviderButton({ provider, className }: ProviderButtonProps) {
   return (
     <Button
       variant='secondary'
-      className='gap-2'
+      className={cn('gap-2', className)}
       type='button'
       onClick={() => signIn(provider)}
     >
       <Image
         src={providersData[provider].src}
         alt={providersData[provider].alt}
-        width={24}
-        height={24}
+        width={22}
+        height={22}
       />
-      <p>Sign Up with Google</p>
+      <p>
+        Sign up with <span className='capitalize'>{provider}</span>
+      </p>
     </Button>
   );
 }
