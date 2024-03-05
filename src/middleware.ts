@@ -1,17 +1,19 @@
 import { auth } from '@/auth/auth';
 import { NextResponse } from 'next/server';
-import { getToken } from 'next-auth/jwt';
-import { DEFAULT_REDIRECT, authRoutes } from './auth/routes';
-import { RedirectType, redirect } from 'next/navigation';
+import { DEFAULT_REDIRECT, authRoutes, privateRoutes } from './auth/routes';
 
 export default auth((req) => {
   const { nextUrl, auth } = req;
 
-  console.log(new URL(DEFAULT_REDIRECT, nextUrl.origin).href);
-
+  // Redirection for pages routes based on session and endpoint
   if (auth) {
-    if (authRoutes.includes(nextUrl.pathname))
+    if (authRoutes.includes(nextUrl.pathname)) {
       return NextResponse.redirect(new URL(DEFAULT_REDIRECT, nextUrl.origin));
+    }
+  } else {
+    if (privateRoutes.includes(nextUrl.pathname)) {
+      return NextResponse.redirect(new URL('/auth/login', nextUrl.origin));
+    }
   }
 
   return NextResponse.next();

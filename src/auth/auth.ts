@@ -1,25 +1,11 @@
 import { db } from '@/lib/db';
 import { PrismaAdapter } from '@auth/prisma-adapter';
 import NextAuth, { NextAuthConfig } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider from 'next-auth/providers/google';
+import { authConfig } from './auth.config';
 
-const authConfig = {
-  providers: [
-    CredentialsProvider({
-      async authorize(credentials, req) {
-        return null;
-      },
-    }),
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || '',
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
-    }),
-  ],
+export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token }) {
-      console.log(token);
-
       return token;
     },
   },
@@ -30,6 +16,5 @@ const authConfig = {
   },
   adapter: PrismaAdapter(db),
   session: { strategy: 'jwt' },
-} satisfies NextAuthConfig;
-
-export const { handlers, auth, signIn, signOut } = NextAuth(authConfig);
+  ...authConfig,
+});
