@@ -8,6 +8,9 @@ import LoginForm from './LoginForm';
 import ProviderButton from './ProviderButton';
 import { PROVIDERS } from '@/schemas/auth.schemas';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
+import { buttonVariants } from '@/components/ui/button';
+import RegisterForm from './RegisterForm';
 
 interface AuthCardProps {
   action: 'login' | 'register';
@@ -17,13 +20,44 @@ function AuthCard({ action }: AuthCardProps) {
   return (
     <Card className='w-full min-w-[300px] sm:min-w-[450px] max-w-[500px]'>
       <CardHeader>
-        {action === 'login' ? 'Sign in' : 'Sign up'}
+        <h1 className='text-3xl font-bold tracking-wide leading-loose'>
+          {action === 'login' ? 'Sign in' : 'Sign up'}
+        </h1>
 
-        <CardDescription>Welcome back</CardDescription>
+        <CardDescription>
+          {action === 'login'
+            ? 'Welcome back'
+            : 'Hi! Please create your account to continue'}
+        </CardDescription>
       </CardHeader>
 
       <CardContent>
-        <LoginForm />
+        {action === 'login' ? <LoginForm /> : <RegisterForm />}
+
+        {action === 'login' && (
+          <p className='text-sm mt-2'>
+            Don't have an account?
+            <span className='ml-1'>
+              <Link
+                href='/auth/register'
+                className='text-blue-700 font-semibold'
+              >
+                Sign up
+              </Link>
+            </span>
+          </p>
+        )}
+
+        {action === 'register' && (
+          <p className='text-sm mt-2'>
+            Already have an account?
+            <span className='ml-1'>
+              <Link href='/auth/login' className='text-blue-700 font-semibold'>
+                Sign in
+              </Link>
+            </span>
+          </p>
+        )}
 
         <div className='relative my-8 text-center'>
           <Separator />

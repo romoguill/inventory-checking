@@ -10,20 +10,22 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { LoginSchema } from '@/schemas/auth.schemas';
+import { RegisterSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-function LoginForm() {
-  const form = useForm<LoginSchema>({
-    resolver: zodResolver(LoginSchema),
+function RegisterForm() {
+  const form = useForm<RegisterSchema>({
+    resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: '',
+      fullName: '',
       password: '',
+      passwordConfirmed: '',
     },
   });
 
-  const onSubmit: SubmitHandler<LoginSchema> = (data) => {
+  const onSubmit: SubmitHandler<RegisterSchema> = (data) => {
     console.log(data);
   };
 
@@ -46,6 +48,19 @@ function LoginForm() {
           />
           <FormField
             control={form.control}
+            name='fullName'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Full name</FormLabel>
+                <FormControl>
+                  <Input placeholder='Rick Paterson' {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
             name='password'
             render={({ field }) => (
               <FormItem>
@@ -57,13 +72,26 @@ function LoginForm() {
               </FormItem>
             )}
           />
+          <FormField
+            control={form.control}
+            name='passwordConfirmed'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Confirm password</FormLabel>
+                <FormControl>
+                  <Input placeholder='******' {...field} type='password' />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <Button type='submit' className='mt-6 w-full'>
-          Sign in
+          Sign up
         </Button>
       </form>
     </Form>
   );
 }
 
-export default LoginForm;
+export default RegisterForm;

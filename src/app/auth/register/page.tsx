@@ -1,18 +1,7 @@
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import ProviderButton from '../_components/ProviderButton';
-import { PROVIDERS } from '@/schemas/auth.schemas';
+import AuthCard from '../_components/AuthCard';
 
 function RegisterPage() {
-  return (
-    <Card>
-      <CardHeader>Create Account</CardHeader>
-      <CardContent>
-        <form>
-          <ProviderButton provider={PROVIDERS.GOOGLE} />
-        </form>
-      </CardContent>
-    </Card>
-  );
+  return <AuthCard action='register' />;
 }
 
 export default RegisterPage;
