@@ -7,7 +7,22 @@ import GitHubProvider, { GitHubProfile } from 'next-auth/providers/github';
 export const authConfig = {
   providers: [
     CredentialsProvider({
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'text',
+        },
+        name: {
+          label: 'Full Name',
+          type: 'text',
+        },
+        password: {
+          label: 'Password',
+          type: 'text',
+        },
+      },
       async authorize(credentials, req) {
+        console.log(credentials);
         return null;
       },
     }),

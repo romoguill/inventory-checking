@@ -1,5 +1,6 @@
 'use client';
 
+import { DEFAULT_REDIRECT } from '@/auth/routes';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -12,21 +13,44 @@ import {
 import { Input } from '@/components/ui/input';
 import { RegisterSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 function RegisterForm() {
+  const router = useRouter();
+
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       email: '',
-      fullName: '',
+      name: '',
       password: '',
       passwordConfirmed: '',
     },
   });
 
-  const onSubmit: SubmitHandler<RegisterSchema> = (data) => {
+  const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
     console.log(data);
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/register`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    if (response.ok) {
+      router.push('/auth/login');
+      toast.success('User created! Please check your inbox to confirm account');
+    } else {
+      const data = await response.json();
+      toast.error(data.error);
+    }
   };
 
   return (
@@ -48,7 +72,7 @@ function RegisterForm() {
           />
           <FormField
             control={form.control}
-            name='fullName'
+            name='name'
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Full name</FormLabel>
