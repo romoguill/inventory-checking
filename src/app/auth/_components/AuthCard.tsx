@@ -68,11 +68,19 @@ function AuthCard({ action }: AuthCardProps) {
           </span>
         </div>
 
-        <ProviderButton
-          action={action}
-          provider={PROVIDERS.GOOGLE}
-          className='w-full'
-        />
+        <div className='space-y-3'>
+          <ProviderButton
+            action={action}
+            provider={PROVIDERS.GOOGLE}
+            className='w-full'
+          />
+
+          <ProviderButton
+            action={action}
+            provider={PROVIDERS.GITHUB}
+            className='w-full'
+          />
+        </div>
       </CardContent>
     </Card>
   );

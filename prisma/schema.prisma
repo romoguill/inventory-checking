@@ -47,7 +47,7 @@ model User {
   password      String?
   image         String?
   accounts      Account[]
-  role          UserRole
+  role          UserRole  @default(USER)
 }
 
 model VerificationToken {

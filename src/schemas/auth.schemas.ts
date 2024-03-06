@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 export enum PROVIDERS {
   GOOGLE = 'google',
+  GITHUB = 'github',
 }
 
 export const LoginSchema = z.object({

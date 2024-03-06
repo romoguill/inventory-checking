@@ -11,6 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
   },
+
   pages: {
     signIn: '/auth/login',
     newUser: '/auth/register',

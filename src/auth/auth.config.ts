@@ -2,6 +2,7 @@ import { UserRole } from '@prisma/client';
 import { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
+import GitHubProvider, { GitHubProfile } from 'next-auth/providers/github';
 
 export const authConfig = {
   providers: [
@@ -13,15 +14,29 @@ export const authConfig = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
+      allowDangerousEmailAccountLinking: true,
       profile(profile: GoogleProfile) {
         // Set fields for prisma adapter when creating user
         return {
+          id: profile.sub,
           name: profile.name,
           email: profile.email,
           image: profile.picture,
           role: UserRole.USER,
         };
       },
+      authorization: {
+        params: {
+          prompt: 'consent',
+          access_type: 'offline',
+          response_type: 'code',
+        },
+      },
+    }),
+    GitHubProvider({
+      clientId: process.env.GITHUB_CLIENT_ID || '',
+      clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+      allowDangerousEmailAccountLinking: true,
     }),
   ],
 } satisfies NextAuthConfig;

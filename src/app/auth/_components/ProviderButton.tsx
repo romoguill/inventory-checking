@@ -7,6 +7,8 @@ import { signIn } from 'next-auth/react';
 import Image from 'next/image';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import GoogleLogo from './provider-google.svg';
+import GithubLogo from './provider-github.svg';
 
 interface ProviderButtonProps {
   provider: PROVIDERS;
@@ -16,8 +18,12 @@ interface ProviderButtonProps {
 
 const providersData = {
   [PROVIDERS.GOOGLE]: {
-    src: '/providers-google.png',
+    src: GoogleLogo,
     alt: 'Google Provider',
+  },
+  [PROVIDERS.GITHUB]: {
+    src: GithubLogo,
+    alt: 'GitHub Provider',
   },
 };
 
