@@ -7,8 +7,16 @@ import { UserRole } from '@prisma/client';
 export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user }) {
-      console.log({ user });
+      if (user) {
+        token.role = user.role;
+      }
       return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role;
+      }
+      return session;
     },
   },
 
