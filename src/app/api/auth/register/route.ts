@@ -4,6 +4,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { UserRole } from '@prisma/client';
+import { sendEmail } from '@/lib/emails/sendEmail';
+import VerificationEmail from '@/emails/VerificationEmail';
 
 export async function POST(req: NextRequest) {
   const payload = await req.json();
@@ -49,6 +51,14 @@ export async function POST(req: NextRequest) {
         role: UserRole.USER,
       },
     });
+
+    const { data, error: emailError } = await sendEmail({
+      to: [email],
+      subject: 'Verify your email - Check Delta',
+      content: VerificationEmail({ name, token: 'sdfa' }),
+    });
+
+    console.log(emailError);
 
     return NextResponse.json({ user: newUser }, { status: 200 });
   } catch (error) {
