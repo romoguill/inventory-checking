@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { RegisterSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
@@ -21,6 +22,7 @@ import { toast } from 'sonner';
 
 function RegisterForm() {
   const router = useRouter();
+  const [isPending, setIsPending] = useState(false);
 
   const form = useForm<RegisterSchema>({
     resolver: zodResolver(RegisterSchema),
@@ -33,7 +35,8 @@ function RegisterForm() {
   });
 
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
-    console.log(data);
+    setIsPending(true);
+
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/register`,
       {
@@ -55,6 +58,8 @@ function RegisterForm() {
         form.setError('email', { message: 'Email already in use' });
       }
     }
+
+    setIsPending(false);
   };
 
   return (
@@ -114,8 +119,8 @@ function RegisterForm() {
             )}
           />
         </div>
-        <Button type='submit' className='mt-6 w-full'>
-          Sign up
+        <Button type='submit' className='mt-6 w-full' disabled={isPending}>
+          {!isPending ? 'Sign up' : <Loader2 className='animate-spin' />}
         </Button>
       </form>
     </Form>
