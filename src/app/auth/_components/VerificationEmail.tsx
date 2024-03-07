@@ -6,7 +6,7 @@ interface VerificationEmailProps {
   token: string;
 }
 
-function VerificationEmal({ name, token }: VerificationEmailProps) {
+function VerificationEmail({ name, token }: VerificationEmailProps) {
   return (
     <body className='mx-auto max-w-[500px] bg-slate-100 h-[700px] flex items-center'>
       <div className='bg-white rounded-xl overflow-hidden'>
@@ -34,4 +34,4 @@ function VerificationEmal({ name, token }: VerificationEmailProps) {
   );
 }
 
-export default VerificationEmal;
+export default VerificationEmail;

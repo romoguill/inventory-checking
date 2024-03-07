@@ -1,7 +1,7 @@
-import VerificationEmal from '@/app/auth/_components/VerificationEmal';
+import { VerificationEmail } from '@/app/auth/_components/VerificationEmail';
 
 function VerificationEmailPage() {
-  return <VerificationEmal name='Rodrigo' token='jhasldkjf' />;
+  return <VerificationEmail name='Rodrigo' token='jhasldkjf' />;
 }
 
 export default VerificationEmailPage;
