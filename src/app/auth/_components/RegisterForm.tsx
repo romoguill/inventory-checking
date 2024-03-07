@@ -15,6 +15,7 @@ import { RegisterSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -50,6 +51,9 @@ function RegisterForm() {
     } else {
       const data = await response.json();
       toast.error(data.error);
+      if (response.status === 409) {
+        form.setError('email', { message: 'Email already in use' });
+      }
     }
   };
 
