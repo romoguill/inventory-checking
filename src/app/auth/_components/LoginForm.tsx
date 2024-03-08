@@ -1,5 +1,6 @@
 'use client';
 
+import { DEFAULT_REDIRECT } from '@/auth/routes';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -12,7 +13,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { LoginSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AuthError } from 'next-auth';
+import { SignInResponse, signIn } from 'next-auth/react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 function LoginForm() {
   const form = useForm<LoginSchema>({
@@ -23,8 +27,24 @@ function LoginForm() {
     },
   });
 
-  const onSubmit: SubmitHandler<LoginSchema> = (data) => {
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    const { error, ok } = (await signIn('credentials', {
+      callbackUrl: DEFAULT_REDIRECT,
+      redirect: false,
+      ...data,
+    })) as SignInResponse;
+
+    if (error) {
+      if (error === 'CredentialsSignin') {
+        form.setError('root', {
+          type: 'credentials',
+          message: 'Invalid credentials',
+        });
+        toast.error('Invalid credentials');
+      } else {
+        toast.error('Something went wrong. Please try again later');
+      }
+    }
   };
 
   return (
@@ -58,9 +78,16 @@ function LoginForm() {
             )}
           />
         </div>
+
         <Button type='submit' className='mt-6 w-full'>
           Sign in
         </Button>
+
+        {form.formState.errors.root && (
+          <p className='text-sm font-medium text-destructive mt-2'>
+            {form.formState.errors.root.message}
+          </p>
+        )}
       </form>
     </Form>
   );

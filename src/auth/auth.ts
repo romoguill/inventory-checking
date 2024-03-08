@@ -21,9 +21,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 
   pages: {
-    signIn: '/auth/login',
-    newUser: '/auth/register',
-    error: '/auth/error',
+    signIn: '/login',
+    newUser: '/register',
+    error: '/error',
   },
 
   adapter: PrismaAdapter(db),
