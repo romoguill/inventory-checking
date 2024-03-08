@@ -1,9 +1,10 @@
+import { getServerAuthSession } from '@/auth/auth.config';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { auth } from '@/auth/auth';
 import { SessionProvider } from 'next-auth/react';
+import { Inter } from 'next/font/google';
 import { Toaster } from 'sonner';
+import './globals.css';
+import AuthProvider from './context/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -17,16 +18,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const session = await auth();
+  const session = await getServerAuthSession();
 
   return (
-    <SessionProvider session={session}>
+    <AuthProvider>
       <html lang='en'>
         <body className={inter.className}>
           {children}
           <Toaster position='top-center' richColors />
         </body>
       </html>
-    </SessionProvider>
+    </AuthProvider>
   );
 }

@@ -1,29 +1,19 @@
-import { UserRole } from '@prisma/client';
-import { NextAuthConfig } from 'next-auth';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
-import GitHubProvider, { GitHubProfile } from 'next-auth/providers/github';
 import { db } from '@/lib/db';
-import { z } from 'zod';
 import { LoginSchema } from '@/schemas/auth.schemas';
+import { UserRole } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { NextAuthOptions, getServerSession } from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import GitHubProvider from 'next-auth/providers/github';
+import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 
 export const authConfig = {
   providers: [
     CredentialsProvider({
       credentials: {
-        email: {
-          label: 'Email',
-          type: 'text',
-        },
-        name: {
-          label: 'Full Name',
-          type: 'text',
-        },
-        password: {
-          label: 'Password',
-          type: 'text',
-        },
+        email: {},
+        name: {},
+        password: {},
       },
 
       async authorize(credentials, req) {
@@ -81,13 +71,15 @@ export const authConfig = {
     GitHubProvider({
       clientId:
         process.env.NODE_ENV === 'production'
-          ? process.env.GITHUB_CLIENT_ID_PROD
+          ? process.env.GITHUB_CLIENT_ID_PROD || ''
           : process.env.GITHUB_CLIENT_ID || '',
       clientSecret:
         process.env.NODE_ENV === 'production'
-          ? process.env.GITHUB_CLIENT_SECRET_PROD
+          ? process.env.GITHUB_CLIENT_SECRET_PROD || ''
           : process.env.GITHUB_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
     }),
   ],
-} satisfies NextAuthConfig;
+} satisfies NextAuthOptions;
+
+export const getServerAuthSession = () => getServerSession(authConfig);

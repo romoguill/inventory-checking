@@ -1,8 +1,8 @@
 import LogoutButton from '@/app/auth/_components/LogoutButton';
-import { auth } from '@/auth/auth';
+import { getServerAuthSession } from '@/auth/auth.config';
 
 async function DashboardPage() {
-  const session = await auth();
+  const session = await getServerAuthSession();
 
   return (
     <div>

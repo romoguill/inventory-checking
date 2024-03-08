@@ -1,15 +1,12 @@
 import { db } from '@/lib/db';
 import { PrismaAdapter } from '@auth/prisma-adapter';
-import NextAuth, { NextAuthConfig } from 'next-auth';
+import NextAuth, { getServerSession } from 'next-auth';
 import { authConfig } from './auth.config';
-import { UserRole } from '@prisma/client';
+import { Adapter } from 'next-auth/adapters';
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const handlers = NextAuth({
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role;
-      }
+    async jwt({ token }) {
       return token;
     },
     async session({ session, token }) {
@@ -26,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/error',
   },
 
-  adapter: PrismaAdapter(db),
+  adapter: PrismaAdapter(db) as Adapter,
   session: { strategy: 'jwt' },
   ...authConfig,
 });
