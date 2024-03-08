@@ -3,6 +3,10 @@ import { NextAuthConfig } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
 import GitHubProvider, { GitHubProfile } from 'next-auth/providers/github';
+import { db } from '@/lib/db';
+import { z } from 'zod';
+import { LoginSchema } from '@/schemas/auth.schemas';
+import bcrypt from 'bcryptjs';
 
 export const authConfig = {
   providers: [
@@ -21,9 +25,35 @@ export const authConfig = {
           type: 'text',
         },
       },
+
       async authorize(credentials, req) {
-        console.log(credentials);
-        return null;
+        const parsedCredentials = LoginSchema.safeParse(credentials);
+
+        // return {error: 'Invalid credentials'} as any; ## Nextjs don't want to support credentials specially with app router. If I return null, the library will throw an error, that can be handled but the response will be 200 which is wrong. Maybe replace NextAuth with other tools
+        if (!parsedCredentials.success) return null;
+
+        const dbUser = await db.user.findUnique({
+          where: {
+            email: parsedCredentials.data.email,
+          },
+        });
+
+        if (!dbUser) return null;
+
+        const passwordsMatch = bcrypt.compareSync(
+          parsedCredentials.data.password,
+          dbUser?.password || ''
+        );
+
+        if (!passwordsMatch) return null;
+
+        return {
+          id: dbUser?.id,
+          email: dbUser?.email,
+          name: dbUser?.name,
+          image: dbUser?.image,
+          role: dbUser.role,
+        };
       },
     }),
     GoogleProvider({

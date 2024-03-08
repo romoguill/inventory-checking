@@ -13,12 +13,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { LoginSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { AuthError } from 'next-auth';
 import { SignInResponse, signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 function LoginForm() {
+  const [isPending, setIsPending] = useState(false);
+  const router = useRouter();
+
   const form = useForm<LoginSchema>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -28,6 +32,8 @@ function LoginForm() {
   });
 
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
+    setIsPending(true);
+
     const { error, ok } = (await signIn('credentials', {
       callbackUrl: DEFAULT_REDIRECT,
       redirect: false,
@@ -44,7 +50,13 @@ function LoginForm() {
       } else {
         toast.error('Something went wrong. Please try again later');
       }
+
+      setIsPending(false);
+      return;
     }
+
+    setIsPending(false);
+    router.push('/dashboard');
   };
 
   return (
@@ -79,7 +91,7 @@ function LoginForm() {
           />
         </div>
 
-        <Button type='submit' className='mt-6 w-full'>
+        <Button type='submit' className='mt-6 w-full' disabled={isPending}>
           Sign in
         </Button>
 
