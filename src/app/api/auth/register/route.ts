@@ -6,6 +6,7 @@ import bcrypt from 'bcryptjs';
 import { UserRole } from '@prisma/client';
 import { sendEmail } from '@/lib/emails/sendEmail';
 import VerificationEmail from '@/emails/VerificationEmail';
+import { generateVerificationToken } from '@/auth/token-utils';
 
 export async function POST(req: NextRequest) {
   const payload = await req.json();
@@ -65,10 +66,12 @@ export async function POST(req: NextRequest) {
       },
     });
 
+    const verificationToken = await generateVerificationToken(email);
+
     const { data, error: emailError } = await sendEmail({
       to: [email],
       subject: 'Verify your email - Check Delta',
-      content: VerificationEmail({ name, token: 'sdfa' }),
+      content: VerificationEmail({ name, token: verificationToken.token }),
     });
 
     console.log(emailError);

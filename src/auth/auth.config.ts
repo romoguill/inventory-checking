@@ -82,6 +82,31 @@ export const authConfig = {
       allowDangerousEmailAccountLinking: true,
     }),
   ],
+  callbacks: {
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.role = token.role;
+      }
+
+      console.log(session);
+      return session;
+    },
+    async jwt({ token, user }) {
+      if (!token.email) return token;
+
+      const existingUser = await db.user.findUnique({
+        where: { email: token.email },
+      });
+
+      if (!existingUser) return token;
+
+      // Add only the absolutely necesary data to encode in JWT
+      token.role = existingUser.role;
+
+      console.log(token);
+      return token;
+    },
+  },
 } satisfies NextAuthOptions;
 
 export const getServerAuthSession = () => getServerSession(authConfig);
