@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import { UserRole } from '@prisma/client';
-import { sendEmail } from '@/lib/emails/sendEmail';
+import { sendEmail, sendEmailVerification } from '@/lib/emails/sendEmail';
 import VerificationEmail from '@/emails/VerificationEmail';
 import { generateVerificationToken } from '@/auth/token-utils';
 
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
   const { email, name, password } = parsed.data;
 
   // Check if user exists with that email
-  const existingUser = await db.user.findFirst({
+  const existingUser = await db.user.findUnique({
     where: {
       email,
     },
@@ -44,11 +44,14 @@ export async function POST(req: NextRequest) {
         { status: 409 }
       );
     } else {
-      await sendEmail({
-        to: [email],
-        subject: 'Verify your email - Check Delta',
-        content: VerificationEmail({ name, token: 'sdfa' }),
-      });
+      const verificationToken = await generateVerificationToken(email);
+
+      await sendEmailVerification(
+        existingUser.email,
+        existingUser.name,
+        verificationToken.token
+      );
+
       return NextResponse.json(null, { status: 201 });
     }
   }
@@ -57,7 +60,7 @@ export async function POST(req: NextRequest) {
   const hashedPassword = bcrypt.hashSync(password, salt);
 
   try {
-    const newUser = await db.user.create({
+    await db.user.create({
       data: {
         email,
         name,
@@ -68,13 +71,7 @@ export async function POST(req: NextRequest) {
 
     const verificationToken = await generateVerificationToken(email);
 
-    const { data, error: emailError } = await sendEmail({
-      to: [email],
-      subject: 'Verify your email - Check Delta',
-      content: VerificationEmail({ name, token: verificationToken.token }),
-    });
-
-    console.log(emailError);
+    await sendEmailVerification(email, name, verificationToken.token);
 
     return NextResponse.json(null, { status: 201 });
   } catch (error) {

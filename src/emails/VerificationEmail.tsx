@@ -11,8 +11,8 @@ import {
 } from '@react-email/components';
 
 interface VerificationEmailProps {
-  name: string;
   token: string;
+  name: string | null;
 }
 
 export default function Email({ name, token }: VerificationEmailProps) {
@@ -30,7 +30,7 @@ export default function Email({ name, token }: VerificationEmailProps) {
 
             <Container className='pl-4 pr-6 py-2 pb-4'>
               <Text className='mt-2'>
-                Hi, <span className='font-semibold'>{name}</span>
+                Hi, <span className='font-semibold'>{name ?? ''}</span>
               </Text>
               <Heading className='text-xl mb-2'>Welcome to Check Detla</Heading>
               <Text className=''>
@@ -38,7 +38,7 @@ export default function Email({ name, token }: VerificationEmailProps) {
                 your email
               </Text>
               <Link
-                href={`${process.env.NEXT_PUBLIC_SERVER_URL}/verify-email?token=${token}`}
+                href={`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/verification-email?token=${token}`}
                 className='px-3 py-2 bg-violet-400 rounded-md font-semibold text-neutral-50 block text-center w-1/2 mx-auto mt-10 no-underline'
               >
                 Verify Email

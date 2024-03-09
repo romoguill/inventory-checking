@@ -28,8 +28,6 @@ export const authConfig = {
           },
         });
 
-        console.log(dbUser);
-
         if (!dbUser) return null;
 
         const passwordsMatch = bcrypt.compareSync(
@@ -88,7 +86,6 @@ export const authConfig = {
         session.user.role = token.role;
       }
 
-      console.log(session);
       return session;
     },
     async jwt({ token, user }) {
@@ -103,7 +100,6 @@ export const authConfig = {
       // Add only the absolutely necesary data to encode in JWT
       token.role = existingUser.role;
 
-      console.log(token);
       return token;
     },
   },

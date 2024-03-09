@@ -6,6 +6,7 @@ import appIcon from '../../../public/app-icon.svg';
 interface LogoProps {
   withIcon?: boolean;
   className?: string;
+  size?: 'sm' | 'md' | 'lg';
 }
 
 const logoFont = LogoFont({
@@ -13,11 +14,23 @@ const logoFont = LogoFont({
   subsets: ['latin'],
 });
 
-function Logo({ className, withIcon = true }: LogoProps) {
+function Logo({ className, withIcon = true, size = 'md' }: LogoProps) {
   return (
-    <div className='flex items-center justify-start gap-2 px-4 py-2'>
-      {withIcon && <Image src={appIcon} width={50} alt='Corporate logo' />}
-      <h2 className={cn(className, logoFont.className, 'text-3xl')}>
+    <div className={cn(className, 'flex items-center justify-start gap-2')}>
+      {withIcon && (
+        <Image
+          src={appIcon}
+          width={size === 'sm' ? 30 : size === 'md' ? 50 : 60}
+          alt='Corporate logo'
+        />
+      )}
+      <h2
+        className={cn(logoFont.className, {
+          'text-xl': size === 'sm',
+          'text-2xl': size === 'md',
+          'text-3xl': size === 'lg',
+        })}
+      >
         Check Delta
       </h2>
     </div>
