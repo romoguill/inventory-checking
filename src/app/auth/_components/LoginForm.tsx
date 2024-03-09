@@ -1,5 +1,6 @@
 'use client';
 
+import { generateEmailVerification } from '@/actions/email-verification';
 import { DEFAULT_REDIRECT } from '@/auth/routes';
 import { Button } from '@/components/ui/button';
 import {
@@ -47,10 +48,12 @@ function LoginForm() {
           message: 'Invalid credentials',
         });
         toast.error('Invalid credentials');
+      } else if (error === 'Email not verified') {
+        await generateEmailVerification(data.email, null);
+        toast.success('Please check your inbox to confirm account');
       } else {
         toast.error('Something went wrong. Please try again later');
       }
-
       setIsPending(false);
       return;
     }

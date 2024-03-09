@@ -9,12 +9,13 @@ export const generateEmailVerification = async (
   name: string | null
 ) => {
   const verificationToken = await generateVerificationToken(email);
+  console.log({ verificationToken });
 
   await sendEmailVerification(email, name, verificationToken.token);
 };
 
 export const verifyEmail = async (email: string) => {
-  const user = await db.user.update({
+  await db.user.update({
     data: {
       emailVerified: new Date(),
     },
@@ -22,6 +23,4 @@ export const verifyEmail = async (email: string) => {
       email,
     },
   });
-
-  console.log(user);
 };

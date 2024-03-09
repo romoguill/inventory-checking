@@ -1,3 +1,4 @@
+import { generateEmailVerification } from '@/actions/email-verification';
 import { db } from '@/lib/db';
 import { LoginSchema } from '@/schemas/auth.schemas';
 import { UserRole } from '@prisma/client';
@@ -6,6 +7,7 @@ import { NextAuthOptions, getServerSession } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import GitHubProvider from 'next-auth/providers/github';
 import GoogleProvider, { GoogleProfile } from 'next-auth/providers/google';
+import { toast } from 'sonner';
 
 export const authConfig = {
   providers: [
@@ -19,7 +21,6 @@ export const authConfig = {
       async authorize(credentials, req) {
         const parsedCredentials = LoginSchema.safeParse(credentials);
 
-        // return {error: 'Invalid credentials'} as any; ## Nextjs don't want to support credentials specially with app router. If I return null, the library will throw an error, that can be handled but the response will be 200 which is wrong. Maybe replace NextAuth with other tools
         if (!parsedCredentials.success) return null;
 
         const dbUser = await db.user.findUnique({
@@ -36,6 +37,8 @@ export const authConfig = {
         );
 
         if (!passwordsMatch) return null;
+
+        if (!dbUser.emailVerified) throw new Error('Email not verified');
 
         return {
           id: dbUser?.id,

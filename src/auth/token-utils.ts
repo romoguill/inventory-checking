@@ -55,6 +55,8 @@ export const generateVerificationToken = async (email: string) => {
   // No need to store old tokens. Delete the old one linked to that email
   const dbVerificationToken = await getVerificationTokenByEmail(email);
 
+  console.log({ dbVerificationToken });
+
   if (dbVerificationToken) {
     await db.verificationToken.delete({
       where: {
