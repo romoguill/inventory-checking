@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { LoginSchema } from '@/schemas/auth.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
 import { SignInResponse, signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -35,7 +36,6 @@ function LoginForm() {
     setIsPending(true);
 
     const { error, ok } = (await signIn('credentials', {
-      callbackUrl: DEFAULT_REDIRECT,
       redirect: false,
       ...data,
     })) as SignInResponse;
@@ -92,7 +92,7 @@ function LoginForm() {
         </div>
 
         <Button type='submit' className='mt-6 w-full' disabled={isPending}>
-          Sign in
+          {!isPending ? 'Sign in' : <Loader2 className='animate-spin' />}
         </Button>
 
         {form.formState.errors.root && (

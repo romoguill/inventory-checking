@@ -28,6 +28,8 @@ export const authConfig = {
           },
         });
 
+        console.log(dbUser);
+
         if (!dbUser) return null;
 
         const passwordsMatch = bcrypt.compareSync(

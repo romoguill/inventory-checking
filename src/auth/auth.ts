@@ -6,9 +6,6 @@ import { Adapter } from 'next-auth/adapters';
 
 export const handlers = NextAuth({
   callbacks: {
-    async jwt({ token }) {
-      return token;
-    },
     async session({ session, token }) {
       if (session.user) {
         session.user.role = token.role;
@@ -18,9 +15,9 @@ export const handlers = NextAuth({
   },
 
   pages: {
-    signIn: '/login',
-    newUser: '/register',
-    error: '/error',
+    signIn: '/auth/login',
+    newUser: '/auth/register',
+    error: '/auth/error',
   },
 
   adapter: PrismaAdapter(db) as Adapter,
