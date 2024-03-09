@@ -1,12 +1,10 @@
-import { db } from '@/lib/db';
-import { RegisterSchema } from '@/schemas/auth.schemas';
-import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
-import bcrypt from 'bcryptjs';
-import { UserRole } from '@prisma/client';
-import { sendEmail, sendEmailVerification } from '@/lib/emails/sendEmail';
-import VerificationEmail from '@/emails/VerificationEmail';
 import { generateVerificationToken } from '@/auth/token-utils';
+import { db } from '@/lib/db';
+import { sendEmailVerification } from '@/lib/emails/sendEmail';
+import { RegisterSchema } from '@/schemas/auth.schemas';
+import { UserRole } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(req: NextRequest) {
   const payload = await req.json();

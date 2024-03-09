@@ -52,6 +52,7 @@ export const generateVerificationToken = async (email: string) => {
   const token = uuidv4();
   const expires = new Date(new Date().getTime() + 1000 * 60 * 60); // token will last 1 hour
 
+  // No need to store old tokens. Delete the old one linked to that email
   const dbVerificationToken = await getVerificationTokenByEmail(email);
 
   if (dbVerificationToken) {
