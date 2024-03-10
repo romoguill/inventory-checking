@@ -20,12 +20,12 @@ function Logo({ className, withIcon = true, size = 'md' }: LogoProps) {
       {withIcon && (
         <Image
           src={appIcon}
-          width={size === 'sm' ? 30 : size === 'md' ? 50 : 60}
+          width={size === 'sm' ? 30 : size === 'md' ? 40 : 60}
           alt='Corporate logo'
         />
       )}
       <h2
-        className={cn(logoFont.className, {
+        className={cn(logoFont.className, 'mt-1', {
           'text-xl': size === 'sm',
           'text-2xl': size === 'md',
           'text-3xl': size === 'lg',

@@ -37,6 +37,7 @@ function RegisterForm() {
   const onSubmit: SubmitHandler<RegisterSchema> = async (data) => {
     setIsPending(true);
 
+    console.log('Begining register', new Date().getMilliseconds());
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_SERVER_URL}/api/auth/register`,
       {

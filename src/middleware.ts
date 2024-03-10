@@ -16,6 +16,7 @@ type WithAuth = {
 
 export async function middleware(req: NextRequest & WithAuth) {
   const { nextUrl } = req;
+  console.log('middleware run');
 
   // Check if route is public. Middleware will not affect this ones
   if (publicRoutes.includes(nextUrl.pathname)) {
