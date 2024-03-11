@@ -1,5 +1,11 @@
+import Hero from './_components/Hero';
+
 function LandingPage() {
-  return <main>LandingPage</main>;
+  return (
+    <main className='w-full'>
+      <Hero />
+    </main>
+  );
 }
 
 export default LandingPage;

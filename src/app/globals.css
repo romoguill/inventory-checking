@@ -13,8 +13,11 @@ body,
     --background: 0 0% 100%;
     --foreground: 20 14.3% 4.1%;
 
-    --landing-primary: #ecf7fb;
-    --landing-primary-foreground: #404c99;
+    --landing-primary: 196 65% 95%;
+    --landing-primary-foreground: 232 41% 43%;
+
+    --cta: 192 91% 48%;
+    --cta-foreground: 0 0% 100%;
 
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;

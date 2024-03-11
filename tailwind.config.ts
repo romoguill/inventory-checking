@@ -25,8 +25,12 @@ const config = {
         background: 'hsl(var(--background))',
         foreground: 'hsl(var(--foreground))',
         landing: {
-          DEFAULT: 'var(--landing-primary)',
-          foreground: 'var(--landing-primary-foreground)',
+          DEFAULT: 'hsl(var(--landing-primary))',
+          foreground: 'hsl(var(--landing-primary-foreground))',
+        },
+        cta: {
+          DEFAULT: 'hsl(var(--cta))',
+          foreground: 'hsl(var(--cta-foreground))',
         },
         primary: {
           DEFAULT: 'hsl(var(--primary))',
@@ -56,6 +60,9 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+      },
+      backgroundImage: {
+        hero: "url('/hero-bg.jpg')",
       },
       borderRadius: {
         lg: 'var(--radius)',

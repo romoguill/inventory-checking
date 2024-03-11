@@ -25,7 +25,7 @@ function Logo({ className, withIcon = true, size = 'md' }: LogoProps) {
         />
       )}
       <h2
-        className={cn(logoFont.className, 'mt-1', {
+        className={cn(logoFont.className, 'mt-1 text-nowrap', {
           'text-xl': size === 'sm',
           'text-2xl': size === 'md',
           'text-3xl': size === 'lg',
