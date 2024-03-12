@@ -5,19 +5,10 @@ import Image from 'next/image';
 
 function LandingLayout({ children }: PropsWithChildren) {
   return (
-    <>
-      {/* <Image
-        src={bgStripes}
-        fill
-        aria-hidden
-        alt=''
-        className='w-full -z-40 absolute'
-      /> */}
-      <div className='w-full min-h-full flex flex-col items-center bg-landing'>
-        <Header />
-        {children}
-      </div>
-    </>
+    <div className='w-full min-h-full flex flex-col items-center bg-landing'>
+      <Header />
+      {children}
+    </div>
   );
 }
 
