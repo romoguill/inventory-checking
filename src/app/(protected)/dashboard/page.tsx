@@ -5,10 +5,7 @@ async function DashboardPage() {
   const session = await getServerAuthSession();
 
   return (
-    <div>
-      {JSON.stringify(session)}
-      <LogoutButton />
-    </div>
+    <main className='col-start-2 row-start-2 bg-dashboard-light'>Contents</main>
   );
 }
 

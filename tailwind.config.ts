@@ -60,6 +60,12 @@ const config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
+        dashboard: {
+          dark: 'var(--dashboard-dark)',
+          light: 'var(--dashboard-light)',
+          foreground: 'var(--dashboard-foreground)',
+          accent: 'var(--dashboard-accent)',
+        },
       },
       backgroundImage: {
         hero: "url('/hero-bg.jpg')",
