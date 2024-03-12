@@ -15,15 +15,16 @@ export interface INavItem {
 
 interface NavListProps {
   items: INavItem[];
-  isMobile: boolean;
+  className?: string;
 }
 
-function NavList({ items, isMobile }: NavListProps) {
+function NavList({ items, className }: NavListProps) {
   return (
     <ul
-      className={cn('flex text-landing-foreground font-bold gap-8 mx-auto', {
-        'flex-col': isMobile,
-      })}
+      className={cn(
+        'text-landing-foreground font-bold gap-8 mx-auto',
+        className
+      )}
     >
       {items.map(({ label, href }) => (
         <li key={label} className={cn(font.className, 'hover:opacity-80')}>
