@@ -22,8 +22,8 @@ body,
     --card: 0 0% 100%;
     --card-foreground: 20 14.3% 4.1%;
 
-    --popover: rgba(238, 238, 238);
-    --popover-foreground: rgba(34, 40, 49);
+    --popover: 0 0% 93%;
+    --popover-foreground: 216 18% 16%;
 
     --primary: 24 9.8% 10%;
     --primary-foreground: 60 9.1% 97.8%;
@@ -40,10 +40,10 @@ body,
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 60 9.1% 97.8%;
 
-    --dashboard-dark: rgba(34, 40, 49);
-    --dashboard-light: rgba(49, 54, 63);
-    --dashboard-accent: rgba(118, 171, 174);
-    --dashboard-foreground: rgba(238, 238, 238);
+    --dashboard-dark: 216 18% 16%;
+    --dashboard-light: 219 13% 22%;
+    --dashboard-accent: 183 26% 57%;
+    --dashboard-foreground: 0 0% 93%;
 
     --border: 20 5.9% 90%;
     --input: 20 5.9% 90%;

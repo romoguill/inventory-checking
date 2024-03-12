@@ -53,18 +53,18 @@ const config = {
           foreground: 'hsl(var(--accent-foreground))',
         },
         popover: {
-          DEFAULT: 'var(--popover)',
-          foreground: 'var(--popover-foreground)',
+          DEFAULT: 'hsl(var(--popover))',
+          foreground: 'hsl(var(--popover-foreground))',
         },
         card: {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
         dashboard: {
-          dark: 'var(--dashboard-dark)',
-          light: 'var(--dashboard-light)',
-          foreground: 'var(--dashboard-foreground)',
-          accent: 'var(--dashboard-accent)',
+          dark: 'hsl(var(--dashboard-dark))',
+          light: 'hsl(var(--dashboard-light))',
+          foreground: 'hsl(var(--dashboard-foreground))',
+          accent: 'hsl(var(--dashboard-accent))',
         },
       },
       backgroundImage: {

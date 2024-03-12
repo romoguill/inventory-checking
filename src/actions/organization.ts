@@ -2,14 +2,14 @@
 
 import { db } from '@/lib/db';
 
-export const createOrganization = async (userId: string, name: string) => {
+export const createOrganization = async (email: string, name: string) => {
   try {
     await db.organization.create({
       data: {
         name,
         owner: {
           connect: {
-            id: userId,
+            email: email,
           },
         },
       },
@@ -24,11 +24,11 @@ export const createOrganization = async (userId: string, name: string) => {
   }
 };
 
-export const getOrganizationsOwnedBy = async (userId: string) => {
+export const getOrganizationsOwnedBy = async (email: string) => {
   try {
-    const organizations = db.user.findUnique({
+    const organizations = await db.user.findUnique({
       where: {
-        id: userId,
+        email,
       },
       select: {
         organizationsOwned: {
@@ -40,18 +40,18 @@ export const getOrganizationsOwnedBy = async (userId: string) => {
         },
       },
     });
-    return organizations;
+    return { data: organizations };
   } catch (error) {
     console.log(error);
     return { error: 'Error retrieving organizations' };
   }
 };
 
-export const getOrganizationsLinkedTo = async (userId: string) => {
+export const getOrganizationsLinkedTo = async (email: string) => {
   try {
-    const organizations = db.user.findUnique({
+    const organizations = await db.user.findUnique({
       where: {
-        id: userId,
+        email,
       },
       select: {
         organizationsLinked: {
@@ -67,7 +67,7 @@ export const getOrganizationsLinkedTo = async (userId: string) => {
         },
       },
     });
-    return organizations;
+    return { data: organizations };
   } catch (error) {
     console.log(error);
     return { error: 'Error retrieving organizations' };
