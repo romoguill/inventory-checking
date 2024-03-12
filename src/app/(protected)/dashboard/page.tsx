@@ -5,7 +5,9 @@ async function DashboardPage() {
   const session = await getServerAuthSession();
 
   return (
-    <main className='col-start-2 row-start-2 bg-dashboard-light'>Contents</main>
+    <main className='flex-1 col-start-2 row-start-2 bg-dashboard-light'>
+      Contents
+    </main>
   );
 }
 

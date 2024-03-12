@@ -1,12 +1,15 @@
 import { getServerAuthSession } from '@/auth/auth.config';
 import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
-import { Inter } from 'next/font/google';
+import { Roboto } from 'next/font/google';
 import { Toaster } from 'sonner';
 import './globals.css';
 import AuthProvider from './context/AuthProvider';
 
-const inter = Inter({ subsets: ['latin'] });
+const globalFont = Roboto({
+  weight: '400',
+  subsets: ['latin'],
+});
 
 export const metadata: Metadata = {
   title: 'Check Delta',
@@ -23,7 +26,7 @@ export default async function RootLayout({
   return (
     <AuthProvider>
       <html lang='en'>
-        <body className={inter.className}>
+        <body className={globalFont.className}>
           {children}
           <Toaster position='top-center' richColors />
         </body>
