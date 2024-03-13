@@ -1,6 +1,7 @@
 'use server';
 
 import { db } from '@/lib/db';
+import { revalidatePath } from 'next/cache';
 
 export const createOrganization = async (email: string, name: string) => {
   try {

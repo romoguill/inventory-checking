@@ -22,7 +22,8 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { ChevronDown, Earth, Loader2, Plus } from 'lucide-react';
 import { useSession } from 'next-auth/react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import CreateOrganizationForm from '../forms/CreateOrganizationForm';
 
 interface OrganizationOwned {
   id: string;
@@ -36,47 +37,49 @@ interface OrganizationOwned {
 function OrgMenu() {
   const { data } = useSession();
   const [isPending, setIsPending] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [availableOrganizations, setAvailableOrganizations] = useState<
     OrganizationOwned[] | null
   >(null);
 
-  console.log(data);
-
-  useEffect(() => {
-    const handleGetOrganizations = async () => {
-      if (!data || !data.user) return;
-
-      setIsPending(true);
-
-      const { error, data: organizations } = await getOrganizationsOwnedBy(
-        data.user.email
-      );
-
-      if (
-        !error &&
-        organizations &&
-        organizations.organizationsOwned.length > 0
-      ) {
-        setAvailableOrganizations(organizations.organizationsOwned);
-      }
-
-      setIsPending(false);
-    };
-
-    handleGetOrganizations();
-  }, [data]);
-
-  const handleCreateOrganization = async () => {
+  const handleGetOrganizations = useCallback(async () => {
     if (!data || !data.user) return;
 
-    const { error } = await createOrganization(data.user.email, 'Testing');
+    setIsPending(true);
 
-    console.log(error);
+    const { error, data: organizations } = await getOrganizationsOwnedBy(
+      data.user.email
+    );
+
+    if (
+      !error &&
+      organizations &&
+      organizations.organizationsOwned.length > 0
+    ) {
+      setAvailableOrganizations(organizations.organizationsOwned);
+    }
+
+    setIsPending(false);
+  }, [data]);
+
+  useEffect(() => {
+    handleGetOrganizations();
+  }, [handleGetOrganizations]);
+
+  const handleModalOpenChange = (open: boolean) => {
+    if (open) {
+      setIsMenuOpen(false);
+      setIsModalOpen(true);
+    } else {
+      setIsModalOpen(false);
+    }
   };
+
   // TODO: Trigger should be actual name with icon. Display organizations asociated with user
   return (
-    <Dialog>
-      <DropdownMenu>
+    <Dialog open={isModalOpen} onOpenChange={handleModalOpenChange}>
+      <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <DropdownMenuTrigger
           asChild
           className='flex gap-1 items-center justify-between'
@@ -118,17 +121,16 @@ function OrgMenu() {
 
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create a new Organization</DialogTitle>
+          <DialogTitle className='mb-3'>Create a new Organization</DialogTitle>
+          <CreateOrganizationForm
+            setIsMenuOpen={setIsMenuOpen}
+            setIsModalOpen={setIsModalOpen}
+            getOrganizations={handleGetOrganizations}
+          />
         </DialogHeader>
       </DialogContent>
     </Dialog>
   );
-}
-
-{
-  /* <Button
-            variant='ghost'
-            className='w-full h-8 justify-start bg-dashboard-dark/80 text-dashboard-foreground hover:bg-dashboard-dark/60 hover:text-dashboard-foreground focus:bg-dashboard-dark/60 focus:text-dashboard-foreground focus-visible:outline-none outline-none' */
 }
 
 export default OrgMenu;
