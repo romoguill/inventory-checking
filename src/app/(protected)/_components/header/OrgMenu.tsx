@@ -82,7 +82,7 @@ function OrgMenu() {
       <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <DropdownMenuTrigger
           asChild
-          className='flex gap-1 items-center justify-between'
+          className='flex gap-1 items-center justify-between ml-10'
         >
           <Button className='bg-inherit hover:bg-inherit hover:text-dashboard-accent'>
             <Earth />

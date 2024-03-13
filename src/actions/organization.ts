@@ -10,8 +10,11 @@ export const createOrganization = async (email: string, name: string) => {
         name,
         owner: {
           connect: {
-            email: email,
+            email,
           },
+        },
+        usersWorking: {
+          connect: [{ email }],
         },
       },
     });

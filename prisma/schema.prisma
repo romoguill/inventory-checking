@@ -40,16 +40,20 @@ enum UserRole {
 }
 
 model User {
-  id                  String               @id @default(cuid())
-  name                String?
-  email               String               @unique
-  emailVerified       DateTime?
-  password            String?
-  image               String?
-  accounts            Account[]
-  role                UserRole             @default(USER)
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?
+  image         String?
+  accounts      Account[]
+  role          UserRole  @default(USER)
+
   organizationsOwned  Organization[]
   organizationsLinked OrganizationsUsers[]
+
+  currentOrgId String?
+  currentOrg   Organization? @relation(name: "Current working organization", fields: [currentOrgId], references: [id])
 }
 
 model VerificationToken {
@@ -71,11 +75,12 @@ model PasswordResetToken {
 }
 
 model Organization {
-  id      String               @id @default(cuid())
-  name    String
-  ownerId String
-  owner   User                 @relation(fields: [ownerId], references: [id])
-  users   OrganizationsUsers[]
+  id           String               @id @default(cuid())
+  name         String
+  ownerId      String
+  owner        User                 @relation(fields: [ownerId], references: [id])
+  users        OrganizationsUsers[]
+  usersWorking User[]               @relation("Current working organization")
 }
 
 model OrganizationsUsers {
