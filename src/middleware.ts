@@ -36,36 +36,6 @@ export async function middleware(req: NextRequest & WithAuth) {
   }
 }
 
-// export async function middleware(
-//   req: NextRequestWithAuth,
-//   event: NextFetchEvent
-// ) {
-//   const { nextUrl } = req;
-
-//   const { pathname, search, origin, basePath } = req.nextUrl;
-//   console.log({ pathname, search, origin, basePath });
-
-//   if (!publicRoutes.includes(nextUrl.pathname)) {
-//     const authMiddleware = await withAuth(
-//       (req) => {
-//         console.log(req.nextauth.token);
-//         console.log('hola');
-//         return NextResponse.next();
-//       },
-//       {
-//         callbacks: { authorized: ({ token }) => !!token?.email },
-//         pages: {
-//           signIn: '/auth/login',
-//           error: '/auth/error',
-//           newUser: '/auth/register',
-//         },
-//       }
-//     )(req, event);
-
-//     return authMiddleware;
-//   }
-// }
-
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
 };

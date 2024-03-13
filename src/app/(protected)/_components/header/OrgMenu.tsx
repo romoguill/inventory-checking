@@ -3,6 +3,8 @@
 import {
   createOrganization,
   getOrganizationsOwnedBy,
+  getWorkingOrganization,
+  setWorkingOrganization,
 } from '@/actions/organization';
 import { Button } from '@/components/ui/button';
 import {
@@ -24,6 +26,9 @@ import { ChevronDown, Earth, Loader2, Plus } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import { useCallback, useEffect, useState } from 'react';
 import CreateOrganizationForm from '../forms/CreateOrganizationForm';
+import { type Organization } from '@prisma/client';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useRouter } from 'next/navigation';
 
 interface OrganizationOwned {
   id: string;
@@ -42,6 +47,22 @@ function OrgMenu() {
   const [availableOrganizations, setAvailableOrganizations] = useState<
     OrganizationOwned[] | null
   >(null);
+  const [currentOrganization, setCurrentOrganization] =
+    useState<Organization | null>(null);
+  const [isLoadingWorkingOrg, setIsLoadingWorkingOrg] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const loadCurrentOrganization = async () => {
+      const response = await getWorkingOrganization();
+
+      if (response.error) return;
+
+      response.data && setCurrentOrganization(response.data.currentOrg);
+    };
+
+    loadCurrentOrganization();
+  }, []);
 
   const handleGetOrganizations = useCallback(async () => {
     if (!data || !data.user) return;
@@ -67,6 +88,24 @@ function OrgMenu() {
     handleGetOrganizations();
   }, [handleGetOrganizations]);
 
+  const handleOrganizationChange = async (name: string) => {
+    // setIsLoadingWorkingOrg(true);
+
+    const responseSet = await setWorkingOrganization(name);
+    console.log(responseSet);
+
+    if (responseSet.error) return;
+
+    // const responseGet = await getWorkingOrganization();
+
+    // if (responseGet.error) return;
+
+    // responseGet.data && setCurrentOrganization(responseGet.data.currentOrg);
+    window.location.reload();
+
+    setIsLoadingWorkingOrg(false);
+  };
+
   const handleModalOpenChange = (open: boolean) => {
     if (open) {
       setIsMenuOpen(false);
@@ -85,9 +124,15 @@ function OrgMenu() {
           className='flex gap-1 items-center justify-between ml-10'
         >
           <Button className='bg-inherit hover:bg-inherit hover:text-dashboard-accent'>
-            <Earth />
-            <span>My Organization</span>
-            <ChevronDown size={16} />
+            {!currentOrganization || isLoadingWorkingOrg ? (
+              <Skeleton className='h-7 w-32 bg-dashboard-light/70 rounded-sm' />
+            ) : (
+              <>
+                <Earth />
+                <span>{currentOrganization?.name}</span>
+                <ChevronDown size={16} />
+              </>
+            )}
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align='start' alignOffset={50}>
@@ -104,6 +149,7 @@ function OrgMenu() {
                 <DropdownMenuItem
                   key={org.id}
                   className='hover:bg-dashboard-light/20 focus:bg-dashboard-light/20'
+                  onClick={() => handleOrganizationChange(org.id)}
                 >
                   {org.name}
                 </DropdownMenuItem>

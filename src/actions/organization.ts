@@ -1,5 +1,6 @@
 'use server';
 
+import { getServerAuthSession } from '@/auth/auth.config';
 import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
 
@@ -75,5 +76,49 @@ export const getOrganizationsLinkedTo = async (email: string) => {
   } catch (error) {
     console.log(error);
     return { error: 'Error retrieving organizations' };
+  }
+};
+
+export const setWorkingOrganization = async (id: string) => {
+  const session = await getServerAuthSession();
+  if (!session) return { error: 'No user detected' };
+
+  try {
+    await db.user.update({
+      where: {
+        email: session.user.email,
+      },
+      data: {
+        currentOrgId: id,
+      },
+    });
+
+    revalidatePath('/dashboard');
+
+    return { success: 'Updated current organization' };
+  } catch (error) {
+    console.log(error);
+    return { error: "Couldn't change organization" };
+  }
+};
+
+export const getWorkingOrganization = async () => {
+  const session = await getServerAuthSession();
+  if (!session) return { error: 'No user detected' };
+
+  try {
+    const response = await db.user.findUnique({
+      where: {
+        email: session.user.email,
+      },
+      select: {
+        currentOrg: true,
+      },
+    });
+
+    return { data: response };
+  } catch (error) {
+    console.log(error);
+    return { error: "Couldn't change organization" };
   }
 };
