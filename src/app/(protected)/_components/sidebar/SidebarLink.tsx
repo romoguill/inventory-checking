@@ -5,6 +5,12 @@ import { TSidebarLink } from './Sidebar';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
 
 interface WrapperProps {
   link: TSidebarLink;
@@ -13,8 +19,31 @@ interface WrapperProps {
 }
 
 const Wrapper = ({ children, link, className }: WrapperProps) => {
+  const pathname = usePathname();
   if (link.type === 'menu') {
-    return <div className={className}>{children}</div>;
+    return (
+      <Accordion type='multiple' className={className}>
+        <AccordionItem
+          value={link.label}
+          className='w-full border-none flex flex-col'
+        >
+          <AccordionTrigger
+            isActive={isLinkActive(link, pathname)}
+            className='flex items-center justify-start gap-2 p-0 hover:no-underline'
+          >
+            {children}
+          </AccordionTrigger>
+          <AccordionContent
+            asChild
+            className='hover:no-underline text-md flex flex-col gap-1 pb-0 pl-3 pt-2'
+          >
+            {link.children.map((link) => (
+              <SidebarLink key={link.label} link={link} />
+            ))}
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    );
   } else {
     return (
       <Link href={link.href} className={className}>
@@ -46,8 +75,10 @@ function SidebarLink({ link, className }: SidebarLinkProps) {
     <li className={className}>
       <Wrapper
         link={link}
-        className={cn('flex gap-2 items-center', {
-          'bg-dashboard-accent/60': isLinkActive(link, pathname),
+        className={cn('flex gap-2 items-center rounded-sm', {
+          'bg-dashboard-accent/60':
+            link.type === 'link' && isLinkActive(link, pathname),
+          'p-2': link.type === 'link',
         })}
       >
         <link.Icon />

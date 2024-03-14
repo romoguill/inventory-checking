@@ -81,8 +81,11 @@ const config = {
           to: { height: 'var(--radix-accordion-content-height)' },
         },
         'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+            paddingTop: '0.5rem',
+          },
+          to: { height: '0', paddingTop: '0' },
         },
       },
       animation: {
