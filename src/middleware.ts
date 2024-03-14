@@ -31,7 +31,11 @@ export async function middleware(req: NextRequest & WithAuth) {
     return NextResponse.redirect(new URL(DEFAULT_REDIRECT, nextUrl.origin));
   }
 
-  if (!token && privateRoutes.includes(nextUrl.pathname)) {
+  if (
+    !token &&
+    !authRoutes.includes(nextUrl.pathname) &&
+    !publicRoutes.includes(nextUrl.pathname)
+  ) {
     return NextResponse.redirect(new URL('/auth/login', nextUrl.origin));
   }
 }

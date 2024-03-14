@@ -1,9 +1,8 @@
 'use client';
 
+import Logo from '@/components/corporate/Logo';
 import {
-  AreaChart,
   Box,
-  Check,
   Flag,
   Layers,
   LayoutDashboard,
@@ -11,8 +10,8 @@ import {
   Settings,
 } from 'lucide-react';
 import SidebarLink from './SidebarLink';
-import Logo from '@/components/corporate/Logo';
-import Link from 'next/link';
+import UserInfo from './UserInfo';
+import { Button } from '@/components/ui/button';
 
 export type TSidebarLink =
   | {
@@ -64,13 +63,14 @@ export const sidebarLinks: TSidebarLink[] = [
 
 function Sidebar() {
   return (
-    <div className='col-span-1 row-start-1 row-span-2 hidden bg-dashboard-dark md:flex md:flex-col justify-start '>
+    <div className='col-span-1 row-start-1 row-span-2 hidden bg-dashboard-dark md:flex md:flex-col justify-start'>
       <Logo className='ml-6 py-[0.6rem]' />
-      <ul className='flex flex-col gap-2 px-3 mt-32'>
+      <ul className='flex flex-col gap-2 px-3 mt-10'>
         {sidebarLinks.map((link) => (
           <SidebarLink key={link.label} link={link} />
         ))}
       </ul>
+      <UserInfo />
     </div>
   );
 }

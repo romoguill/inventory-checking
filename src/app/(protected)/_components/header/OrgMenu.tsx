@@ -128,8 +128,8 @@ function OrgMenu() {
               <Skeleton className='h-7 w-32 bg-dashboard-light/70 rounded-sm' />
             ) : (
               <>
-                <Earth />
-                <span>{currentOrganization?.name}</span>
+                <Earth size={18} className='mr-1' />
+                <span className='text-lg'>{currentOrganization?.name}</span>
                 <ChevronDown size={16} />
               </>
             )}

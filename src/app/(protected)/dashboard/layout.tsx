@@ -10,7 +10,9 @@ function DashboardLayout({ children }: PropsWithChildren) {
     <div className='flex flex-col md:grid grid-cols-[230px_1fr] min-h-full grid-rows-[60px_1fr] text-dashboard-foreground'>
       <Sidebar />
       <AppHeader />
-      {children}
+      <main className='flex-1 col-start-2 row-start-2 bg-dashboard-light'>
+        {children}
+      </main>
     </div>
   );
 }
