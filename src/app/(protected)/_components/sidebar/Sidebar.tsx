@@ -1,3 +1,5 @@
+'use client';
+
 import {
   AreaChart,
   Box,
@@ -10,50 +12,53 @@ import {
 } from 'lucide-react';
 import SidebarLink from './SidebarLink';
 import Logo from '@/components/corporate/Logo';
+import Link from 'next/link';
 
 export type TSidebarLink =
   | {
+      type: 'link';
       label: string;
       Icon: LucideIcon;
       href: string;
-      children: null;
     }
   | {
+      type: 'menu';
       label: string;
       Icon: LucideIcon;
       children: TSidebarLink[];
     };
 
-const sidebarLinks: TSidebarLink[] = [
+export const sidebarLinks: TSidebarLink[] = [
   {
+    type: 'link',
     label: 'Dasboard',
     Icon: LayoutDashboard,
     href: '/dashboard',
-    children: null,
   },
   {
+    type: 'menu',
     label: 'Management',
     Icon: Layers,
     children: [
       {
+        type: 'link',
         label: 'Products',
         Icon: Box,
         href: '/dashboard/products',
-        children: null,
       },
       {
+        type: 'link',
         label: 'Stock policies',
         Icon: Flag,
         href: '/dashboard/policies',
-        children: null,
       },
     ],
   },
   {
+    type: 'link',
     label: 'Settings',
     Icon: Settings,
     href: '/dashboard/settings',
-    children: null,
   },
 ];
 
