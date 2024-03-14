@@ -65,6 +65,7 @@ const config = {
           light: 'hsl(var(--dashboard-light))',
           foreground: 'hsl(var(--dashboard-foreground))',
           accent: 'hsl(var(--dashboard-accent))',
+          border: 'hsl(var(--dashboard-border))',
         },
       },
       backgroundImage: {
