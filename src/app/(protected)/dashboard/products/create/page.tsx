@@ -4,7 +4,7 @@ import ProductForm from '@/app/(protected)/_components/forms/ProductForm';
 function CreateProductPage() {
   return (
     <InnerDashboardContainer>
-      <ProductForm />
+      <ProductForm type='create' />
     </InnerDashboardContainer>
   );
 }
