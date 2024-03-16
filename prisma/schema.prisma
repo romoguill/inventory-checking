@@ -91,3 +91,31 @@ model OrganizationsUsers {
 
   @@id([organizationId, userId])
 }
+
+enum Severity {
+  LOW
+  MEDIUM
+  HIGH
+}
+
+model Product {
+  id       String  @id @default(cuid())
+  name     String
+  imageUrl String?
+
+  batchTracking Boolean
+  severity      Severity
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Policy {
+  id   String @id @default(cuid())
+  name String
+
+  severity Severity[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
