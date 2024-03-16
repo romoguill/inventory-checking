@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { OrganizationSchema } from '@/schemas/dashboard.schemas';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Dispatch, SetStateAction, useState } from 'react';
@@ -33,6 +34,7 @@ function CreateOrganizationForm({
   const router = useRouter();
 
   const form = useForm<OrganizationSchema>({
+    resolver: zodResolver(OrganizationSchema),
     defaultValues: {
       name: '',
     },
