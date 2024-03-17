@@ -18,10 +18,11 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { UploadButton } from '@/lib/uploadthing/uploadthing';
+import { UploadButton, UploadDropzone } from '@/lib/uploadthing/uploadthing';
 import { ProductSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import UploadImages from './UploadImages';
 
 interface ProductFormProps {
   type: 'create' | 'update';
@@ -60,7 +61,7 @@ function ProductForm({ type }: ProductFormProps) {
             )}
           />
 
-          <UploadButton
+          {/* <UploadDropzone
             endpoint='imageUploader'
             onClientUploadComplete={(res) => {
               // Do something with the response
@@ -71,7 +72,10 @@ function ProductForm({ type }: ProductFormProps) {
               // Do something with the error.
               alert(`ERROR! ${error.message}`);
             }}
-          />
+            className='h-40 [&_[data-ut-element=button]]:bg-dashboard-accent [&_[data-ut-element=button]]:p-3 [&_[data-ut-element=button]]:rounded-sm [&_[data-ut-element=button]]:text-sm [data-ut-element=button]]:font-semibold'
+          /> */}
+
+          <UploadImages />
 
           <FormField
             control={form.control}

@@ -20,7 +20,7 @@ const buttonVariants = cva(
         link: 'text-primary underline-offset-4 hover:underline',
         cta: 'bg-cta text-cta-foreground hover:bg-cta/90',
         submit:
-          'bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground',
+          'bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground font-semibold tracking-wide',
       },
       size: {
         default: 'h-10 px-4 py-2',
