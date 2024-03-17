@@ -3,6 +3,7 @@ import type { Metadata } from 'next';
 import { SessionProvider } from 'next-auth/react';
 import { Roboto } from 'next/font/google';
 import { Toaster } from 'sonner';
+
 import './globals.css';
 import AuthProvider from './context/AuthProvider';
 

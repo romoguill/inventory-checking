@@ -1,3 +1,5 @@
+import {} from '@uploadthing/react';
+
 import { Roboto } from 'next/font/google';
 
 import { PropsWithChildren } from 'react';

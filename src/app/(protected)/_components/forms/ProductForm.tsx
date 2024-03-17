@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { UploadButton } from '@/lib/uploadthing/uploadthing';
 import { ProductSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -58,6 +59,20 @@ function ProductForm({ type }: ProductFormProps) {
               </FormItem>
             )}
           />
+
+          <UploadButton
+            endpoint='imageUploader'
+            onClientUploadComplete={(res) => {
+              // Do something with the response
+              console.log('Files: ', res);
+              alert('Upload Completed');
+            }}
+            onUploadError={(error: Error) => {
+              // Do something with the error.
+              alert(`ERROR! ${error.message}`);
+            }}
+          />
+
           <FormField
             control={form.control}
             name='imageUrl'
@@ -68,7 +83,6 @@ function ProductForm({ type }: ProductFormProps) {
                   <Input
                     placeholder='Product image url'
                     variant='form'
-                    type='file'
                     {...field}
                   />
                 </FormControl>
