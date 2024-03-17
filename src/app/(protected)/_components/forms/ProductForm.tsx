@@ -23,12 +23,15 @@ import { ProductSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import UploadImages from './UploadImages';
+import { ioTsResolver } from '@hookform/resolvers/io-ts';
+import { useState } from 'react';
 
 interface ProductFormProps {
   type: 'create' | 'update';
 }
 
 function ProductForm({ type }: ProductFormProps) {
+  const [isUrlReady, setIsUrlReady] = useState(false);
   const form = useForm<ProductSchema>({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
@@ -41,6 +44,11 @@ function ProductForm({ type }: ProductFormProps) {
 
   const onSubmit: SubmitHandler<ProductSchema> = async (data) => {
     console.log(data);
+  };
+
+  const handleImageUrlAfterUpload = (url: string) => {
+    form.setValue('imageUrl', url);
+    setIsUrlReady(true);
   };
 
   return (
@@ -61,39 +69,32 @@ function ProductForm({ type }: ProductFormProps) {
             )}
           />
 
-          {/* <UploadDropzone
-            endpoint='imageUploader'
-            onClientUploadComplete={(res) => {
-              // Do something with the response
-              console.log('Files: ', res);
-              alert('Upload Completed');
-            }}
-            onUploadError={(error: Error) => {
-              // Do something with the error.
-              alert(`ERROR! ${error.message}`);
-            }}
-            className='h-40 [&_[data-ut-element=button]]:bg-dashboard-accent [&_[data-ut-element=button]]:p-3 [&_[data-ut-element=button]]:rounded-sm [&_[data-ut-element=button]]:text-sm [data-ut-element=button]]:font-semibold'
-          /> */}
+          {!isUrlReady && (
+            <UploadImages
+              handleImageUrlAfterUpload={handleImageUrlAfterUpload}
+            />
+          )}
 
-          <UploadImages />
-
-          <FormField
-            control={form.control}
-            name='imageUrl'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Image</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Product image url'
-                    variant='form'
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+          {isUrlReady && (
+            <FormField
+              control={form.control}
+              name='imageUrl'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder='Product image url'
+                      variant='form'
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
 
           <FormField
             control={form.control}
