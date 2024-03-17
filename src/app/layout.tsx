@@ -29,7 +29,7 @@ export default async function RootLayout({
       <html lang='en'>
         <body className={globalFont.className}>
           {children}
-          <Toaster position='top-center' richColors />
+          <Toaster position='top-right' richColors />
         </body>
       </html>
     </AuthProvider>

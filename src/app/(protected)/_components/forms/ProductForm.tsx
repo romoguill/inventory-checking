@@ -25,6 +25,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import UploadImages from './UploadImages';
 import { ioTsResolver } from '@hookform/resolvers/io-ts';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 interface ProductFormProps {
   type: 'create' | 'update';
@@ -32,6 +33,8 @@ interface ProductFormProps {
 
 function ProductForm({ type }: ProductFormProps) {
   const [isUrlReady, setIsUrlReady] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+
   const form = useForm<ProductSchema>({
     resolver: zodResolver(ProductSchema),
     defaultValues: {
@@ -44,6 +47,29 @@ function ProductForm({ type }: ProductFormProps) {
 
   const onSubmit: SubmitHandler<ProductSchema> = async (data) => {
     console.log(data);
+    const response = await fetch(`/api/products`, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+
+    const { error, data: product } = await response.json();
+
+    if (!error) {
+      toast.success('Product created');
+    } else {
+      console.log(error);
+      toast.error("Couldn't create product");
+    }
+
+    form.reset({
+      name: '',
+      imageUrl: '',
+      batchTracking: true,
+      severity: '' as any,
+    });
+
+    setFiles([]);
+    setIsUrlReady(false);
   };
 
   const handleImageUrlAfterUpload = (url: string) => {
@@ -72,6 +98,8 @@ function ProductForm({ type }: ProductFormProps) {
           {!isUrlReady && (
             <UploadImages
               handleImageUrlAfterUpload={handleImageUrlAfterUpload}
+              files={files}
+              setFiles={setFiles}
             />
           )}
 

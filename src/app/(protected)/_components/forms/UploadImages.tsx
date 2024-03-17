@@ -4,23 +4,31 @@ import { useUploadThing } from '@/lib/uploadthing/uploadthing';
 import { generateReactHelpers, useDropzone } from '@uploadthing/react';
 import { Loader2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
-import { useCallback, useState } from 'react';
+import { SetStateAction, useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { ClientUploadedFileData } from 'uploadthing/types';
 
 interface UploadImagesProps {
   handleImageUrlAfterUpload: (url: string) => void;
+  files: File[];
+  setFiles: React.Dispatch<SetStateAction<File[]>>;
 }
 
-function UploadImages({ handleImageUrlAfterUpload }: UploadImagesProps) {
-  const [files, setFiles] = useState<File[]>([]);
+function UploadImages({
+  handleImageUrlAfterUpload,
+  files,
+  setFiles,
+}: UploadImagesProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [isUploadingFinished, setIsUploadingFinished] = useState(false);
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
-    setFiles(acceptedFiles);
-  }, []);
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      setFiles(acceptedFiles);
+    },
+    [setFiles]
+  );
 
   const { startUpload, permittedFileInfo } = useUploadThing('imageUploader', {
     onClientUploadComplete: (res) => {

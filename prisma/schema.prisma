@@ -75,12 +75,15 @@ model PasswordResetToken {
 }
 
 model Organization {
-  id           String               @id @default(cuid())
-  name         String
-  ownerId      String
-  owner        User                 @relation(fields: [ownerId], references: [id])
+  id   String @id @default(cuid())
+  name String
+
+  ownerId String
+  owner   User   @relation(fields: [ownerId], references: [id])
+
   users        OrganizationsUsers[]
   usersWorking User[]               @relation("Current working organization")
+  products     Product[]
 }
 
 model OrganizationsUsers {
@@ -102,6 +105,9 @@ model Product {
   id       String  @id @default(cuid())
   name     String
   imageUrl String?
+
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   batchTracking Boolean
   severity      Severity
