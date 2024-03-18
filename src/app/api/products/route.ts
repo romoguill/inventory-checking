@@ -60,3 +60,46 @@ export async function POST(req: NextRequest) {
     );
   }
 }
+
+export async function GET(req: NextRequest) {
+  const session = await getServerAuthSession();
+
+  if (!session || !session.user.email) {
+    return NextResponse.json(
+      { data: null, error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  const dbOrganization = await db.user.findUnique({
+    where: {
+      email: session.user.email,
+    },
+    select: {
+      currentOrgId: true,
+    },
+  });
+
+  if (!dbOrganization || !dbOrganization.currentOrgId) {
+    return NextResponse.json(
+      { data: null, error: 'Unauthorized' },
+      { status: 401 }
+    );
+  }
+
+  try {
+    const response = await db.product.findMany({
+      where: {
+        organizationId: dbOrganization.currentOrgId,
+      },
+    });
+
+    return NextResponse.json({ data: response, error: null }, { status: 200 });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { data: null, error: 'Something went wrong' },
+      { status: 500 }
+    );
+  }
+}

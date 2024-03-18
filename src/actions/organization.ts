@@ -25,7 +25,9 @@ export const createOrganization = async (email: string, name: string) => {
     };
   } catch (error) {
     console.log(error);
-    return { error: 'There was a problem creating an organization' };
+    return {
+      error: { message: 'There was a problem creating an organization' },
+    };
   }
 };
 
@@ -48,7 +50,7 @@ export const getOrganizationsOwnedBy = async (email: string) => {
     return { data: organizations };
   } catch (error) {
     console.log(error);
-    return { error: 'Error retrieving organizations' };
+    return { error: { message: 'Error retrieving organizations' } };
   }
 };
 
@@ -75,7 +77,7 @@ export const getOrganizationsLinkedTo = async (email: string) => {
     return { data: organizations };
   } catch (error) {
     console.log(error);
-    return { error: 'Error retrieving organizations' };
+    return { error: { message: 'Error retrieving organizations' } };
   }
 };
 
@@ -98,13 +100,13 @@ export const setWorkingOrganization = async (id: string) => {
     return { success: 'Updated current organization' };
   } catch (error) {
     console.log(error);
-    return { error: "Couldn't change organization" };
+    return { error: { message: "Couldn't change organization" } };
   }
 };
 
 export const getWorkingOrganization = async () => {
   const session = await getServerAuthSession();
-  if (!session) return { error: 'No user detected' };
+  if (!session) return { error: { message: 'No user detected' }, data: null };
 
   try {
     const response = await db.user.findUnique({
@@ -116,9 +118,12 @@ export const getWorkingOrganization = async () => {
       },
     });
 
-    return { data: response };
+    if (response && response.currentOrg)
+      return { data: response.currentOrg, error: null };
+
+    return { data: null, error: { message: null } };
   } catch (error) {
     console.log(error);
-    return { error: "Couldn't change organization" };
+    return { error: { message: "Couldn't get organization" }, data: null };
   }
 };
