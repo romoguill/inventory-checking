@@ -1,10 +1,10 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import SearchBar from './SearchBar';
 import { Filter } from 'lucide-react';
 import { useState } from 'react';
-import ModalForm from '../ModalForm';
+import SearchBar from './SearchBar';
+import Link from 'next/link';
 
 function TableHeader() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,14 +19,12 @@ function TableHeader() {
         <SearchBar placeholder='Search products' className='' />
         <Filter className='bg-dashboard-border' size={30} />
       </div>
-      <Button
-        variant='ghost'
-        className='bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground'
-        onClick={() => setIsModalOpen(true)}
+      <Link
+        href={'/dashboard/products/create'}
+        className='bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground rounded-md flex items-center justify-center p-1 px-3'
       >
         Add new
-      </Button>
-      <ModalForm open={isModalOpen} onOpenChange={onOpenChange} />
+      </Link>
     </div>
   );
 }

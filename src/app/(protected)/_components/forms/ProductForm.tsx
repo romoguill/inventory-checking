@@ -18,14 +18,13 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { UploadButton, UploadDropzone } from '@/lib/uploadthing/uploadthing';
 import { ProductSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import UploadImages from './UploadImages';
-import { ioTsResolver } from '@hookform/resolvers/io-ts';
 import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import UploadImages from './UploadImages';
+import { Loader2 } from 'lucide-react';
 
 interface ProductFormProps {
   type: 'create' | 'update';
@@ -174,8 +173,17 @@ function ProductForm({ type }: ProductFormProps) {
             )}
           />
         </div>
-        <Button type='submit' variant='submit' className='mx-auto flex mt-8'>
-          Add product
+        <Button
+          type='submit'
+          variant='submit'
+          className='mx-auto flex mt-8 w-28'
+          disabled={form.formState.isSubmitting}
+        >
+          {form.formState.isSubmitting ? (
+            <Loader2 className='animate-spin' />
+          ) : (
+            'Add product'
+          )}
         </Button>
       </form>
     </Form>
