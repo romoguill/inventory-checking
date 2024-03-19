@@ -21,7 +21,7 @@ function TableHeader() {
       </div>
       <Link
         href={'/dashboard/products/create'}
-        className='bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground rounded-md flex items-center justify-center p-1 px-3'
+        className='bg-dashboard-action hover:bg-dashboard-action/90 hover:text-dashboard-foreground rounded-md flex items-center justify-center p-1 px-3 h-10'
       >
         Add new
       </Link>
