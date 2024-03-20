@@ -8,7 +8,7 @@ import ProductTable from '../../_components/products/ProductList';
 import { Suspense } from 'react';
 import ProductList from '../../_components/products/ProductList';
 import { Loader2 } from 'lucide-react';
-import TableLoader from '../../_components/TableLoader';
+import TableLoader from '../../_components/tables/TableLoader';
 
 async function ProductsPage() {
   return (

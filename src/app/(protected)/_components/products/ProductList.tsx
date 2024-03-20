@@ -1,6 +1,6 @@
 import { getProducts } from '@/actions/products';
 import ProductCard from './ProductCard';
-import TableEmpty from '../TableEmpty';
+import TableEmpty from '../tables/TableEmpty';
 
 async function ProductList() {
   // TODO: Backend is ready for pagination. For now its not needed. Maybe do a infinite scroll

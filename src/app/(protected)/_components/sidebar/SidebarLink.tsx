@@ -22,26 +22,28 @@ const Wrapper = ({ children, link, className }: WrapperProps) => {
   const pathname = usePathname();
   if (link.type === 'menu') {
     return (
-      <Accordion type='multiple' className={className}>
-        <AccordionItem
-          value={link.label}
-          className='w-full border-none flex flex-col'
-        >
-          <AccordionTrigger
-            isActive={isLinkActive(link, pathname)}
-            className='flex items-center justify-start gap-2 p-0 hover:no-underline'
+      <Accordion type='multiple' className={className} asChild>
+        <ul>
+          <AccordionItem
+            value={link.label}
+            className='w-full border-none flex flex-col'
           >
-            {children}
-          </AccordionTrigger>
-          <AccordionContent
-            asChild
-            className='hover:no-underline text-md flex flex-col gap-1 pb-0 pl-3 pt-2'
-          >
-            {link.children.map((link) => (
-              <SidebarLink key={link.label} link={link} />
-            ))}
-          </AccordionContent>
-        </AccordionItem>
+            <AccordionTrigger
+              isActive={isLinkActive(link, pathname)}
+              className='flex items-center justify-start gap-2 p-0 hover:no-underline'
+            >
+              {children}
+            </AccordionTrigger>
+            <AccordionContent
+              asChild
+              className='hover:no-underline text-md flex flex-col gap-1 pb-0 pl-3 pt-2'
+            >
+              {link.children.map((link) => (
+                <SidebarLink key={link.label} link={link} />
+              ))}
+            </AccordionContent>
+          </AccordionItem>
+        </ul>
       </Accordion>
     );
   } else {
