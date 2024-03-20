@@ -56,9 +56,10 @@ function OrgMenu() {
     const loadCurrentOrganization = async () => {
       const response = await getWorkingOrganization();
 
+      console.log(response);
       if (response.error) return;
 
-      response.data && setCurrentOrganization(response.data.currentOrg);
+      response.data && setCurrentOrganization(response.data);
     };
 
     loadCurrentOrganization();
@@ -124,8 +125,13 @@ function OrgMenu() {
           className='flex gap-1 items-center justify-between ml-10'
         >
           <Button className='bg-inherit hover:bg-inherit hover:text-dashboard-accent'>
-            {!currentOrganization || isLoadingWorkingOrg ? (
+            {isLoadingWorkingOrg ? (
               <Skeleton className='h-7 w-32 bg-dashboard-light/70 rounded-sm' />
+            ) : !currentOrganization ? (
+              <div className='flex gap-2 items-center'>
+                Select Organization
+                <ChevronDown size={16} />
+              </div>
             ) : (
               <>
                 <Earth size={18} className='mr-1' />
