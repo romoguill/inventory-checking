@@ -1,11 +1,6 @@
-import {} from '@uploadthing/react';
-
-import { Roboto } from 'next/font/google';
-
 import { PropsWithChildren } from 'react';
 import AppHeader from '../_components/header/AppHeader';
 import Sidebar from '../_components/sidebar/Sidebar';
-import { cn } from '@/lib/utils';
 
 function DashboardLayout({ children }: PropsWithChildren) {
   return (

@@ -9,6 +9,7 @@ export type OrganizationSchema = z.infer<typeof OrganizationSchema>;
 
 export const ProductSchema = z.object({
   name: z.string().min(1, { message: 'Name is required' }),
+  currentStock: z.coerce.number(),
   imageUrl: z.string().optional(),
   batchTracking: z.boolean(),
   severity: z.enum([Severity.LOW, Severity.MEDIUM, Severity.HIGH], {

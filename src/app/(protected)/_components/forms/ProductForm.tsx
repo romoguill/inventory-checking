@@ -38,6 +38,7 @@ function ProductForm({ type }: ProductFormProps) {
     resolver: zodResolver(ProductSchema),
     defaultValues: {
       name: '',
+      currentStock: 0,
       imageUrl: '',
       batchTracking: true,
       severity: '' as any,
@@ -94,12 +95,33 @@ function ProductForm({ type }: ProductFormProps) {
             )}
           />
 
+          <FormField
+            control={form.control}
+            name='currentStock'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Stock</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder='Product current stock'
+                    variant='form'
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {!isUrlReady && (
-            <UploadImages
-              handleImageUrlAfterUpload={handleImageUrlAfterUpload}
-              files={files}
-              setFiles={setFiles}
-            />
+            <div className='space-y-2'>
+              <FormLabel>Image</FormLabel>
+              <UploadImages
+                handleImageUrlAfterUpload={handleImageUrlAfterUpload}
+                files={files}
+                setFiles={setFiles}
+              />
+            </div>
           )}
 
           {isUrlReady && (

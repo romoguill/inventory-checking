@@ -24,7 +24,7 @@ function ProductCard({ product }: ProductCardProps) {
       </td>
 
       <td className='bg-dashboard-foreground/10 px-1'>
-        {product.initialStock}
+        {product.currentStock}
       </td>
       <td className='bg-dashboard-foreground/10 px-1 rounded-r-xl md:rounded-none'>
         {product.batchTracking ? 'Yes' : 'No'}
@@ -33,13 +33,13 @@ function ProductCard({ product }: ProductCardProps) {
         className={cn(
           'bg-dashboard-foreground/10 px-1 rounded-r-lg capitalize hidden md:table-cell',
           {
-            'text-green-500': product.severity === Severity.LOW,
-            'text-orange-500': product.severity === Severity.MEDIUM,
-            'text-red-500': product.severity === Severity.HIGH,
+            'text-green-500': product.policyId === Severity.LOW,
+            'text-orange-500': product.policyId === Severity.MEDIUM,
+            'text-red-500': product.policyId === Severity.HIGH,
           }
         )}
       >
-        {product.severity.toLowerCase()}
+        {product.policyId.toLowerCase()}
       </td>
     </>
   );

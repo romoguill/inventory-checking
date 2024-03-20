@@ -23,13 +23,24 @@ export async function POST(req: NextRequest) {
     },
   });
 
-  if (!dbOrganization || !dbOrganization.currentOrgId) {
+  if (!dbOrganization) {
     return NextResponse.json(
       { data: null, error: 'Unauthorized' },
       { status: 401 }
     );
   }
 
+  if (dbOrganization.currentOrgId == null) {
+    return NextResponse.json(
+      {
+        data: null,
+        error: 'Must select which organization to add the product',
+      },
+      { status: 400 }
+    );
+  }
+
+  const a = dbOrganization.currentOrgId;
   const payload = await req.json();
 
   const parsedProduct = ProductSchema.safeParse(payload);
@@ -46,8 +57,8 @@ export async function POST(req: NextRequest) {
         name,
         imageUrl,
         batchTracking,
-        severity,
-        organizationId: dbOrganization.currentOrgId,
+        policy: { connect: { name: severity } },
+        organization: { connect: { id: dbOrganization.currentOrgId } },
       },
     });
 

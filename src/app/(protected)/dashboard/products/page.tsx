@@ -4,18 +4,13 @@ import Title from '../../_components/forms/Title';
 import TableHeader from '../../_components/tables/TableHeader';
 import Image from 'next/image';
 import ProductCard from '../../_components/products/ProductCard';
+import ProductTable from '../../_components/products/ProductList';
+import { Suspense } from 'react';
+import ProductList from '../../_components/products/ProductList';
+import { Loader2 } from 'lucide-react';
+import TableLoader from '../../_components/TableLoader';
 
 async function ProductsPage() {
-  // TODO: Backend is ready for pagination. For now its not needed. Maybe do a infinite scroll
-  // { pagination: { cursor: x, limit: y } }
-  const response = await getProducts();
-
-  if (response.error) return null;
-
-  const { data: products } = response;
-
-  console.log(products);
-
   return (
     <InnerDashboardContainer>
       <Title size='lg'>Products</Title>
@@ -35,15 +30,10 @@ async function ProductsPage() {
               </th>
             </tr>
           </thead>
-          <tbody>
-            {products.map((product) => (
-              <tr
-                key={product.id}
-                className='h-16 md:h-24 rounded-xl mt-3 overflow-hidden'
-              >
-                <ProductCard product={product} />
-              </tr>
-            ))}
+          <tbody className='relative'>
+            <Suspense fallback={<TableLoader />}>
+              <ProductList />
+            </Suspense>
           </tbody>
         </table>
       </section>

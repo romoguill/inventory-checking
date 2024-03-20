@@ -105,23 +105,27 @@ model Product {
   id           String  @id @default(cuid())
   name         String
   imageUrl     String?
-  initialStock Int     @default(0)
+  currentStock Int     @default(0)
 
   organizationId String
   organization   Organization @relation(fields: [organizationId], references: [id])
 
   batchTracking Boolean
-  severity      Severity
+  policyId      String
+  policy        Policy  @relation(fields: [policyId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Policy {
-  id   String @id @default(cuid())
-  name String
+  id   String   @id @default(cuid())
+  name Severity @unique
 
-  severity Severity[]
+  threshold Float
+  frequency Int
+
+  product Product[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
