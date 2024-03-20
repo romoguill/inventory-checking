@@ -84,6 +84,7 @@ model Organization {
   users        OrganizationsUsers[]
   usersWorking User[]               @relation("Current working organization")
   products     Product[]
+  policies     Policy[]
 }
 
 model OrganizationsUsers {
@@ -120,13 +121,17 @@ model Product {
 
 model Policy {
   id   String   @id @default(cuid())
-  name Severity @unique
+  name Severity
 
   threshold Float
   frequency Int
 
-  product Product[]
+  product        Product[]
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([name, organizationId])
 }
