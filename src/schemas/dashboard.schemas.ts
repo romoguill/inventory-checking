@@ -20,3 +20,12 @@ export const ProductSchema = z.object({
 });
 
 export type ProductSchema = z.infer<typeof ProductSchema>;
+
+Prisma.PolicyScalarFieldEnum;
+
+export const PolicySchema = z.object({
+  threshold: z.coerce.number(),
+  frequency: z.coerce.number(),
+});
+
+export type PolicySchema = z.infer<typeof PolicySchema>;

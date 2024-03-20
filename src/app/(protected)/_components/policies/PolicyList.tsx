@@ -2,24 +2,35 @@ import { getPolicies } from '@/actions/policy';
 import PolicyCard from './PolicyCard';
 import { Policy, Severity } from '@prisma/client';
 
-const policiesPlaceholder: Pick<Policy, 'name' | 'frequency' | 'threshold'>[] =
-  [
-    {
-      name: Severity.LOW,
-      threshold: 0,
-      frequency: 0,
-    },
-    {
-      name: Severity.MEDIUM,
-      threshold: 0,
-      frequency: 0,
-    },
-    {
-      name: Severity.HIGH,
-      threshold: 0,
-      frequency: 0,
-    },
-  ];
+const policiesPlaceholder: Policy[] = [
+  {
+    name: Severity.LOW,
+    threshold: 0,
+    frequency: 0,
+    createdAt: new Date(),
+    id: Math.random().toString(),
+    organizationId: Math.random().toString(),
+    updatedAt: new Date(),
+  },
+  {
+    name: Severity.MEDIUM,
+    threshold: 0,
+    frequency: 0,
+    createdAt: new Date(),
+    id: Math.random().toString(),
+    organizationId: Math.random().toString(),
+    updatedAt: new Date(),
+  },
+  {
+    name: Severity.HIGH,
+    threshold: 0,
+    frequency: 0,
+    createdAt: new Date(),
+    id: Math.random().toString(),
+    organizationId: Math.random().toString(),
+    updatedAt: new Date(),
+  },
+];
 
 async function PolicyList() {
   const { error, data: policies } = await getPolicies();
