@@ -1,16 +1,48 @@
 import { getPolicies } from '@/actions/policy';
 import PolicyCard from './PolicyCard';
+import { Policy, Severity } from '@prisma/client';
+
+const policiesPlaceholder: Pick<Policy, 'name' | 'frequency' | 'threshold'>[] =
+  [
+    {
+      name: Severity.LOW,
+      threshold: 0,
+      frequency: 0,
+    },
+    {
+      name: Severity.MEDIUM,
+      threshold: 0,
+      frequency: 0,
+    },
+    {
+      name: Severity.HIGH,
+      threshold: 0,
+      frequency: 0,
+    },
+  ];
 
 async function PolicyList() {
   const { error, data: policies } = await getPolicies();
 
   if (error) return null;
 
+  // To ensure the customer knows the only 3 types of policies available, I'll render placeholder
+  //    to guide them if no policy in DB is found.
   return (
     <section className='grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] w-full gap-8'>
-      {policies.map((policy) => (
-        <PolicyCard key={policy.name} policy={policy} />
-      ))}
+      {policiesPlaceholder.map((placeholder) => {
+        let existingPolicy = policies.find(
+          (policy) => policy.name === placeholder.name
+        );
+
+        if (existingPolicy) {
+          return (
+            <PolicyCard key={existingPolicy.name} policy={existingPolicy} />
+          );
+        } else {
+          return <PolicyCard key={placeholder.name} policy={placeholder} />;
+        }
+      })}
     </section>
   );
 }
