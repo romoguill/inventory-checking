@@ -1,10 +1,10 @@
 import { cn } from '@/lib/utils';
-import { Product, Severity } from '@prisma/client';
+import { Prisma, Product, Severity } from '@prisma/client';
 import Image from 'next/image';
 import fallback from '../../../../../public/product-placeholder.png';
 
 interface ProductCardProps {
-  product: Product;
+  product: Prisma.ProductGetPayload<{ include: { policy: true } }>;
 }
 
 function ProductCard({ product }: ProductCardProps) {
@@ -33,13 +33,13 @@ function ProductCard({ product }: ProductCardProps) {
         className={cn(
           'bg-dashboard-foreground/10 px-1 rounded-r-lg capitalize hidden md:table-cell',
           {
-            'text-green-500': product.policyId === Severity.LOW,
-            'text-orange-500': product.policyId === Severity.MEDIUM,
-            'text-red-500': product.policyId === Severity.HIGH,
+            'text-green-500': product.policy.name === Severity.LOW,
+            'text-orange-500': product.policy.name === Severity.MEDIUM,
+            'text-red-500': product.policy.name === Severity.HIGH,
           }
         )}
       >
-        {product.policyId.toLowerCase()}
+        {product.policy.name.toLowerCase()}
       </td>
     </>
   );

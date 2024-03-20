@@ -19,6 +19,9 @@ export const getProducts = async (options?: GetProductsOptions) => {
       where: {
         organizationId: currentOrganization.id,
       },
+      include: {
+        policy: true,
+      },
     });
 
     return { data: response, error: null };
@@ -26,6 +29,9 @@ export const getProducts = async (options?: GetProductsOptions) => {
     const response = await db.product.findMany({
       where: {
         organizationId: currentOrganization.id,
+      },
+      include: {
+        policy: true,
       },
       skip: options.pagination.cursor,
       take: options.pagination.limit,

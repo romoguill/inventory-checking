@@ -2,6 +2,7 @@ import { Severity } from '@prisma/client';
 import InnerDashboardContainer from '../../_components/InnerDashboardContainer';
 import Title from '../../_components/forms/Title';
 import PolicyCard from '../../_components/policies/PolicyCard';
+import PolicyList from '../../_components/policies/PolicyList';
 
 const mockData = [
   {
@@ -28,11 +29,7 @@ function PoliciesPage() {
         Policies
       </Title>
 
-      <section className='grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] w-full gap-8'>
-        {mockData.map((policy) => (
-          <PolicyCard key={policy.name} policy={policy} />
-        ))}
-      </section>
+      <PolicyList />
     </InnerDashboardContainer>
   );
 }
