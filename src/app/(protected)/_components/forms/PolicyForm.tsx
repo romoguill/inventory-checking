@@ -17,19 +17,30 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { usePolicy } from '../policies/PolicyContext';
 import { createPolicy, updatePolicy } from '@/actions/policy';
+import { ChangeEvent } from 'react';
+import { Policy } from '@prisma/client';
+import { revalidatePath } from 'next/cache';
+import { useRouter } from 'next/navigation';
+
+// Regex for allowwing 2 integer + 2 decimals only
+const restrictPercentIntput = (e: ChangeEvent<HTMLInputElement>) => {
+  const regex = /\d{0,2}(\.\d{1,2})?/;
+  return e.target.value.match(regex)?.[0];
+};
 
 interface PolicyFormProps {
   type: 'create' | 'update';
+  policy: Policy;
+  handleDialogOpenChange: (open: boolean) => void;
 }
 
-function PolicyForm({ type }: PolicyFormProps) {
-  const policy = usePolicy();
-
+function PolicyForm({ type, policy, handleDialogOpenChange }: PolicyFormProps) {
+  const router = useRouter();
   const form = useForm<PolicySchema>({
     resolver: zodResolver(PolicySchema),
     defaultValues: {
-      frequency: policy?.frequency || 0,
-      threshold: policy?.threshold || 0,
+      frequency: policy?.frequency,
+      threshold: policy?.threshold,
     },
   });
 
@@ -38,6 +49,7 @@ function PolicyForm({ type }: PolicyFormProps) {
 
     const { error } = await createPolicy({
       ...data,
+      threshold: data.threshold / 100, // Since locale formater multplies by 100.
       name: policy.name,
     });
 
@@ -52,6 +64,10 @@ function PolicyForm({ type }: PolicyFormProps) {
       frequency: 0,
       threshold: 0,
     });
+
+    handleDialogOpenChange(false);
+
+    router.refresh();
   };
 
   return (
@@ -63,14 +79,22 @@ function PolicyForm({ type }: PolicyFormProps) {
             name='threshold'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Threshold</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='% of delta allowed'
-                    variant='form'
-                    {...field}
-                  />
-                </FormControl>
+                <div className='flex gap-2 justify-between items-center'>
+                  <FormLabel>Threshold (stock difference allowed)</FormLabel>
+                  <FormControl>
+                    <Input
+                      variant='form'
+                      type='number'
+                      {...field}
+                      onChange={(e) => {
+                        console.log(e.target.value);
+                        field.onChange(restrictPercentIntput(e));
+                      }}
+                      className='basis-20 ml-auto flex-grow-0'
+                    />
+                  </FormControl>
+                  <span className='w-12'>%</span>
+                </div>
                 <FormMessage />
               </FormItem>
             )}
@@ -81,14 +105,20 @@ function PolicyForm({ type }: PolicyFormProps) {
             name='frequency'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Frequency</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder='Frequency between inventrory checks (in days)'
-                    variant='form'
-                    {...field}
-                  />
-                </FormControl>
+                <div className='flex gap-2 justify-between items-center'>
+                  <FormLabel>
+                    Frequency (days between inventory checks)
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      variant='form'
+                      type='number'
+                      {...field}
+                      className='basis-20 ml-auto flex-grow-0'
+                    />
+                  </FormControl>
+                  <span className='w-12'>days</span>
+                </div>
                 <FormMessage />
               </FormItem>
             )}

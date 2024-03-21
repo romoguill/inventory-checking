@@ -14,33 +14,52 @@ import {
 import { Ellipsis } from 'lucide-react';
 import { usePolicy } from './PolicyContext';
 import PolicyForm from '../forms/PolicyForm';
+import { Policy } from '@prisma/client';
+import { useState } from 'react';
 
 interface PolicyCardActionProps {
-  name: string;
-  threshold: number;
-  frequency: number;
+  policy: Policy;
 }
 
-function PolicyCardAction({}) {
-  const policy = usePolicy();
+function PolicyCardAction({ policy }: PolicyCardActionProps) {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const handleDialogOpenChange = (open: boolean) => {
+    if (open) {
+      setIsMenuOpen(false);
+      setIsDialogOpen(true);
+    } else {
+      setIsDialogOpen(false);
+    }
+  };
 
   return (
-    <Dialog>
-      <DropdownMenu>
+    <Dialog open={isDialogOpen} onOpenChange={handleDialogOpenChange}>
+      <DropdownMenu
+        open={isMenuOpen}
+        onOpenChange={(open) => setIsMenuOpen(open)}
+      >
         <DropdownMenuTrigger>
           <Ellipsis />
         </DropdownMenuTrigger>
-        <DropdownMenuContent>
-          <DialogTrigger>
-            <span>Edit</span>
+        <DropdownMenuContent align='end'>
+          <DialogTrigger className='w-full text-start focus:bg-dashboard-light/5 hover:bg-dashboard-light/5 px-2 hover:text-dashboard-accent focus:text-dashboard-accent'>
+            Edit
           </DialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
       <DialogContent>
         <DialogTitle>
-          <h4>{policy?.name}</h4>
+          <h4>
+            {policy.name} <span>(policy)</span>
+          </h4>
         </DialogTitle>
-        <PolicyForm type='update' />
+        <PolicyForm
+          type='update'
+          policy={policy}
+          handleDialogOpenChange={handleDialogOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );
