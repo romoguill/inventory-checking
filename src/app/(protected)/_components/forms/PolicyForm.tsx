@@ -47,23 +47,33 @@ function PolicyForm({ type, policy, handleDialogOpenChange }: PolicyFormProps) {
   const onSubmit: SubmitHandler<PolicySchema> = async (data) => {
     if (!policy) return;
 
-    const { error } = await createPolicy({
-      ...data,
-      threshold: data.threshold / 100, // Since locale formater multplies by 100.
-      name: policy.name,
-    });
+    // Type refers to if the policy display was a placeholder or not. Fire update / create accordingly
+    if (type === 'create') {
+      const { error } = await createPolicy({
+        ...data,
+        threshold: data.threshold / 100, // Since locale formater multplies by 100.
+        name: policy.name,
+      });
 
-    if (!error) {
-      toast.success('Policy created');
+      if (!error) {
+        toast.success('Policy created');
+      } else {
+        console.log(error);
+        toast.error("Couldn't create policy");
+      }
     } else {
-      console.log(error);
-      toast.error("Couldn't create policy");
-    }
+      const { error } = await updatePolicy(policy.id, {
+        ...data,
+        threshold: data.threshold / 100, // Since locale formater multplies by 100.
+      });
 
-    form.reset({
-      frequency: 0,
-      threshold: 0,
-    });
+      if (!error) {
+        toast.success('Policy updated');
+      } else {
+        console.log(error);
+        toast.error("Couldn't update policy");
+      }
+    }
 
     handleDialogOpenChange(false);
 

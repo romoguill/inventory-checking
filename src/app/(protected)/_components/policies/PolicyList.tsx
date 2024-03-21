@@ -51,7 +51,13 @@ async function PolicyList() {
             <PolicyCard key={existingPolicy.name} policy={existingPolicy} />
           );
         } else {
-          return <PolicyCard key={placeholder.name} policy={placeholder} />;
+          return (
+            <PolicyCard
+              key={placeholder.name}
+              policy={placeholder}
+              isPlaceholder
+            />
+          );
         }
       })}
     </section>

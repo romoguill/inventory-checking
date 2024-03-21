@@ -5,9 +5,10 @@ import PolicyCardAction from './PolicyCardAction';
 
 interface PolicyCardProps {
   policy: Policy;
+  isPlaceholder?: boolean;
 }
 
-function PolicyCard({ policy }: PolicyCardProps) {
+function PolicyCard({ policy, isPlaceholder = false }: PolicyCardProps) {
   return (
     <article className='p-4 bg-dashboard-foreground/10 rounded-xl flex-grow'>
       <div className='flex items-center justify-between'>
@@ -20,7 +21,7 @@ function PolicyCard({ policy }: PolicyCardProps) {
         >
           {policy.name.toLowerCase()}
         </h2>
-        <PolicyCardAction policy={policy} />
+        <PolicyCardAction policy={policy} isPlaceholder={isPlaceholder} />
       </div>
       <p>
         Delta Threshold:{' '}

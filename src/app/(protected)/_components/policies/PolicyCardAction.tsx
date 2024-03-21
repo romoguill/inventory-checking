@@ -19,9 +19,13 @@ import { useState } from 'react';
 
 interface PolicyCardActionProps {
   policy: Policy;
+  isPlaceholder: boolean;
 }
 
-function PolicyCardAction({ policy }: PolicyCardActionProps) {
+function PolicyCardAction({
+  policy,
+  isPlaceholder = false,
+}: PolicyCardActionProps) {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -56,7 +60,7 @@ function PolicyCardAction({ policy }: PolicyCardActionProps) {
           </h4>
         </DialogTitle>
         <PolicyForm
-          type='update'
+          type={isPlaceholder ? 'create' : 'update'}
           policy={policy}
           handleDialogOpenChange={handleDialogOpenChange}
         />
