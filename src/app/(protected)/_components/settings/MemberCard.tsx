@@ -23,9 +23,11 @@ function MemberCard({ member }: MemberCardProps) {
           className='object-cover mx-auto rounded-full'
         />
       </div>
-      <div className='flex flex-col pt-12 pb-6'>
-        <h4 className='text-center text-lg font-semibold'>{member.name}</h4>
-        <p className='text-center'>{member.email}</p>
+      <div className='flex flex-col pt-12 pb-6 px-3'>
+        <h4 className='text-center text-lg font-semibold break-words'>
+          {member.name}
+        </h4>
+        <p className='text-center break-words'>{member.email}</p>
       </div>
     </article>
   );

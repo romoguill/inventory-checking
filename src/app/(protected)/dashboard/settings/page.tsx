@@ -2,8 +2,8 @@ import { Suspense } from 'react';
 import InnerDashboardContainer from '../../_components/InnerDashboardContainer';
 import Title from '../../_components/forms/Title';
 import ManageTeam from '../../_components/settings/ManageTeam';
+import MemberListSkeleton from '../../_components/settings/MemberListSkeleton';
 import TeamList from '../../_components/settings/TeamList';
-import MemberSkeleton from '../../_components/settings/MemberSkeleton';
 
 function SettingsPage() {
   return (
@@ -12,9 +12,11 @@ function SettingsPage() {
         Settings
       </Title>
       <section>
-        <Title size='md'>Your team</Title>
-        <ManageTeam />
-        <Suspense fallback={<MemberSkeleton />}>
+        <div className='flex justify-between items-center mb-4'>
+          <Title size='md'>Your team</Title>
+          <ManageTeam />
+        </div>
+        <Suspense fallback={<MemberListSkeleton />}>
           <TeamList />
         </Suspense>
       </section>

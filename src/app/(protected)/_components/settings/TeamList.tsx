@@ -15,7 +15,7 @@ async function TeamList() {
   }
 
   return (
-    <div className='grid grid-cols-[repeat(auto-fill,270px)]'>
+    <div className='grid grid-cols-[repeat(auto-fill,270px)] gap-4'>
       {teamMembers.map((user) => (
         <MemberCard key={user.id} member={user} />
       ))}
