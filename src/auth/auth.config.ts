@@ -88,6 +88,7 @@ export const authConfig = {
     async session({ session, token }) {
       if (session.user) {
         session.user.role = token.role;
+        session.user.id = token.id;
       }
 
       return session;
@@ -103,6 +104,7 @@ export const authConfig = {
 
       // Add only the absolutely necesary data to encode in JWT
       token.role = existingUser.role;
+      token.id = existingUser.id;
 
       return token;
     },

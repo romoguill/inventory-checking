@@ -45,3 +45,25 @@ export const getTeamByOrganization = async () => {
 
   return { data: flattenedResponse, error: null };
 };
+
+export const getUserByEmail = async (email: string) => {
+  const session = await getServerAuthSession();
+
+  if (!session || session.user.role !== 'ORG_ADMIN') {
+    return { data: null, error: { message: 'Unauthorized' } };
+  }
+
+  const response = await db.user.findUnique({
+    where: {
+      email,
+    },
+    select: {
+      id: true,
+      name: true,
+      image: true,
+      email: true,
+    },
+  });
+
+  return { data: response, error: null };
+};

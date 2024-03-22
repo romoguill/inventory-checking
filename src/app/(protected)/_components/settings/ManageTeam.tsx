@@ -2,19 +2,32 @@
 
 import { addUserToOrganization } from '@/actions/organization';
 import { Button } from '@/components/ui/button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import MemberForm from '../forms/MemberForm';
+import { useState } from 'react';
 
 function ManageTeam() {
-  const addMember = async () => {
-    const { data, error } = await addUserToOrganization(
-      'clu1f0p0500005ftbr5113ilg'
-    );
-
-    console.log(error);
-  };
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <div>
-      <Button onClick={addMember}>Add member</Button>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogTrigger asChild>
+          <Button>Add member</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader className='mb-2'>
+            <DialogTitle>Add a user to your Organization</DialogTitle>
+          </DialogHeader>
+          <MemberForm setIsModalOpen={setIsModalOpen} />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

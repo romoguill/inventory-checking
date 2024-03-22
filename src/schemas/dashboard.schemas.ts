@@ -34,3 +34,9 @@ export const PolicySchema = z.object({
 });
 
 export type PolicySchema = z.infer<typeof PolicySchema>;
+
+export const MemberSchema = z.object({
+  email: z.string().email(),
+});
+
+export type MemberSchema = z.infer<typeof MemberSchema>;
