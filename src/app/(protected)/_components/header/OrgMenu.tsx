@@ -50,7 +50,7 @@ function OrgMenu() {
   const [currentOrganization, setCurrentOrganization] =
     useState<Organization | null>(null);
   const [isLoadingWorkingOrg, setIsLoadingWorkingOrg] = useState(false);
-  const router = useRouter();
+  const session = useSession();
 
   useEffect(() => {
     const loadCurrentOrganization = async () => {
@@ -162,12 +162,14 @@ function OrgMenu() {
               ))
             )}
           </div>
-          <DialogTrigger className='flex gap-1 items-center mt-2' asChild>
-            <button className='w-full rounded-sm pl-2 py-[0.5rem] text-dashboard-foreground bg-dashboard-dark/90 hover:bg-dashboard-dark/80 focus:bg-dashboard-dark/80 focus:text-dashboard-foreground'>
-              <Plus size={16} />
-              <span>Add new</span>
-            </button>
-          </DialogTrigger>
+          {session.data?.user.role === 'ORG_ADMIN' && (
+            <DialogTrigger className='flex gap-1 items-center mt-2' asChild>
+              <button className='w-full rounded-sm pl-2 py-[0.5rem] text-dashboard-foreground bg-dashboard-dark/90 hover:bg-dashboard-dark/80 focus:bg-dashboard-dark/80 focus:text-dashboard-foreground'>
+                <Plus size={16} />
+                <span>Add new</span>
+              </button>
+            </DialogTrigger>
+          )}
         </DropdownMenuContent>
       </DropdownMenu>
 
