@@ -1,11 +1,7 @@
-import LogoutButton from '@/app/auth/_components/LogoutButton';
-import { getServerAuthSession } from '@/auth/auth.config';
-
 async function DashboardPage() {
-  const session = await getServerAuthSession();
-  console.log(session);
-
-  return <div>Dashboard page</div>;
+  return (
+    <div className='grid grid-cols-[repeat(12,_1fr)] grid-rows-2 w-full h-full'></div>
+  );
 }
 
 export default DashboardPage;

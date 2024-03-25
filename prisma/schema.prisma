@@ -54,6 +54,8 @@ model User {
 
   currentOrgId String?
   currentOrg   Organization? @relation(name: "Current working organization", fields: [currentOrgId], references: [id])
+
+  inventories InventoryRoundUser[]
 }
 
 model VerificationToken {
@@ -115,6 +117,9 @@ model Product {
   policyId      String
   policy        Policy  @relation(fields: [policyId], references: [id])
 
+  inventories     InventoryProduct[]
+  inventoryRounds InventoryRoundProduct[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -134,4 +139,68 @@ model Policy {
   updatedAt DateTime @updatedAt
 
   @@unique([name, organizationId])
+}
+
+model Inventory {
+  id       String  @id @default(cuid())
+  finished Boolean @default(false)
+
+  products InventoryProduct[]
+
+  round InventoryRound[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Round {
+  ORIGINAL
+  REVIEW
+}
+
+model InventoryRound {
+  id   String @id @default(cuid())
+  name Round
+
+  users    InventoryRoundUser[]
+  products InventoryRoundProduct[]
+
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model InventoryRoundUser {
+  inventoryRoundId String
+  inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@unique([inventoryRoundId, userId])
+}
+
+model InventoryRoundProduct {
+  inventoryRoundId String
+  inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([inventoryRoundId, productId])
+}
+
+model InventoryProduct {
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id])
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  initalStock     Int
+  reconciledStock Int
+
+  @@unique([inventoryId, productId])
 }
