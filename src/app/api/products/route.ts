@@ -57,7 +57,14 @@ export async function POST(req: NextRequest) {
         name,
         imageUrl,
         batchTracking,
-        policy: { connect: { name: severity } },
+        policy: {
+          connect: {
+            name_organizationId: {
+              name: severity,
+              organizationId: dbOrganization.currentOrgId,
+            },
+          },
+        },
         organization: { connect: { id: dbOrganization.currentOrgId } },
       },
     });
