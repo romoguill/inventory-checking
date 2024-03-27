@@ -1,4 +1,4 @@
-import { getProducts } from '@/actions/products';
+import { findProductsByName, getProducts } from '@/actions/products';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import useDebouncedSearch from '@/hooks/useDebouncedSearch';
@@ -23,7 +23,7 @@ function SearchBar({
   const [products, setProducts] = useState<Product[] | null>(null);
 
   useEffect(() => {
-    getProducts().then(({ data, error }) => {
+    findProductsByName(debouncedSearch).then(({ data, error }) => {
       if (error) return;
 
       setProducts(data);

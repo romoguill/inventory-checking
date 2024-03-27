@@ -42,3 +42,22 @@ export const getProducts = async (options?: GetProductsOptions) => {
     return { data: response, error: null };
   }
 };
+
+export const findProductsByName = async (name: string) => {
+  const { data: currentOrganization } = await getWorkingOrganization();
+
+  if (!currentOrganization)
+    return { data: null, error: { message: 'Unauthorized' } };
+
+  const response = await db.product.findMany({
+    where: {
+      name: {
+        equals: `%${name.toLowerCase()}%`,
+        mode: 'insensitive',
+      },
+    },
+    take: 5,
+  });
+
+  return { data: response, error: null };
+};
