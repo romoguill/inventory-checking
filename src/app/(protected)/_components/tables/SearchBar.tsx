@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Command,
   CommandEmpty,
@@ -15,40 +17,36 @@ interface SearchBarProps<T> {
   data: T[] | null;
   placeholder?: string;
   className?: string;
+  renderItem: (item: T) => React.ReactNode;
 }
 
-function SearchBar<T>({
+function SearchBar<T extends { id: string }>({
   data,
   search,
   setSearch,
   placeholder,
   className,
+  renderItem,
 }: SearchBarProps<T>) {
   console.log(data);
   return (
-    <Command
-      className={cn(
-        'flex items-center border-2 rounded-md border-dashboard-border w-3/4 max-w-md',
-        className
-      )}
-    >
+    <Command className='bg-dashboard-light'>
       {/* <Label htmlFor='search-field'>
         <LucideSearch className='ml-3 my-[0.3rem]' />
       </Label> */}
       <CommandInput
         id='search-field'
-        className='bg-inherit border-none focus-visible:ring-transparent focus-visible:ring-offset-0 ring-transparent placeholder:text-dashboard-foreground/80'
+        className='placeholder:text-dashboard-foreground text-dashboard-foreground'
         placeholder={placeholder}
         onValueChange={(search) => setSearch(search)}
         value={search}
         autoComplete='off'
       />
-      <CommandList>
+      <CommandList className='text-dashboard-foreground'>
         <CommandEmpty>No results found</CommandEmpty>
-        <CommandGroup>
-          {data?.map((item) => (
-            <CommandItem>{item.name}</CommandItem>
-          ))}
+        <CommandGroup className='bg-dashboard-dark/90'>
+          <CommandItem>Gi</CommandItem>
+          {data?.map((item) => renderItem(item))}
         </CommandGroup>
       </CommandList>
     </Command>

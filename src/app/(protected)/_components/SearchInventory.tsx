@@ -6,7 +6,7 @@ import { Product } from '@prisma/client';
 import useDebouncedSearch from '@/hooks/useDebouncedSearch';
 import { findProductsByName } from '@/actions/products';
 import Image from 'next/image';
-import imageFallback from '../../../../public/product-placeholder.png';
+import ProductSearchItem from './tables/ProductSearchItem';
 
 function SearchInventory() {
   const [search, setSearch] = useState('');
@@ -24,7 +24,7 @@ function SearchInventory() {
     });
   }, [debouncedSearch]);
 
-  console.log(products);
+  const content = <div></div>;
 
   return (
     <div>
@@ -32,6 +32,7 @@ function SearchInventory() {
         setSearch={setSearch}
         search={search}
         data={products}
+        renderItem={(item) => <ProductSearchItem item={item} />}
       />
     </div>
   );

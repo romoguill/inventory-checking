@@ -19,10 +19,10 @@ function CreateInventoryPage({
 
   return (
     <InnerDashboardContainer>
-      <Title size='lg' className='mb-4'>
+      <Title size='lg' className='mb-6'>
         New Inventory Setup
       </Title>
-      <Title size='md' className='capitalize'>
+      <Title size='md' className='capitalize mb-4'>
         Preset: {inventoryPreset.toLowerCase()}
       </Title>
       <section>

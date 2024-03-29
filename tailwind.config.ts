@@ -98,6 +98,9 @@ const config = {
       screens: {
         xs: '485px',
       },
+      data: {
+        disabled: 'disabled~="true"',
+      },
     },
   },
   plugins: [require('tailwindcss-animate')],
