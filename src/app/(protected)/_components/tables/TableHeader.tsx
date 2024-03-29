@@ -16,7 +16,7 @@ function TableHeader() {
   return (
     <div className='flex justify-between my-4'>
       <div className='flex items-center gap-4'>
-        <SearchBar placeholder='Search products' className='' />
+        {/* <SearchBar placeholder='Search products' className='' /> */}
         <Filter className='bg-dashboard-border' size={30} />
       </div>
       <Link

@@ -3,6 +3,7 @@ import InnerDashboardContainer from '../../_components/InnerDashboardContainer';
 import Title from '../../_components/forms/Title';
 import SearchBar from '../../_components/tables/SearchBar';
 import SearchInventory from '../../_components/SearchInventory';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 const allowedPresets = ['custom', 'LOW', 'MEDIUM', 'HIGH'];
 
@@ -28,6 +29,31 @@ function CreateInventoryPage({
       <section>
         <SearchInventory />
       </section>
+      <ScrollArea className='h-[100px] mt-8'>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+        <p>Hello</p>
+      </ScrollArea>
     </InnerDashboardContainer>
   );
 }
