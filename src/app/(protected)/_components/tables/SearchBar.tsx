@@ -1,58 +1,57 @@
-import { findProductsByName, getProducts } from '@/actions/products';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import useDebouncedSearch from '@/hooks/useDebouncedSearch';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
 import { cn } from '@/lib/utils';
-import { Product } from '@prisma/client';
-import { LucideSearch } from 'lucide-react';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { SetStateAction } from 'react';
 
-interface SearchBarProps {
+interface SearchBarProps<T> {
+  search: string;
+  setSearch: React.Dispatch<SetStateAction<string>>;
+  data: T[] | null;
   placeholder?: string;
   className?: string;
-  withDropdown?: boolean;
 }
 
-function SearchBar({
+function SearchBar<T>({
+  data,
+  search,
+  setSearch,
   placeholder,
   className,
-  withDropdown = false,
-}: SearchBarProps) {
-  const [search, setSearch] = useState('');
-  const debouncedSearch = useDebouncedSearch(search);
-  const [products, setProducts] = useState<Product[] | null>(null);
-
-  useEffect(() => {
-    findProductsByName(debouncedSearch).then(({ data, error }) => {
-      if (error) return;
-
-      setProducts(data);
-    });
-  }, [debouncedSearch]);
-
-  console.log(products);
-
+}: SearchBarProps<T>) {
+  console.log(data);
   return (
-    <div
+    <Command
       className={cn(
         'flex items-center border-2 rounded-md border-dashboard-border w-3/4 max-w-md',
         className
       )}
     >
-      <Label htmlFor='search-field'>
+      {/* <Label htmlFor='search-field'>
         <LucideSearch className='ml-3 my-[0.3rem]' />
-      </Label>
-      <Input
+      </Label> */}
+      <CommandInput
         id='search-field'
         className='bg-inherit border-none focus-visible:ring-transparent focus-visible:ring-offset-0 ring-transparent placeholder:text-dashboard-foreground/80'
         placeholder={placeholder}
-        onChange={(e) => setSearch(e.target.value)}
+        onValueChange={(search) => setSearch(search)}
+        value={search}
+        autoComplete='off'
       />
-
-      {products?.map((product) => (
-        <div key={product.id}>{product.name}</div>
-      ))}
-    </div>
+      <CommandList>
+        <CommandEmpty>No results found</CommandEmpty>
+        <CommandGroup>
+          {data?.map((item) => (
+            <CommandItem>{item.name}</CommandItem>
+          ))}
+        </CommandGroup>
+      </CommandList>
+    </Command>
   );
 }
 
