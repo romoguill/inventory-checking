@@ -10,6 +10,7 @@ import ProductSearchItem from './tables/ProductSearchItem';
 
 function SearchInventory() {
   const [search, setSearch] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[] | null>(null);
 
   const [isListOpen, setIsListOpen] = useState(false);
@@ -26,10 +27,12 @@ function SearchInventory() {
   // }, [debouncedSearch]);
 
   useEffect(() => {
+    setIsLoading(true);
     getProducts().then(({ data, error }) => {
       if (error) return;
 
       setProducts(data);
+      setIsLoading(false);
     });
   }, []);
 
@@ -41,6 +44,7 @@ function SearchInventory() {
         setSearch={setSearch}
         search={search}
         data={products}
+        isLoading={isLoading}
         renderItem={(item) => <ProductSearchItem item={item} />}
       />
     </div>
