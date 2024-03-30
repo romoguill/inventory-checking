@@ -36,8 +36,6 @@ function SearchInventory() {
     });
   }, []);
 
-  const content = <div></div>;
-
   return (
     <div>
       <SearchBar<Product>
