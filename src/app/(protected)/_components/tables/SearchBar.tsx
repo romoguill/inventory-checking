@@ -11,7 +11,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Loader2 } from 'lucide-react';
-import { SetStateAction, useState } from 'react';
+import { SetStateAction, useRef, useState } from 'react';
 
 interface SearchBarProps<T> {
   search: string;
@@ -33,9 +33,13 @@ function SearchBar<T extends { id: string }>({
   renderItem,
 }: SearchBarProps<T>) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const commandRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Command className='bg-dashboard-light relative overflow-visible'>
+    <Command
+      className='bg-dashboard-light relative overflow-visible'
+      ref={commandRef}
+    >
       {/* <Label htmlFor='search-field'>
         <LucideSearch className='ml-3 my-[0.3rem]' />
       </Label> */}
@@ -47,7 +51,11 @@ function SearchBar<T extends { id: string }>({
         value={search}
         autoComplete='off'
         onFocus={() => setIsDropdownOpen(true)}
-        onBlur={() => setIsDropdownOpen(false)}
+        onBlur={(e) => {
+          // console.log(commandRef.current?.contains(e.target));
+          // console.log(e);
+          setIsDropdownOpen(false);
+        }}
       />
       {isDropdownOpen && (
         <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 z-30 rounded-md overflow-hidden bg-dashboard-dark/90 max-h-[400px]'>

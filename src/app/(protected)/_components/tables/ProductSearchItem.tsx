@@ -21,6 +21,10 @@ function ProductSearchItem({ item, onSelect }: ProductSearcItemProps) {
         console.log('run');
         onSelect('hola');
       }}
+      onMouseDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
     >
       <Image
         src={item.imageUrl || imageFallback}
