@@ -13,13 +13,13 @@ function ProductsToBeInventoriedList() {
   console.log(products);
   return (
     <section>
-      <table className='w-full border-spacing-x-4'>
+      <table className='w-full border-separate border-spacing-y-4'>
         <thead>
           <tr className='text-left'>
             <th className='p-2 text-sm md:w-32 md:p-4'></th>
             <th className='p-2 text-sm md:p-4'>Name</th>
-            <th className='p-2 text-sm md:p-4'>Current Stock</th>
-            <th className='p-2 text-sm md:p-4'>Last inventory</th>
+            <th className='p-2 text-sm md:p-4 text-center'>Current Stock</th>
+            <th className='p-2 text-sm md:p-4 text-center'>Last inventory</th>
           </tr>
         </thead>
         <tbody>
@@ -31,17 +31,19 @@ function ProductsToBeInventoriedList() {
                   alt={`Product ${product.name}`}
                   width={128}
                   height={128}
-                  className='w-20 md:w-32 aspect-square rounded-md'
+                  className='w-20 md:w-32 aspect-square rounded-md min-w-24'
                 />
               </td>
               <td className='p-2 md:p-4 text-sm md:text-lg font-bold'>
                 {product.name}
               </td>
-              <td className='p-2 md:p-4 text-sm md:text-base '>
+              <td className='p-2 md:p-4 text-sm md:text-base text-center'>
                 {product.currentStock}
               </td>
               {/* TODO: Get last inventory of product */}
-              <td className='p-2 md:p-4 text-sm md:text-base '>2024/02/04</td>
+              <td className='p-2 md:p-4 text-sm md:text-base text-center'>
+                2024/02/04
+              </td>
             </tr>
           ))}
         </tbody>

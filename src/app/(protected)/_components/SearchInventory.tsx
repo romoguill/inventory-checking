@@ -47,7 +47,15 @@ function SearchInventory() {
           <ProductSearchItem
             key={item.id}
             item={item}
-            onSelect={() => setProductsSelected((prev) => [...prev, item])}
+            onSelect={() =>
+              setProductsSelected((prev) => {
+                if (!prev.find((product) => product.id === item.id)) {
+                  return [...prev, item];
+                }
+
+                return prev;
+              })
+            }
           />
         )}
       />
