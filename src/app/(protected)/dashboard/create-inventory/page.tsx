@@ -5,6 +5,7 @@ import SearchBar from '../../_components/tables/SearchBar';
 import SearchInventory from '../../_components/SearchInventory';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ProductsToBeInventoriedList from '../../_components/tables/ProductsToBeInventoriedList';
+import { ProductsToBeInventoriedProvider } from '@/app/context/ProductsToBeInventoriedContext';
 
 const allowedPresets = ['custom', 'LOW', 'MEDIUM', 'HIGH'];
 
@@ -29,11 +30,13 @@ function CreateInventoryPage({
         Preset: {inventoryPreset.toLowerCase()}
       </Title>
 
-      <section className='mb-6'>
-        <SearchInventory />
-      </section>
+      <ProductsToBeInventoriedProvider>
+        <section className='mb-6'>
+          <SearchInventory />
+        </section>
 
-      <ProductsToBeInventoriedList />
+        <ProductsToBeInventoriedList />
+      </ProductsToBeInventoriedProvider>
     </InnerDashboardContainer>
   );
 }

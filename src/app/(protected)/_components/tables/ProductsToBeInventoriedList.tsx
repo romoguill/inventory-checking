@@ -5,12 +5,12 @@ import productPlaceholder from '../../../../../public/product-placeholder.png';
 import { useState } from 'react';
 import { Product } from '@prisma/client';
 import { tr } from 'date-fns/locale';
+import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
 
 function ProductsToBeInventoriedList() {
-  const [productsToBeInventoried, setProductsToBeInventoried] = useState<
-    Product[]
-  >([]);
+  const { products } = useProductsToBeInventoriedContext();
 
+  console.log(products);
   return (
     <section>
       <table className='w-full border-spacing-x-4'>
@@ -23,7 +23,7 @@ function ProductsToBeInventoriedList() {
           </tr>
         </thead>
         <tbody>
-          {productsToBeInventoried?.map((product) => (
+          {products.map((product) => (
             <tr key={product.id}>
               <td>
                 <Image
@@ -46,7 +46,7 @@ function ProductsToBeInventoriedList() {
           ))}
         </tbody>
       </table>
-      {productsToBeInventoried.length === 0 && (
+      {products.length === 0 && (
         <div className='text-center text-dashboard-foreground/80 text-sm mt-3'>
           No products added yet.
         </div>

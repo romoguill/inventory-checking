@@ -1,19 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import SearchBar from './tables/SearchBar';
+import { getProducts } from '@/actions/products';
+import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
 import { Product } from '@prisma/client';
-import useDebouncedSearch from '@/hooks/useDebouncedSearch';
-import { findProductsByName, getProducts } from '@/actions/products';
-import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import ProductSearchItem from './tables/ProductSearchItem';
+import SearchBar from './tables/SearchBar';
 
 function SearchInventory() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState<Product[] | null>(null);
+  const { setProducts: setProductsSelected } =
+    useProductsToBeInventoriedContext();
+  const [products, setProducts] = useState<Product[]>([]);
 
-  const [isListOpen, setIsListOpen] = useState(false);
   // TODO: Having performance issues with prisma in serverless. Its faster for now to query all DB and filter it in frontend. Maybe comeback later. For production, pagination should be working
 
   // const debouncedSearch = useDebouncedSearch(search);
@@ -34,7 +34,7 @@ function SearchInventory() {
       setProducts(data);
       setIsLoading(false);
     });
-  }, []);
+  }, [setProducts]);
 
   return (
     <div>
@@ -43,7 +43,13 @@ function SearchInventory() {
         search={search}
         data={products}
         isLoading={isLoading}
-        renderItem={(item) => <ProductSearchItem item={item} />}
+        renderItem={(item) => (
+          <ProductSearchItem
+            key={item.id}
+            item={item}
+            onSelect={() => setProductsSelected((prev) => [...prev, item])}
+          />
+        )}
       />
     </div>
   );
