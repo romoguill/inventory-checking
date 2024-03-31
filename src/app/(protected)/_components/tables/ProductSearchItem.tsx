@@ -5,6 +5,11 @@ import { Product } from '@prisma/client';
 import Image from 'next/image';
 import imageFallback from '../../../../../public/product-placeholder.png';
 import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
+import { cn } from '@/lib/utils';
+
+const isItemInList = (item: Product, list: Product[]) => {
+  return list.find((product) => item.id === product.id) ? true : false;
+};
 
 interface ProductSearcItemProps {
   item: Product;
@@ -12,11 +17,18 @@ interface ProductSearcItemProps {
 }
 
 function ProductSearchItem({ item, onSelect }: ProductSearcItemProps) {
+  const { products } = useProductsToBeInventoriedContext();
+  //aria-selected:bg-accent aria-selected:text-accent-foreground
   return (
     <CommandItem
       key={item.id}
       value={item.name}
-      className='text-dashboard-foreground flex gap-3 py-2'
+      className={cn('text-dashboard-foreground flex gap-3 py-2 my-3', {
+        'aria-selected:bg-green-500/30 bg-green-400/20': isItemInList(
+          item,
+          products
+        ),
+      })}
       onSelect={() => {
         console.log('run');
         onSelect('hola');

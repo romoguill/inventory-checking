@@ -51,9 +51,9 @@ function SearchInventory() {
               setProductsSelected((prev) => {
                 if (!prev.find((product) => product.id === item.id)) {
                   return [...prev, item];
+                } else {
+                  return prev.filter((product) => product.id !== item.id);
                 }
-
-                return prev;
               })
             }
           />

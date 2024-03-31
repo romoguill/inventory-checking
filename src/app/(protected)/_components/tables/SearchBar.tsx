@@ -37,7 +37,7 @@ function SearchBar<T extends { id: string }>({
 
   return (
     <Command
-      className='bg-dashboard-light relative overflow-visible'
+      className='bg-dashboard-light relative overflow-visible w-full md:w-[500px]'
       ref={commandRef}
     >
       {/* <Label htmlFor='search-field'>
@@ -58,7 +58,7 @@ function SearchBar<T extends { id: string }>({
         }}
       />
       {isDropdownOpen && (
-        <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 z-30 rounded-md overflow-hidden bg-dashboard-dark/90 max-h-[400px]'>
+        <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 z-30 rounded-md overflow-hidden bg-dashboard-dark max-h-[400px]'>
           <CommandEmpty>
             {isLoading ? (
               <Loader2 className='animate-spin mx-auto' />
