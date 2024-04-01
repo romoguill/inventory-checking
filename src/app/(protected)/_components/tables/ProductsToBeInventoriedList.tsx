@@ -6,6 +6,13 @@ import { useState } from 'react';
 import { Product } from '@prisma/client';
 import { tr } from 'date-fns/locale';
 import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { EllipsisVertical } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 function ProductsToBeInventoriedList() {
   const { products } = useProductsToBeInventoriedContext();
@@ -17,9 +24,14 @@ function ProductsToBeInventoriedList() {
         <thead>
           <tr className='text-left'>
             <th className='p-2 text-sm md:w-32 md:p-4'></th>
-            <th className='p-2 text-sm md:p-4'>Name</th>
-            <th className='p-2 text-sm md:p-4 text-center'>Current Stock</th>
-            <th className='p-2 text-sm md:p-4 text-center'>Last inventory</th>
+            <th className='p-2 text-sm md:text-base md:p-4'>Name</th>
+            <th className='p-2 text-sm md:text-base md:p-4 text-center'>
+              Current Stock
+            </th>
+            <th className='p-2 text-sm md:text-base md:p-4 text-center'>
+              Last inventory
+            </th>
+            <th className='w-5'></th>
           </tr>
         </thead>
         <tbody>
@@ -43,6 +55,21 @@ function ProductsToBeInventoriedList() {
               {/* TODO: Get last inventory of product */}
               <td className='p-2 md:p-4 text-sm md:text-base text-center'>
                 2024/02/04
+              </td>
+              <td>
+                <DropdownMenu>
+                  <DropdownMenuTrigger className='bg-dashboard-dark/50 p-1 rounded-md hover:bg-dashboard-dark'>
+                    <EllipsisVertical />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    align='end'
+                    className='bg-dashboard-dark border-none'
+                  >
+                    <Button variant='destructive' className='w-full'>
+                      Remove
+                    </Button>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </td>
             </tr>
           ))}
