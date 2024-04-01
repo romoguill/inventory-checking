@@ -45,7 +45,7 @@ function SearchBar<T extends { id: string }>({
       </Label> */}
       <CommandInput
         id='search-field'
-        className='placeholder:text-dashboard-foreground text-dashboard-foreground'
+        className='placeholder:text-dashboard-foreground text-dashboard-foreground relative z-10'
         placeholder={placeholder}
         onValueChange={(search) => setSearch(search)}
         value={search}
@@ -58,7 +58,7 @@ function SearchBar<T extends { id: string }>({
         }}
       />
       {isDropdownOpen && (
-        <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 z-30 rounded-md overflow-hidden bg-dashboard-dark max-h-[400px]'>
+        <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 rounded-md overflow-hidden bg-dashboard-dark max-h-[400px] animate-command-dropdown'>
           <CommandEmpty>
             {isLoading ? (
               <Loader2 className='animate-spin mx-auto' />

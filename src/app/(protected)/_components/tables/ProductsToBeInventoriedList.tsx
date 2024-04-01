@@ -15,9 +15,8 @@ import { EllipsisVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 function ProductsToBeInventoriedList() {
-  const { products } = useProductsToBeInventoriedContext();
+  const { products, dispatch } = useProductsToBeInventoriedContext();
 
-  console.log(products);
   return (
     <section>
       <table className='w-full border-separate border-spacing-y-4'>
@@ -65,7 +64,16 @@ function ProductsToBeInventoriedList() {
                     align='end'
                     className='bg-dashboard-dark border-none'
                   >
-                    <Button variant='destructive' className='w-full'>
+                    <Button
+                      variant='destructive'
+                      className='w-full'
+                      onClick={() =>
+                        dispatch({
+                          type: 'remove',
+                          payload: product.id,
+                        })
+                      }
+                    >
                       Remove
                     </Button>
                   </DropdownMenuContent>

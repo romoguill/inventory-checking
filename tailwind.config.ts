@@ -90,10 +90,15 @@ const config = {
           },
           to: { height: '0', paddingTop: '0' },
         },
+        'command-dropdown': {
+          from: { transform: 'translateY(-5%)', opacity: '0' },
+          to: { transform: 'translateY(0%)', opacity: '1' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'command-dropdown': 'command-dropdown 0.2s ease-in',
       },
       screens: {
         xs: '485px',

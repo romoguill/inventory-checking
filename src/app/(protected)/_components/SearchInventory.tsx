@@ -10,7 +10,7 @@ import SearchBar from './tables/SearchBar';
 function SearchInventory() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { setProducts: setProductsSelected } =
+  const { products: selectedProducts, dispatch } =
     useProductsToBeInventoriedContext();
   const [products, setProducts] = useState<Product[]>([]);
 
@@ -47,15 +47,13 @@ function SearchInventory() {
           <ProductSearchItem
             key={item.id}
             item={item}
-            onSelect={() =>
-              setProductsSelected((prev) => {
-                if (!prev.find((product) => product.id === item.id)) {
-                  return [...prev, item];
-                } else {
-                  return prev.filter((product) => product.id !== item.id);
-                }
-              })
-            }
+            onSelect={() => {
+              if (selectedProducts.find((product) => product.id === item.id)) {
+                dispatch({ type: 'remove', payload: item.id });
+              } else {
+                dispatch({ type: 'add', payload: item });
+              }
+            }}
           />
         )}
       />

@@ -31,7 +31,7 @@ function CreateInventoryPage({
       </Title>
 
       <ProductsToBeInventoriedProvider>
-        <section className='mb-6'>
+        <section className='mb-6 relative'>
           <SearchInventory />
         </section>
 
