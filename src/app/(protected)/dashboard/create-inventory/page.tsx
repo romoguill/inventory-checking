@@ -6,6 +6,7 @@ import SearchInventory from '../../_components/SearchInventory';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ProductsToBeInventoriedList from '../../_components/tables/ProductsToBeInventoriedList';
 import { ProductsToBeInventoriedProvider } from '@/app/context/ProductsToBeInventoriedContext';
+import ConfirmInventoryButton from '../../_components/ConfirmInventoryButton';
 
 const allowedPresets = ['custom', 'LOW', 'MEDIUM', 'HIGH'];
 
@@ -26,11 +27,14 @@ function CreateInventoryPage({
         New Inventory Setup
       </Title>
 
-      <Title size='md' className='capitalize mb-4'>
-        Preset: {inventoryPreset.toLowerCase()}
-      </Title>
-
       <ProductsToBeInventoriedProvider>
+        <div className='flex justify-between'>
+          <Title size='md' className='capitalize mb-4'>
+            Preset: {inventoryPreset.toLowerCase()}
+          </Title>
+          <ConfirmInventoryButton />
+        </div>
+
         <section className='mb-6 relative'>
           <SearchInventory />
         </section>
