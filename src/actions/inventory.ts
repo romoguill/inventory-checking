@@ -31,6 +31,7 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
   const response = await db.inventory.create({
     data: {
       finished: false,
+      organizationId: currentOrganization.id,
       products: {
         create: inventoryItem.map((item, i) => ({
           product: {
@@ -45,17 +46,13 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
       round: {
         create: {
           name: 'ORIGINAL',
-          products: {
+          round_product_user: {
             create: inventoryItem.map((item) => ({
               product: {
                 connect: {
                   id: item.productId,
                 },
               },
-            })),
-          },
-          users: {
-            create: inventoryItem.map((item) => ({
               user: {
                 connect: {
                   id: item.userId,
