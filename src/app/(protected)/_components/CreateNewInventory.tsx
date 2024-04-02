@@ -8,6 +8,8 @@ import {
 import { ProductSchema } from '@/schemas/dashboard.schemas';
 import Link from 'next/link';
 
+export type Presets = 'low' | 'medium' | 'high' | 'custom';
+
 function CreateNewInventory() {
   return (
     <DropdownMenu>

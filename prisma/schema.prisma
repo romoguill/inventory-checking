@@ -87,6 +87,7 @@ model Organization {
   usersWorking User[]               @relation("Current working organization")
   products     Product[]
   policies     Policy[]
+  inventories  Inventory[]
 }
 
 model OrganizationsUsers {
@@ -142,8 +143,10 @@ model Policy {
 }
 
 model Inventory {
-  id       String  @id @default(cuid())
-  finished Boolean @default(false)
+  id             String       @id @default(cuid())
+  finished       Boolean      @default(false)
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
 
   products InventoryProduct[]
 

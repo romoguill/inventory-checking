@@ -40,7 +40,6 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const a = dbOrganization.currentOrgId;
   const payload = await req.json();
 
   const parsedProduct = ProductSchema.safeParse(payload);
