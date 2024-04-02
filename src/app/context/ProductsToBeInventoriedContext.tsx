@@ -1,6 +1,6 @@
 'use client';
 
-import { Product } from '@prisma/client';
+import { Product, User } from '@prisma/client';
 import {
   Dispatch,
   PropsWithChildren,
@@ -11,44 +11,70 @@ import {
   useState,
 } from 'react';
 
-export type TProductsToBeInventoriedProvider = {
-  products: Product[];
-  dispatch: Dispatch<AddAction | RemoveAction>;
-};
-
-const Context = createContext<TProductsToBeInventoriedProvider | null>(null);
-
-type AddAction = {
+type AddItem = {
   type: 'add';
-  payload: Product;
+  payload: string;
 };
 
-type RemoveAction = {
+type RemoveItem = {
   type: 'remove';
   payload: string;
 };
 
-const reducer = (products: Product[], action: AddAction | RemoveAction) => {
-  if (action.type === 'add') {
-    if (!products.find((product) => action.payload.id === product.id)) {
-      return [...products, action.payload];
-    }
-
-    return products;
-  } else if (action.type === 'remove') {
-    return products.filter((product) => product.id !== action.payload);
-  }
-
-  return products;
+type UpdateUser = {
+  type: 'updateUser';
+  payload: {
+    productId: string;
+    userId: string;
+  };
 };
 
-export const ProductsToBeInventoriedProvider = ({
-  children,
-}: PropsWithChildren) => {
+type InventoryState = {
+  productId: string;
+  userId: string | null;
+}[];
+
+export type TInventoryCreationContext = {
+  inventoryItems: InventoryState;
+  dispatch: Dispatch<AddItem | RemoveItem | UpdateUser>;
+};
+
+const Context = createContext<TInventoryCreationContext | null>(null);
+
+const reducer = (
+  state: InventoryState,
+  action: AddItem | RemoveItem | UpdateUser
+): InventoryState => {
+  switch (action.type) {
+    case 'add':
+      if (state.find((item) => item.productId === action.payload)) {
+        return state;
+      }
+
+      return [...state, { productId: action.payload, userId: null }];
+    case 'remove':
+      return state.filter((item) => item.productId !== action.payload);
+    case 'updateUser':
+      return state.map((item) => {
+        if (item.productId === action.payload.productId) {
+          return {
+            productId: action.payload.productId,
+            userId: action.payload.userId,
+          };
+        } else {
+          return item;
+        }
+      });
+    default:
+      return state;
+  }
+};
+
+export const InventoryCreationContext = ({ children }: PropsWithChildren) => {
   const [state, dispatch] = useReducer(reducer, []);
 
   return (
-    <Context.Provider value={{ products: state, dispatch }}>
+    <Context.Provider value={{ inventoryItems: state, dispatch }}>
       {children}
     </Context.Provider>
   );
@@ -59,7 +85,7 @@ export const useProductsToBeInventoriedContext = () => {
 
   if (!productContext) {
     throw new Error(
-      'useProductsToBeInventoriedContext must be used inside a ProductsToBeInventoriedProvider'
+      'useProductsToBeInventoriedContext must be used inside a InventoryCreationContext'
     );
   }
 
