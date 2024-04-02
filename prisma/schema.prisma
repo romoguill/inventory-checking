@@ -55,7 +55,7 @@ model User {
   currentOrgId String?
   currentOrg   Organization? @relation(name: "Current working organization", fields: [currentOrgId], references: [id])
 
-  inventories InventoryRoundUser[]
+  inventories InventoryRoundProductUser[]
 }
 
 model VerificationToken {
@@ -119,7 +119,7 @@ model Product {
   policy        Policy  @relation(fields: [policyId], references: [id])
 
   inventories     InventoryProduct[]
-  inventoryRounds InventoryRoundProduct[]
+  inventoryRounds InventoryRoundProductUser[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -165,8 +165,7 @@ model InventoryRound {
   id   String @id @default(cuid())
   name Round
 
-  users    InventoryRoundUser[]
-  products InventoryRoundProduct[]
+  round_product_user InventoryRoundProductUser[]
 
   inventoryId String
   inventory   Inventory @relation(fields: [inventoryId], references: [id])
@@ -175,25 +174,38 @@ model InventoryRound {
   updatedAt DateTime @updatedAt
 }
 
-model InventoryRoundUser {
+model InventoryRoundProductUser {
   inventoryRoundId String
   inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
 
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
-  @@unique([inventoryRoundId, userId])
-}
-
-model InventoryRoundProduct {
-  inventoryRoundId String
-  inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
-
   productId String
   product   Product @relation(fields: [productId], references: [id])
 
-  @@unique([inventoryRoundId, productId])
+  @@unique([inventoryRoundId, userId, productId])
 }
+
+// model InventoryRoundUser {
+//   inventoryRoundId String
+//   inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
+
+//   userId String
+//   user   User   @relation(fields: [userId], references: [id])
+
+//   @@unique([inventoryRoundId, userId])
+// }
+
+// model InventoryRoundProduct {
+//   inventoryRoundId String
+//   inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
+
+//   productId String
+//   product   Product @relation(fields: [productId], references: [id])
+
+//   @@unique([inventoryRoundId, productId])
+// }
 
 model InventoryProduct {
   inventoryId String

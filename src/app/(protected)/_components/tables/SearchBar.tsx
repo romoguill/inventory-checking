@@ -61,7 +61,7 @@ function SearchBar<T extends { id: string }>({
         <CommandList className='text-dashboard-foreground absolute left-0 right-0 top-16 rounded-md overflow-hidden bg-dashboard-dark max-h-[400px] animate-command-dropdown'>
           <CommandEmpty>
             {isLoading ? (
-              <Loader2 className='animate-spin mx-auto' />
+              <Loader2 className='animate-spin mx-auto mt-4' />
             ) : (
               'No results found'
             )}

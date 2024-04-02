@@ -7,10 +7,11 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import ProductsToBeInventoriedList from '../../_components/tables/ProductsToBeInventoriedList';
 import { ProductsToBeInventoriedProvider } from '@/app/context/ProductsToBeInventoriedContext';
 import ConfirmInventoryButton from '../../_components/ConfirmInventoryButton';
+import { createInventory } from '@/actions/inventory';
 
 const allowedPresets = ['custom', 'LOW', 'MEDIUM', 'HIGH'];
 
-function CreateInventoryPage({
+async function CreateInventoryPage({
   searchParams,
 }: {
   searchParams: { [key: string]: string | undefined };
@@ -20,6 +21,23 @@ function CreateInventoryPage({
   if (!inventoryPreset || !allowedPresets.includes(inventoryPreset)) {
     redirect('/dashboard');
   }
+
+  const mockData = [
+    {
+      productId: 'clu8k4ows0001mfgmk7r4kr4g',
+      userId: 'clu1f0p0500005ftbr5113ilg',
+    },
+    {
+      productId: 'clud6o9jp0001pbh0eg9a5682',
+      userId: 'clu1f0p0500005ftbr5113ilg',
+    },
+    {
+      productId: 'clud6pc8w0002pbh0mqvqmccx',
+      userId: 'clu1up6tx00035ftbx0n519dr',
+    },
+  ];
+
+  await createInventory(mockData);
 
   return (
     <InnerDashboardContainer>

@@ -5,7 +5,12 @@ import { Product } from '@prisma/client';
 import { getWorkingOrganization } from './organization';
 import { db } from '@/lib/db';
 
-export const createInventory = async (productIds: string[]) => {
+interface InventoryItem {
+  productId: string;
+  userId: string;
+}
+
+export const createInventory = async (inventoryItem: InventoryItem[]) => {
   const { data: currentOrganization } = await getWorkingOrganization();
 
   if (!currentOrganization) {
@@ -15,7 +20,7 @@ export const createInventory = async (productIds: string[]) => {
   const currentStocks = await db.product.findMany({
     where: {
       id: {
-        in: productIds,
+        in: inventoryItem.map((item) => item.productId),
       },
     },
     select: {
@@ -27,10 +32,10 @@ export const createInventory = async (productIds: string[]) => {
     data: {
       finished: false,
       products: {
-        create: productIds.map((id, i) => ({
+        create: inventoryItem.map((item, i) => ({
           product: {
             connect: {
-              id,
+              id: item.productId,
             },
           },
           initalStock: currentStocks[i].currentStock,
@@ -40,11 +45,30 @@ export const createInventory = async (productIds: string[]) => {
       round: {
         create: {
           name: 'ORIGINAL',
+          products: {
+            create: inventoryItem.map((item) => ({
+              product: {
+                connect: {
+                  id: item.productId,
+                },
+              },
+            })),
+          },
+          users: {
+            create: inventoryItem.map((item) => ({
+              user: {
+                connect: {
+                  id: item.userId,
+                },
+              },
+            })),
+          },
         },
       },
     },
-    include: {
-      products: true,
-    },
   });
+
+  console.log(response);
+
+  return { data: response, error: null };
 };

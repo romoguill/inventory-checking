@@ -2,8 +2,8 @@
 
 import Image from 'next/image';
 import productPlaceholder from '../../../../../public/product-placeholder.png';
-import { useState } from 'react';
-import { Product } from '@prisma/client';
+import { useEffect, useState } from 'react';
+import { Product, User } from '@prisma/client';
 import { tr } from 'date-fns/locale';
 import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
 import {
@@ -13,9 +13,32 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { EllipsisVertical } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { getTeamByOrganization } from '@/actions/team';
 
 function ProductsToBeInventoriedList() {
   const { products, dispatch } = useProductsToBeInventoriedContext();
+  const [team, setTeam] = useState<
+    Pick<User, 'id' | 'name' | 'email' | 'role' | 'image'>[] | null
+  >(null);
+
+  useEffect(() => {
+    const getTeam = async () => {
+      const response = await getTeamByOrganization();
+      if (response.error) return;
+
+      setTeam(response.data);
+    };
+
+    getTeam();
+  }, []);
 
   return (
     <section>
@@ -54,6 +77,25 @@ function ProductsToBeInventoriedList() {
               {/* TODO: Get last inventory of product */}
               <td className='p-2 md:p-4 text-sm md:text-base text-center'>
                 2024/02/04
+              </td>
+              <td>
+                <Select>
+                  <SelectTrigger className='bg-inherit border-2 border-dashboard-border focus-visible:ring-transparent focus-visible:ring-offset-0 ring-transparent placeholder:text-dashboard-foreground/80 w-[150px]'>
+                    <SelectValue placeholder='Asign to...' />
+                  </SelectTrigger>
+
+                  <SelectContent className='bg-dashboard-dark text-dashboard-foreground'>
+                    {team?.map((user) => (
+                      <SelectItem
+                        key={user.id}
+                        value={user.id}
+                        className='focus:bg-dashboard-accent'
+                      >
+                        {user.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </td>
               <td>
                 <DropdownMenu>
