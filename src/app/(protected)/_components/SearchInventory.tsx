@@ -10,8 +10,7 @@ import SearchBar from './tables/SearchBar';
 function SearchInventory() {
   const [search, setSearch] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const { products: selectedProducts, dispatch } =
-    useProductsToBeInventoriedContext();
+  const { inventoryItems, dispatch } = useProductsToBeInventoriedContext();
   const [products, setProducts] = useState<Product[]>([]);
 
   // TODO: Having performance issues with prisma in serverless. Its faster for now to query all DB and filter it in frontend. Maybe comeback later. For production, pagination should be working
@@ -48,7 +47,9 @@ function SearchInventory() {
             key={item.id}
             item={item}
             onSelect={() => {
-              if (selectedProducts.find((product) => product.id === item.id)) {
+              if (
+                inventoryItems.find(({ product }) => product.id === item.id)
+              ) {
                 dispatch({ type: 'remove', payload: item.id });
               } else {
                 dispatch({ type: 'add', payload: item });

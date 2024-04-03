@@ -24,7 +24,7 @@ import {
 import { getTeamByOrganization } from '@/actions/team';
 
 function ProductsToBeInventoriedList() {
-  const { products, dispatch } = useProductsToBeInventoriedContext();
+  const { inventoryItems, dispatch } = useProductsToBeInventoriedContext();
   const [team, setTeam] = useState<
     Pick<User, 'id' | 'name' | 'email' | 'role' | 'image'>[] | null
   >(null);
@@ -57,22 +57,22 @@ function ProductsToBeInventoriedList() {
           </tr>
         </thead>
         <tbody>
-          {products.map((product) => (
-            <tr key={product.id}>
+          {inventoryItems.map((item) => (
+            <tr key={item.product.id}>
               <td>
                 <Image
-                  src={product.imageUrl || productPlaceholder}
-                  alt={`Product ${product.name}`}
+                  src={item.product.imageUrl || productPlaceholder}
+                  alt={`Product ${item.product.name}`}
                   width={128}
                   height={128}
                   className='w-20 md:w-32 aspect-square rounded-md min-w-24'
                 />
               </td>
               <td className='p-2 md:p-4 text-sm md:text-lg font-bold'>
-                {product.name}
+                {item.product.name}
               </td>
               <td className='p-2 md:p-4 text-sm md:text-base text-center'>
-                {product.currentStock}
+                {item.product.currentStock}
               </td>
               {/* TODO: Get last inventory of product */}
               <td className='p-2 md:p-4 text-sm md:text-base text-center'>
@@ -112,7 +112,7 @@ function ProductsToBeInventoriedList() {
                       onClick={() =>
                         dispatch({
                           type: 'remove',
-                          payload: product.id,
+                          payload: item.product.id,
                         })
                       }
                     >
@@ -125,7 +125,7 @@ function ProductsToBeInventoriedList() {
           ))}
         </tbody>
       </table>
-      {products.length === 0 && (
+      {inventoryItems.length === 0 && (
         <div className='text-center text-dashboard-foreground/80 text-sm mt-3'>
           No products added yet.
         </div>
