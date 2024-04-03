@@ -5,7 +5,7 @@ import SearchBar from '../../_components/tables/SearchBar';
 import SearchInventory from '../../_components/SearchInventory';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import ProductsToBeInventoriedList from '../../_components/tables/ProductsToBeInventoriedList';
-import { ProductsToBeInventoriedProvider } from '@/app/context/ProductsToBeInventoriedContext';
+import { InventoryCreationContext } from '@/app/context/ProductsToBeInventoriedContext';
 import ConfirmInventoryButton from '../../_components/ConfirmInventoryButton';
 import { createInventory } from '@/actions/inventory';
 
@@ -45,7 +45,7 @@ async function CreateInventoryPage({
         New Inventory Setup
       </Title>
 
-      <ProductsToBeInventoriedProvider>
+      <InventoryCreationContext>
         <div className='flex justify-between'>
           <Title size='md' className='capitalize mb-4'>
             Preset: {inventoryPreset.toLowerCase()}
@@ -58,7 +58,7 @@ async function CreateInventoryPage({
         </section>
 
         <ProductsToBeInventoriedList />
-      </ProductsToBeInventoriedProvider>
+      </InventoryCreationContext>
     </InnerDashboardContainer>
   );
 }

@@ -13,7 +13,7 @@ import {
 
 type AddItem = {
   type: 'add';
-  payload: string;
+  payload: Product;
 };
 
 type RemoveItem = {
@@ -25,13 +25,13 @@ type UpdateUser = {
   type: 'updateUser';
   payload: {
     productId: string;
-    userId: string;
+    user: User;
   };
 };
 
 type InventoryState = {
-  productId: string;
-  userId: string | null;
+  product: Product;
+  user: User | null;
 }[];
 
 export type TInventoryCreationContext = {
@@ -47,19 +47,19 @@ const reducer = (
 ): InventoryState => {
   switch (action.type) {
     case 'add':
-      if (state.find((item) => item.productId === action.payload)) {
+      if (state.find((item) => item.product === action.payload)) {
         return state;
       }
 
-      return [...state, { productId: action.payload, userId: null }];
+      return [...state, { product: action.payload, user: null }];
     case 'remove':
-      return state.filter((item) => item.productId !== action.payload);
+      return state.filter((item) => item.product.id !== action.payload);
     case 'updateUser':
       return state.map((item) => {
-        if (item.productId === action.payload.productId) {
+        if (item.product.id === action.payload.productId) {
           return {
-            productId: action.payload.productId,
-            userId: action.payload.userId,
+            product: item.product,
+            user: action.payload.user,
           };
         } else {
           return item;
