@@ -5,7 +5,10 @@ import productPlaceholder from '../../../../../public/product-placeholder.png';
 import { useEffect, useState } from 'react';
 import { Product, User } from '@prisma/client';
 import { tr } from 'date-fns/locale';
-import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
+import {
+  InventoryState,
+  useProductsToBeInventoriedContext,
+} from '@/app/context/ProductsToBeInventoriedContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,9 +28,9 @@ import { getTeamByOrganization } from '@/actions/team';
 
 function ProductsToBeInventoriedList() {
   const { inventoryItems, dispatch } = useProductsToBeInventoriedContext();
-  const [team, setTeam] = useState<
-    Pick<User, 'id' | 'name' | 'email' | 'role' | 'image'>[] | null
-  >(null);
+  const [team, setTeam] = useState<InventoryState[number]['user'][] | null>(
+    null
+  );
 
   useEffect(() => {
     const getTeam = async () => {
@@ -39,6 +42,21 @@ function ProductsToBeInventoriedList() {
 
     getTeam();
   }, []);
+
+  const handleUserChange = (userId: string, productId: string) => {
+    const user = team?.find((user) => user?.id === userId);
+    if (!user) return;
+
+    dispatch({
+      type: 'updateUser',
+      payload: {
+        productId,
+        user,
+      },
+    });
+  };
+
+  console.log(inventoryItems);
 
   return (
     <section>
@@ -79,7 +97,11 @@ function ProductsToBeInventoriedList() {
                 2024/02/04
               </td>
               <td>
-                <Select>
+                <Select
+                  onValueChange={(userId) =>
+                    handleUserChange(userId, item.product.id)
+                  }
+                >
                   <SelectTrigger className='bg-inherit border-2 border-dashboard-border focus-visible:ring-transparent focus-visible:ring-offset-0 ring-transparent placeholder:text-dashboard-foreground/80 w-[150px]'>
                     <SelectValue placeholder='Asign to...' />
                   </SelectTrigger>
@@ -87,11 +109,11 @@ function ProductsToBeInventoriedList() {
                   <SelectContent className='bg-dashboard-dark text-dashboard-foreground'>
                     {team?.map((user) => (
                       <SelectItem
-                        key={user.id}
-                        value={user.id}
+                        key={user?.id}
+                        value={user?.id || ''}
                         className='focus:bg-dashboard-accent'
                       >
-                        {user.name}
+                        {user?.name}
                       </SelectItem>
                     ))}
                   </SelectContent>

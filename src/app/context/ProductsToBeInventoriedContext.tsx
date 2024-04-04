@@ -25,13 +25,13 @@ type UpdateUser = {
   type: 'updateUser';
   payload: {
     productId: string;
-    user: User;
+    user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'image'>;
   };
 };
 
-type InventoryState = {
+export type InventoryState = {
   product: Product;
-  user: User | null;
+  user: Pick<User, 'id' | 'name' | 'email' | 'role' | 'image'> | null;
 }[];
 
 export type TInventoryCreationContext = {

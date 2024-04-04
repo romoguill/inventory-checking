@@ -1,14 +1,35 @@
 'use client';
 
-import { useProductsToBeInventoriedContext } from '@/app/context/ProductsToBeInventoriedContext';
+import {
+  InventoryState,
+  useProductsToBeInventoriedContext,
+} from '@/app/context/ProductsToBeInventoriedContext';
 import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+
+// If at least one item doesn't have a user selected, use this to prevent creating inventory
+const allUsersAssigned = (inventoryItems: InventoryState) => {
+  return inventoryItems.every(({ user }) => Boolean(user));
+};
 
 function ConfirmInventoryButton() {
-  const { products } = useProductsToBeInventoriedContext();
+  const { inventoryItems } = useProductsToBeInventoriedContext();
 
-  if (!products.length) return;
+  if (!inventoryItems.length) return;
 
-  return <Button variant='submit'>Confirm inventory</Button>;
+  const handleCreateInventory = () => {
+    if (allUsersAssigned(inventoryItems)) {
+      console.log('passed');
+    } else {
+      toast.error("Some products don't have a user assinged");
+    }
+  };
+
+  return (
+    <Button variant='submit' onClick={handleCreateInventory}>
+      Confirm inventory
+    </Button>
+  );
 }
 
 export default ConfirmInventoryButton;

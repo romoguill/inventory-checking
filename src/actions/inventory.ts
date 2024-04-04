@@ -65,7 +65,5 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
     },
   });
 
-  console.log(response);
-
   return { data: response, error: null };
 };
