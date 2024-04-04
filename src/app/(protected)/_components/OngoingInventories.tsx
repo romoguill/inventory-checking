@@ -9,6 +9,14 @@ async function OngoingInventories() {
     return;
   }
 
+  if (!ongoingInventories.length) {
+    return (
+      <div className='w-full h-full flex items-center justify-center text-dashboard-foreground/80'>
+        <p>No inventories in progress</p>
+      </div>
+    );
+  }
+
   return (
     <ScrollArea className='max-h-full w-full p-1'>
       <table className='w-full'>
