@@ -67,3 +67,19 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
 
   return { data: response, error: null };
 };
+
+export const getOngoingInventories = async () => {
+  const { data: currentOrganization } = await getWorkingOrganization();
+
+  if (!currentOrganization) {
+    return { data: null, error: { message: 'Unauthorized' } };
+  }
+
+  const response = await db.inventory.findMany({
+    where: {
+      finished: false,
+    },
+  });
+
+  return { data: response, error: null };
+};

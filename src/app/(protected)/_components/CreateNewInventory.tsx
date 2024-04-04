@@ -13,7 +13,7 @@ export type Presets = 'low' | 'medium' | 'high' | 'custom';
 function CreateNewInventory() {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className='place-self-center'>
+      <DropdownMenuTrigger className='place-self-center bg-dashboard-border p-2 rounded-md hover:bg-dashboard-border/80'>
         Start Inventory
       </DropdownMenuTrigger>
       <DropdownMenuContent>

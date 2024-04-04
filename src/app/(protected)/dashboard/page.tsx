@@ -1,6 +1,8 @@
+import { Button } from '@/components/ui/button';
 import CreateNewInventory from '../_components/CreateNewInventory';
 import InnerDashboardContainer from '../_components/InnerDashboardContainer';
 import Title from '../_components/forms/Title';
+import OngoingInventories from '../_components/OngoingInventories';
 
 async function DashboardPage() {
   return (
@@ -8,8 +10,13 @@ async function DashboardPage() {
       <Title size='lg' className='mb-4'>
         Dashboard
       </Title>
-      <div className='grid grid-cols-[repeat(12,_1fr)] grid-rows-2 w-full h-full'>
-        <CreateNewInventory />
+      <div className='grid grid-cols-[repeat(12,_1fr)] grid-rows-4 w-full h-full'>
+        <article className='bg-dashboard-dark rounded-xl col-start-1 col-span-3 flex items-center justify-center'>
+          <CreateNewInventory />
+        </article>
+        <article className='bg-dashboard-dark rounded-xl col-start-5 col-span-9 flex items-center flex-grow overflow-hidden p-2'>
+          <OngoingInventories />
+        </article>
       </div>
     </InnerDashboardContainer>
   );
