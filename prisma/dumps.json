@@ -1,0 +1,56 @@
+{
+  "data": {
+    "id": "cluiypfbp0001qeyojq6t4lr7",
+    "finished": false,
+    "organizationId": "cltzvc1rx0005144oagp9feum",
+    "createdAt": "2024-04-02T22:40:00.468Z",
+    "updatedAt": "2024-04-02T22:40:00.468Z",
+    "products": [
+      {
+        "inventoryId": "cluiypfbp0001qeyojq6t4lr7",
+        "productId": "clud6pc8w0002pbh0mqvqmccx",
+        "initalStock": 0,
+        "reconciledStock": 0
+      },
+      {
+        "inventoryId": "cluiypfbp0001qeyojq6t4lr7",
+        "productId": "clud6o9jp0001pbh0eg9a5682",
+        "initalStock": 0,
+        "reconciledStock": 0
+      },
+      {
+        "inventoryId": "cluiypfbp0001qeyojq6t4lr7",
+        "productId": "clu8k4ows0001mfgmk7r4kr4g",
+        "initalStock": 0,
+        "reconciledStock": 0
+      }
+    ],
+    "round": [
+      {
+        "id": "cluiypfbp0002qeyooy3by4ko",
+        "name": "ORIGINAL",
+        "inventoryId": "cluiypfbp0001qeyojq6t4lr7",
+        "createdAt": "2024-04-02T22:40:00.468Z",
+        "updatedAt": "2024-04-02T22:40:00.468Z",
+        "round_product_user": [
+          {
+            "inventoryRoundId": "cluiypfbp0002qeyooy3by4ko",
+            "userId": "clu1up6tx00035ftbx0n519dr",
+            "productId": "clud6pc8w0002pbh0mqvqmccx"
+          },
+          {
+            "inventoryRoundId": "cluiypfbp0002qeyooy3by4ko",
+            "userId": "clu1f0p0500005ftbr5113ilg",
+            "productId": "clud6o9jp0001pbh0eg9a5682"
+          },
+          {
+            "inventoryRoundId": "cluiypfbp0002qeyooy3by4ko",
+            "userId": "clu1f0p0500005ftbr5113ilg",
+            "productId": "clu8k4ows0001mfgmk7r4kr4g"
+          }
+        ]
+      }
+    ]
+  },
+  "error": null
+}

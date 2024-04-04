@@ -1,5 +1,6 @@
 import { getOngoingInventories } from '@/actions/inventory';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import Link from 'next/link';
 
 async function OngoingInventories() {
   const { error, data: ongoingInventories } = await getOngoingInventories();
@@ -29,7 +30,14 @@ async function OngoingInventories() {
         <tbody className=''>
           {ongoingInventories.map((inventory) => (
             <tr key={inventory.id}>
-              <td>{inventory.id}</td>
+              <td>
+                <Link
+                  href={`/dashboard/inventory/${inventory.id}`}
+                  className='hover:underline'
+                >
+                  {inventory.id}
+                </Link>
+              </td>
               <td className='text-center'>
                 {inventory.createdAt.toLocaleDateString('en-CA')}
               </td>

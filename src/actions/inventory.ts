@@ -83,3 +83,21 @@ export const getOngoingInventories = async () => {
 
   return { data: response, error: null };
 };
+
+export const getInventoryDetailById = async (id: string) => {
+  const response = await db.inventory.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      products: true,
+      round: {
+        include: {
+          round_product_user: true,
+        },
+      },
+    },
+  });
+
+  return { data: response, error: null };
+};
