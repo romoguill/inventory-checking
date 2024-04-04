@@ -103,7 +103,7 @@ function ProductsToBeInventoriedList() {
                   }
                 >
                   <SelectTrigger className='bg-inherit border-2 border-dashboard-border focus-visible:ring-transparent focus-visible:ring-offset-0 ring-transparent placeholder:text-dashboard-foreground/80 w-[150px]'>
-                    <SelectValue placeholder='Asign to...' />
+                    <SelectValue placeholder='Assign to...' />
                   </SelectTrigger>
 
                   <SelectContent className='bg-dashboard-dark text-dashboard-foreground'>
