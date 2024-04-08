@@ -90,10 +90,19 @@ export const getInventoryDetailById = async (id: string) => {
       id,
     },
     include: {
-      products: true,
+      products: {
+        include: {
+          product: true,
+        },
+      },
       round: {
         include: {
-          round_product_user: true,
+          round_product_user: {
+            include: {
+              product: true,
+              user: true,
+            },
+          },
         },
       },
     },
