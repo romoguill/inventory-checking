@@ -101,3 +101,23 @@ export const getInventoryDetailById = async (id: string) => {
 
   return { data: response, error: null };
 };
+
+// To check if the round is finished, for now only check if some item still has current inventory = null.
+export const isRoundFinished = async (roundId: string) => {
+  const response = await db.inventoryRound.findFirst({
+    where: {
+      id: roundId,
+    },
+    include: {
+      round_product_user: {
+        where: {
+          currentStock: {
+            not: null,
+          },
+        },
+      },
+    },
+  });
+
+  return Boolean(response);
+};
