@@ -2,8 +2,14 @@ import { getOngoingInventories } from '@/actions/inventory';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Link from 'next/link';
 
-async function OngoingInventories() {
-  const { error, data: ongoingInventories } = await getOngoingInventories();
+interface OngoingInventoriesProps {
+  userId?: string;
+}
+
+async function OngoingInventories({ userId }: OngoingInventoriesProps) {
+  const { error, data: ongoingInventories } = await getOngoingInventories(
+    userId
+  );
 
   if (error) {
     console.log(error);

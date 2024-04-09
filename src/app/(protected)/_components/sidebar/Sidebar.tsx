@@ -13,6 +13,7 @@ import SidebarLink from './SidebarLink';
 import UserInfo from './UserInfo';
 import { Button } from '@/components/ui/button';
 import { Prisma, UserRole } from '@prisma/client';
+import React from 'react';
 
 export type TSidebarLink =
   | {
@@ -86,9 +87,9 @@ function Sidebar({ role }: SidebarProps) {
       <Logo className='ml-6 py-[0.6rem]' />
       <ul className='flex flex-col gap-2 px-3 mt-10'>
         {sidebarLinks.map((link) => (
-          <>
-            {link.role === role && <SidebarLink key={link.label} link={link} />}
-          </>
+          <React.Fragment key={link.label}>
+            {link.role === role && <SidebarLink link={link} />}
+          </React.Fragment>
         ))}
       </ul>
       <UserInfo />

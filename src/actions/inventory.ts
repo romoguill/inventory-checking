@@ -68,20 +68,39 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
   return { data: response, error: null };
 };
 
-export const getOngoingInventories = async () => {
+// If user is specified, get only inventories with that user participating in at least 1 round.
+export const getOngoingInventories = async (userId?: string) => {
   const { data: currentOrganization } = await getWorkingOrganization();
 
   if (!currentOrganization) {
     return { data: null, error: { message: 'Unauthorized' } };
   }
 
-  const response = await db.inventory.findMany({
-    where: {
-      finished: false,
-    },
-  });
+  if (!userId) {
+    const response = await db.inventory.findMany({
+      where: {
+        finished: false,
+      },
+    });
 
-  return { data: response, error: null };
+    return { data: response, error: null };
+  } else {
+    const response = await db.inventory.findMany({
+      where: {
+        finished: false,
+        round: {
+          some: {
+            round_product_user: {
+              some: {
+                userId,
+              },
+            },
+          },
+        },
+      },
+    });
+    return { data: response, error: null };
+  }
 };
 
 export const getInventoryDetailById = async (id: string) => {

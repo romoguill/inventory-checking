@@ -73,7 +73,7 @@ async function InventoryPage({
       </Title>
 
       <section>
-        <Table className='text-'>
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead></TableHead>
