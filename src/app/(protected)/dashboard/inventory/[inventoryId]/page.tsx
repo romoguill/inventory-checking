@@ -13,8 +13,8 @@ import {
 interface TableRow {
   product?: string;
   user?: string;
-  original?: number;
-  review?: number;
+  original?: number | null;
+  review?: number | null;
 }
 
 // Util for formatting response from the server action into simple table
@@ -35,10 +35,10 @@ const getTableFormattedData = (
         (rpu) => rpu.product.id === item.id
       );
       if (invDetail.name === 'ORIGINAL') {
-        rowData.original = search?.currentStock || 0;
+        rowData.original = search?.currentStock;
         rowData.user = search?.user.name || '';
       } else {
-        rowData.review = search?.currentStock || 0;
+        rowData.review = search?.currentStock;
       }
     });
 

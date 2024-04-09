@@ -78,7 +78,11 @@ export const getOrganizationsLinkedTo = async (email: string) => {
         },
       },
     });
-    return { data: organizations };
+    return {
+      data: organizations?.organizationsLinked.map((org) => ({
+        ...org.organization,
+      })),
+    };
   } catch (error) {
     console.log(error);
     return { error: { message: 'Error retrieving organizations' } };

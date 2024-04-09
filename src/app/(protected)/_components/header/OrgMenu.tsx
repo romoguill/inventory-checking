@@ -2,6 +2,7 @@
 
 import {
   createOrganization,
+  getOrganizationsLinkedTo,
   getOrganizationsOwnedBy,
   getWorkingOrganization,
   setWorkingOrganization,
@@ -56,7 +57,6 @@ function OrgMenu() {
     const loadCurrentOrganization = async () => {
       const response = await getWorkingOrganization();
 
-      console.log(response);
       if (response.error) return;
 
       response.data && setCurrentOrganization(response.data);
@@ -66,26 +66,38 @@ function OrgMenu() {
   }, []);
 
   const handleGetOrganizations = useCallback(async () => {
+    console.log({ data });
     if (!data || !data.user) return;
 
     setIsPending(true);
 
-    const { error, data: organizations } = await getOrganizationsOwnedBy(
-      data.user.email
-    );
+    if (data.user.role === 'USER') {
+      const { error, data: organizations } = await getOrganizationsLinkedTo(
+        data.user.email
+      );
 
-    if (
-      !error &&
-      organizations &&
-      organizations.organizationsOwned.length > 0
-    ) {
-      setAvailableOrganizations(organizations.organizationsOwned);
+      if (!error && organizations && organizations.length > 0) {
+        setAvailableOrganizations(organizations);
+      }
+    } else {
+      const { error, data: organizations } = await getOrganizationsOwnedBy(
+        data.user.email
+      );
+
+      if (
+        !error &&
+        organizations &&
+        organizations.organizationsOwned.length > 0
+      ) {
+        setAvailableOrganizations(organizations.organizationsOwned);
+      }
     }
 
     setIsPending(false);
   }, [data]);
 
   useEffect(() => {
+    console.log('useeffect');
     handleGetOrganizations();
   }, [handleGetOrganizations]);
 
@@ -93,7 +105,6 @@ function OrgMenu() {
     // setIsLoadingWorkingOrg(true);
 
     const responseSet = await setWorkingOrganization(name);
-    console.log(responseSet);
 
     if (responseSet.error) return;
 
@@ -115,6 +126,8 @@ function OrgMenu() {
       setIsModalOpen(false);
     }
   };
+
+  console.log('Available organizations', availableOrganizations);
 
   // TODO: Trigger should be actual name with icon. Display organizations asociated with user
   return (
