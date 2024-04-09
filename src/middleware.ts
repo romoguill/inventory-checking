@@ -4,6 +4,7 @@ import {
   authRoutes,
   privateRoutes,
   publicRoutes,
+  userRoutes,
 } from './auth/routes';
 import { NextRequestWithAuth, withAuth } from 'next-auth/middleware';
 import { JWT, getToken } from 'next-auth/jwt';
@@ -28,7 +29,19 @@ export async function middleware(req: NextRequest & WithAuth) {
 
   // If logged in and tries to acces /login or /register, redirect them to app
   if (token && authRoutes.includes(nextUrl.pathname)) {
+    if (token.role === 'USER') {
+      return NextResponse.redirect(new URL('/checking', nextUrl.origin));
+    }
     return NextResponse.redirect(new URL(DEFAULT_REDIRECT, nextUrl.origin));
+  }
+
+  // Redirect users to checking (interacting with inventories)
+  if (
+    token &&
+    token.role === 'USER' &&
+    !userRoutes.includes(nextUrl.pathname)
+  ) {
+    return NextResponse.redirect(new URL('/checking', nextUrl.origin));
   }
 
   if (
