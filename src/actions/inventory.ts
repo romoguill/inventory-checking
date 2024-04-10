@@ -81,6 +81,9 @@ export const getOngoingInventories = async (userId?: string) => {
       where: {
         finished: false,
       },
+      include: {
+        round: true,
+      },
     });
 
     return { data: response, error: null };
@@ -97,6 +100,9 @@ export const getOngoingInventories = async (userId?: string) => {
             },
           },
         },
+      },
+      include: {
+        round: true,
       },
     });
     return { data: response, error: null };
