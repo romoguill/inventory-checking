@@ -10,6 +10,7 @@ import {
 import InnerDashboardContainer from '../_components/InnerDashboardContainer';
 import Title from '../_components/forms/Title';
 import { getOngoingInventories } from '@/actions/inventory';
+import Link from 'next/link';
 
 // Current inventory round will be determined by exitance of name: "Round", meaning org user has created a new
 const getCurrentInventoryRound = (
@@ -45,7 +46,7 @@ async function CheckingPage() {
       </Title>
       <Table>
         <TableHeader>
-          <TableRow>
+          <TableRow className='hover:bg-inherit'>
             <TableHead>ID</TableHead>
             <TableHead>Current Round</TableHead>
             <TableHead>Created At</TableHead>
@@ -55,8 +56,14 @@ async function CheckingPage() {
           {!inventories.error &&
             inventories.data.map((inventory) => (
               <TableRow key={inventory.id}>
-                <TableCell>{inventory.id}</TableCell>
-                {/* TODO: GET CURRENT ROUND */}
+                <TableCell>
+                  <Link
+                    href={`/checking/${inventory.id}`}
+                    className='hover:underline'
+                  >
+                    {inventory.id}
+                  </Link>
+                </TableCell>
                 <TableCell>
                   {getCurrentInventoryRound(inventory.id, inventories.data)}
                 </TableCell>

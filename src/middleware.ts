@@ -39,7 +39,7 @@ export async function middleware(req: NextRequest & WithAuth) {
   if (
     token &&
     token.role === 'USER' &&
-    !userRoutes.includes(nextUrl.pathname)
+    !nextUrl.pathname.startsWith('/checking')
   ) {
     return NextResponse.redirect(new URL('/checking', nextUrl.origin));
   }
