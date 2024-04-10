@@ -2,12 +2,12 @@ import { cn } from '@/lib/utils';
 import { HTMLAttributes } from 'react';
 
 interface TitleProps extends HTMLAttributes<HTMLHeadingElement> {
-  size: 'md' | 'lg';
+  size: 'sm' | 'md' | 'lg';
   children: React.ReactNode;
 }
 
 function Title({ size = 'lg', className, children, ...props }: TitleProps) {
-  const Tag = size === 'md' ? 'h2' : 'h1';
+  const Tag = size === 'md' ? 'h2' : size === 'lg' ? 'h1' : 'h3';
 
   return (
     <Tag
@@ -17,6 +17,7 @@ function Title({ size = 'lg', className, children, ...props }: TitleProps) {
         {
           'text-2xl': size === 'lg',
           'text-xl': size === 'md',
+          'text-lg text-dashboard-foreground/80': size === 'sm',
         },
         className
       )}

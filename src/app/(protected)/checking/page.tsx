@@ -11,18 +11,7 @@ import InnerDashboardContainer from '../_components/InnerDashboardContainer';
 import Title from '../_components/forms/Title';
 import { getOngoingInventories } from '@/actions/inventory';
 import Link from 'next/link';
-
-// Current inventory round will be determined by exitance of name: "Round", meaning org user has created a new
-const getCurrentInventoryRound = (
-  inventoryId: string,
-  inventories: Awaited<ReturnType<typeof getOngoingInventories>>['data']
-) => {
-  const roundInReview = inventories
-    ?.find((inv) => inv.id === inventoryId)
-    ?.round.some((r) => r.name === 'REVIEW');
-
-  return roundInReview ? 'REVIEW' : 'ORIGINAL';
-};
+import { getCurrentInventoryRound } from '@/lib/utils';
 
 async function CheckingPage() {
   const session = await getServerAuthSession();
