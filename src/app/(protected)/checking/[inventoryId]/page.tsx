@@ -2,14 +2,21 @@ import { getCurrentInventoryRound } from '@/lib/utils';
 import InnerDashboardContainer from '../../_components/InnerDashboardContainer';
 import Title from '../../_components/forms/Title';
 import { getInventoryRoundDetails } from '@/actions/inventory';
+import RoundCheckingForm from '../../_components/forms/RoundCheckingForm';
+import { getServerAuthSession } from '@/auth/auth.config';
 
 async function InventoryCheckingPage({
   params: { inventoryId },
 }: {
   params: { inventoryId: string };
 }) {
+  const session = await getServerAuthSession();
+
+  if (!session) return;
+
   const { data: roundDetails, error } = await getInventoryRoundDetails(
-    inventoryId
+    inventoryId,
+    session.user.id
   );
 
   if (error) return;
@@ -26,6 +33,7 @@ async function InventoryCheckingPage({
         Round:{' '}
         <span className='capitalize'>{roundDetails.name.toLowerCase()}</span>
       </Title>
+      <RoundCheckingForm roundDetails={roundDetails} />
     </InnerDashboardContainer>
   );
 }

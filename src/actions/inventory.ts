@@ -156,11 +156,24 @@ export const isRoundFinished = async (roundId: string) => {
   return Boolean(response);
 };
 
-export const getInventoryRoundDetails = async (inventoryId: string) => {
+export const getInventoryRoundDetails = async (
+  inventoryId: string,
+  userId?: string
+) => {
   // If inventory has a review round, it must be in that stage. Else return the original
   const response = await db.inventoryRound.findMany({
     where: {
       inventoryId,
+    },
+    include: {
+      round_product_user: {
+        where: {
+          userId: userId ? userId : {},
+        },
+        include: {
+          product: true,
+        },
+      },
     },
   });
 
