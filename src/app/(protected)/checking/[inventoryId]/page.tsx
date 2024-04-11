@@ -29,7 +29,7 @@ async function InventoryCheckingPage({
       <Title size='sm' className='mb-2'>
         ID: <span>{inventoryId}</span>
       </Title>
-      <Title size='sm' className='mb-2'>
+      <Title size='sm' className='mb-6'>
         Round:{' '}
         <span className='capitalize'>{roundDetails.name.toLowerCase()}</span>
       </Title>

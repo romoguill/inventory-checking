@@ -18,7 +18,7 @@ import { MemberSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { SetStateAction } from 'react';
+import React, { SetStateAction } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -44,36 +44,38 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
-        <div className='space-y-5'>
-          <div className='flex justify-between items-center flex-nowrap'>
-            <p>Iphone</p>
-            <FormField
-              control={form.control}
-              name='stock'
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input variant='form' {...field} />
-                  </FormControl>
+        <div className='grid grid-cols-[1fr,120px] grid-rows-[50px] gap-y-3 rounded-lg'>
+          <p className='self-center bg-dashboard-accent p-2'>Product</p>
+          <p className='self-center text-center bg-dashboard-accent p-2'>
+            Quantity
+          </p>
 
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+          {roundDetails.round_product_user.map((detail) => (
+            <React.Fragment key={detail.productId}>
+              <p className='self-center p-2'>{detail.product.name}</p>
+              <FormField
+                control={form.control}
+                name='stock'
+                render={({ field }) => (
+                  <FormItem className='p-2'>
+                    <FormControl>
+                      <Input
+                        variant='form'
+                        {...field}
+                        className='text-center'
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </React.Fragment>
+          ))}
         </div>
-        {/* <Button
-          type='submit'
-          variant='submit'
-          className='mx-auto flex mt-8 text-dashboard-foreground w-36'
-          disabled={form.formState.isSubmitting}
-        >
-          {form.formState.isSubmitting ? (
-            <Loader2 className='animate-spin' />
-          ) : (
-            'Add team member'
-          )}
-        </Button> */}
+        <Button variant='submit' className='w-full mt-6'>
+          Confirm
+        </Button>
       </form>
     </Form>
   );
