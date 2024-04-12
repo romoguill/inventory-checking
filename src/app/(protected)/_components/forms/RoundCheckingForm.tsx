@@ -19,7 +19,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { SetStateAction } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
 interface RoundCheckingFormProps {
@@ -31,15 +31,20 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
   const form = useForm<RoundCheck>({
     resolver: zodResolver(RoundCheck),
     defaultValues: {
-      stock: undefined,
+      roundResults: new Array(roundDetails.round_product_user.length).fill({
+        stock: '' as unknown as number,
+      }),
     },
+  });
+
+  const fieldArray = useFieldArray({
+    control: form.control,
+    name: 'roundResults',
   });
 
   const onSubmit: SubmitHandler<RoundCheck> = async (data) => {
     console.log(data);
   };
-
-  console.log(roundDetails);
 
   return (
     <Form {...form}>
@@ -50,17 +55,20 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
             Quantity
           </p>
 
-          {roundDetails.round_product_user.map((detail) => (
-            <React.Fragment key={detail.productId}>
-              <p className='self-center p-2'>{detail.product.name}</p>
+          {fieldArray.fields.map((field, i) => (
+            <React.Fragment key={field.id}>
+              <p className='self-center p-2'>
+                {roundDetails.round_product_user[i].product.name}
+              </p>
               <FormField
                 control={form.control}
-                name='stock'
+                name={`roundResults.${i}.stock`}
                 render={({ field }) => (
                   <FormItem className='p-2'>
                     <FormControl>
                       <Input
                         variant='form'
+                        type='number'
                         {...field}
                         className='text-center'
                       />
@@ -73,7 +81,7 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
             </React.Fragment>
           ))}
         </div>
-        <Button variant='submit' className='w-full mt-6'>
+        <Button variant='submit' type='submit' className='w-full mt-6'>
           Confirm
         </Button>
       </form>
