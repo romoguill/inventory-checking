@@ -21,7 +21,7 @@ import { MemberSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { SetStateAction } from 'react';
+import React, { SetStateAction, useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -31,6 +31,7 @@ interface RoundCheckingFormProps {
 
 function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
   const form = useForm<RoundCheck>({
     resolver: zodResolver(RoundCheck),
     defaultValues: {
@@ -46,13 +47,26 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
   });
 
   const onSubmit: SubmitHandler<RoundCheck> = async (data) => {
+    setIsLoading(true);
     // Massage data to match API for prisma transaction
     const parsedData = roundDetails.round_product_user.map((item, i) => ({
       productId: item.productId,
       stock: data.roundResults[i].stock,
     }));
 
-    await updateUserCheckingRound(roundDetails.id, parsedData);
+    const { error } = await updateUserCheckingRound(
+      roundDetails.id,
+      parsedData
+    );
+
+    if (!error) {
+      router.push('/checking');
+      toast.success('Round confirmed successfully');
+    } else {
+      toast.error('There was an error');
+    }
+
+    setIsLoading(false);
   };
 
   return (
@@ -90,8 +104,13 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
             </React.Fragment>
           ))}
         </div>
-        <Button variant='submit' type='submit' className='w-full mt-6'>
-          Confirm
+        <Button
+          variant='submit'
+          type='submit'
+          className='w-full mt-6'
+          disabled={isLoading}
+        >
+          {isLoading ? <Loader2 className='animate-spin' /> : 'Confirm'}
         </Button>
       </form>
     </Form>
