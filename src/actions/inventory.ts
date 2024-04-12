@@ -4,6 +4,7 @@ import { Presets } from '@/app/(protected)/_components/CreateNewInventory';
 import { Product } from '@prisma/client';
 import { getWorkingOrganization } from './organization';
 import { db } from '@/lib/db';
+import { getServerAuthSession } from '@/auth/auth.config';
 
 interface InventoryItem {
   productId: string;
@@ -184,5 +185,58 @@ export const getInventoryRoundDetails = async (
     };
   } else {
     return { data: response[0], error: null };
+  }
+};
+
+export const updateUserCheckingRound = async (
+  roundId: string,
+  data: { productId: string; stock: number }[]
+) => {
+  const session = await getServerAuthSession();
+
+  if (!session) {
+    return { data: null, error: { message: 'Not authenticated' } };
+  }
+  const round = await db.inventoryRound.findUnique({
+    where: {
+      id: roundId,
+    },
+  });
+
+  if (!round) {
+    return { data: null, error: { message: 'No round found with that ID' } };
+  }
+
+  try {
+    await db.$transaction(
+      async (tx) => {
+        for (const item of data) {
+          await tx.inventoryRoundProductUser.update({
+            where: {
+              inventoryRoundId_userId_productId: {
+                inventoryRoundId: roundId,
+                productId: item.productId,
+                userId: session.user.id,
+              },
+            },
+            data: {
+              currentStock: item.stock,
+            },
+          });
+        }
+      },
+      {
+        maxWait: 5000,
+        timeout: 10000,
+        isolationLevel: 'Serializable',
+      }
+    );
+    return { data: 'Round confirmed', error: null };
+  } catch (error) {
+    console.log(error);
+    return {
+      data: null,
+      error: { message: 'Error in the update transaction' },
+    };
   }
 };

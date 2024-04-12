@@ -1,6 +1,9 @@
 'use client';
 
-import { getInventoryRoundDetails } from '@/actions/inventory';
+import {
+  getInventoryRoundDetails,
+  updateUserCheckingRound,
+} from '@/actions/inventory';
 import { addUserToOrganization } from '@/actions/organization';
 import { getUserByEmail } from '@/actions/team';
 import { Button } from '@/components/ui/button';
@@ -32,7 +35,7 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
     resolver: zodResolver(RoundCheck),
     defaultValues: {
       roundResults: new Array(roundDetails.round_product_user.length).fill({
-        stock: '' as unknown as number,
+        stock: '-',
       }),
     },
   });
@@ -43,15 +46,21 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
   });
 
   const onSubmit: SubmitHandler<RoundCheck> = async (data) => {
-    console.log(data);
+    // Massage data to match API for prisma transaction
+    const parsedData = roundDetails.round_product_user.map((item, i) => ({
+      productId: item.productId,
+      stock: data.roundResults[i].stock,
+    }));
+
+    await updateUserCheckingRound(roundDetails.id, parsedData);
   };
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className='grid grid-cols-[1fr,120px] grid-rows-[50px] gap-y-3 rounded-lg'>
-          <p className='self-center bg-dashboard-accent p-2'>Product</p>
-          <p className='self-center text-center bg-dashboard-accent p-2'>
+          <p className='self-center bg-dashboard-dark p-2'>Product</p>
+          <p className='self-center text-center bg-dashboard-dark p-2'>
             Quantity
           </p>
 
