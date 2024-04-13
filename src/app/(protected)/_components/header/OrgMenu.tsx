@@ -66,7 +66,6 @@ function OrgMenu() {
   }, []);
 
   const handleGetOrganizations = useCallback(async () => {
-    console.log({ data });
     if (!data || !data.user) return;
 
     setIsPending(true);
@@ -97,7 +96,6 @@ function OrgMenu() {
   }, [data]);
 
   useEffect(() => {
-    console.log('useeffect');
     handleGetOrganizations();
   }, [handleGetOrganizations]);
 
@@ -126,8 +124,6 @@ function OrgMenu() {
       setIsModalOpen(false);
     }
   };
-
-  console.log('Available organizations', availableOrganizations);
 
   // TODO: Trigger should be actual name with icon. Display organizations asociated with user
   return (
