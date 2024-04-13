@@ -70,7 +70,10 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
 };
 
 // If user is specified, get only inventories with that user participating in at least 1 round.
-export const getOngoingInventories = async (userId?: string) => {
+export const getOngoingInventories = async (
+  userId?: string,
+  onlyNotConfirmed: boolean = false
+) => {
   const { data: currentOrganization } = await getWorkingOrganization();
 
   if (!currentOrganization) {
@@ -97,6 +100,11 @@ export const getOngoingInventories = async (userId?: string) => {
             round_product_user: {
               some: {
                 userId,
+              },
+              every: {
+                currentStock: {
+                  not: onlyNotConfirmed ? null : {},
+                },
               },
             },
           },
