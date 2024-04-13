@@ -22,18 +22,17 @@ import React from 'react';
 
 async function CheckingPage() {
   const session = await getServerAuthSession();
-  console.log(session);
 
   if (!session) return;
 
-  const promise1 = getOngoingInventories(session.user.id, true);
-  const promise2 = getOngoingInventories(session.user.id, false);
+  const promise1 = getOngoingInventories(session.user.id, 'ongoing');
+  const promise2 = getOngoingInventories(session.user.id, 'finished');
   const [ongoingInventories, finishedInventories] = await Promise.all([
     promise1,
     promise2,
   ]);
 
-  console.log(ongoingInventories);
+  console.log(ongoingInventories, finishedInventories);
 
   let displayMsg: string = '';
 
@@ -93,7 +92,7 @@ async function CheckingPage() {
     finishedInventoriesContent = <p>An error occured while retrieving data</p>;
   } else if (!finishedInventories.data.length) {
     finishedInventoriesContent = (
-      <p>You haven&apos;t yet completed an inventory round</p>
+      <p>You haven&apos;t completed an inventory round</p>
     );
   } else {
     finishedInventoriesContent = (

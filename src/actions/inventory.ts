@@ -72,7 +72,7 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
 // If user is specified, get only inventories with that user participating in at least 1 round.
 export const getOngoingInventories = async (
   userId?: string,
-  onlyNotConfirmed: boolean = false
+  filter: 'all' | 'ongoing' | 'finished' = 'all'
 ) => {
   const { data: currentOrganization } = await getWorkingOrganization();
 
@@ -99,17 +99,40 @@ export const getOngoingInventories = async (
           some: {
             round_product_user: {
               some: {
-                userId,
-              },
-              every: {
-                currentStock: {
-                  not: onlyNotConfirmed ? null : {},
+                AND: {
+                  userId,
+                  OR: [
+                    {
+                      currentStock: {
+                        equals: filter === 'ongoing' ? null : undefined,
+                      },
+                    },
+                    {
+                      currentStock: {
+                        not: filter === 'finished' ? null : undefined,
+                      },
+                    },
+                  ],
                 },
               },
             },
+
+            // every: {
+            //   AND: [
+            //     {
+            //       userId,
+            //     },
+            //     // {
+            //     //   NOT: {
+            //     //     currentStock: filter === 'finished' ? null : undefined,
+            //     //   },
+            //     // },
+            //   ],
+            // },
           },
         },
       },
+
       include: {
         round: true,
       },
