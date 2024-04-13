@@ -33,19 +33,23 @@ async function CheckingPage() {
       <Title size='lg' className='mb-2'>
         Dashboard
       </Title>
-      <Table>
+      <Table className='table-fixed'>
         <TableHeader>
           <TableRow className='hover:bg-inherit'>
             <TableHead>ID</TableHead>
-            <TableHead>Current Round</TableHead>
-            <TableHead>Created At</TableHead>
+            <TableHead className='w-[100px] md:w-[150px] text-center'>
+              Round
+            </TableHead>
+            <TableHead className='w-[100px] md:w-[150px] text-center'>
+              Created At
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {!inventories.error &&
             inventories.data.map((inventory) => (
               <TableRow key={inventory.id}>
-                <TableCell>
+                <TableCell className='p-2 md:p-4 overflow-hidden truncate'>
                   <Link
                     href={`/checking/${inventory.id}`}
                     className='hover:underline'
@@ -53,10 +57,13 @@ async function CheckingPage() {
                     {inventory.id}
                   </Link>
                 </TableCell>
-                <TableCell>
-                  {getCurrentInventoryRound(inventory.id, inventories.data)}
+                <TableCell className='p-2 md:p-4 capitalize text-center'>
+                  {getCurrentInventoryRound(
+                    inventory.id,
+                    inventories.data
+                  ).toLowerCase()}
                 </TableCell>
-                <TableCell>
+                <TableCell className='p-2 md:p-4  text-center'>
                   {inventory.createdAt.toLocaleDateString('en-CA')}
                 </TableCell>
               </TableRow>
