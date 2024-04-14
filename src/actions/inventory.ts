@@ -70,6 +70,7 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
 };
 
 // If user is specified, get only inventories with that user participating in at least 1 round.
+// TODO: Works but difficult to read. Maybe create 3 queries for the 3 different filters
 export const getOngoingInventories = async (
   userId?: string,
   filter: 'all' | 'ongoing' | 'finished' = 'all'
@@ -116,19 +117,6 @@ export const getOngoingInventories = async (
                 },
               },
             },
-
-            // every: {
-            //   AND: [
-            //     {
-            //       userId,
-            //     },
-            //     // {
-            //     //   NOT: {
-            //     //     currentStock: filter === 'finished' ? null : undefined,
-            //     //   },
-            //     // },
-            //   ],
-            // },
           },
         },
       },

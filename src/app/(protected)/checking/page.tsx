@@ -44,7 +44,7 @@ async function CheckingPage() {
   } else {
     ongoingInventoriesContent = (
       <AccordionContent>
-        <Table className='table-fixed'>
+        <Table className='table-fixed mb-6'>
           <TableHeader>
             <TableRow className='hover:bg-inherit'>
               <TableHead>ID</TableHead>
@@ -97,7 +97,7 @@ async function CheckingPage() {
   } else {
     finishedInventoriesContent = (
       <AccordionContent>
-        <Table className='table-fixed'>
+        <Table className='table-fixed mb-6'>
           <TableHeader>
             <TableRow className='hover:bg-inherit'>
               <TableHead>ID</TableHead>
@@ -146,14 +146,20 @@ async function CheckingPage() {
         Dashboard
       </Title>
       <Accordion type='single' collapsible defaultValue='ongoingRounds'>
-        <AccordionItem value='ongoingRounds'>
-          <AccordionTrigger>
+        <AccordionItem
+          value='ongoingRounds'
+          className='border-b-dashboard-border'
+        >
+          <AccordionTrigger className='p-2 bg-dashboard-dark -mx-2'>
             <h4>Ongoing Rounds</h4>
           </AccordionTrigger>
           {ongoingInventoriesContent}
         </AccordionItem>
-        <AccordionItem value='finishedRounds'>
-          <AccordionTrigger>
+        <AccordionItem
+          value='finishedRounds'
+          className='border-b-dashboard-border'
+        >
+          <AccordionTrigger className='p-2 bg-dashboard-dark -mx-2'>
             <h4>Finished Rounds</h4>
           </AccordionTrigger>
           {finishedInventoriesContent}
