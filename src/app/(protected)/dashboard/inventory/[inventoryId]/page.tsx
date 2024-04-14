@@ -13,6 +13,7 @@ import {
 interface TableRow {
   product?: string;
   user?: string;
+  initialStock?: number;
   original?: number | null;
   review?: number | null;
 }
@@ -21,14 +22,21 @@ interface TableRow {
 const getTableFormattedData = (
   invetoryDetails: Awaited<ReturnType<typeof getInventoryDetailById>>
 ): TableRow[] => {
-  const productList: { id: string; name: string }[] = [];
+  const productList: { id: string; name: string; initialStock: number }[] = [];
 
   invetoryDetails.data?.products.forEach((item) => {
-    productList.push({ id: item.productId, name: item.product.name });
+    productList.push({
+      id: item.productId,
+      name: item.product.name,
+      initialStock: item.initalStock,
+    });
   });
 
   return productList.map((item) => {
-    const rowData: Partial<TableRow> = { product: item.name };
+    const rowData: Partial<TableRow> = {
+      product: item.name,
+      initialStock: item.initialStock,
+    };
 
     invetoryDetails.data?.round.forEach((invDetail) => {
       const search = invDetail.round_product_user.find(
@@ -78,6 +86,7 @@ async function InventoryPage({
             <TableRow>
               <TableHead></TableHead>
               <TableHead></TableHead>
+              <TableHead></TableHead>
               <TableHead colSpan={2} className='text-center bg-slate-100/20'>
                 Rounds
               </TableHead>
@@ -85,6 +94,7 @@ async function InventoryPage({
             <TableRow>
               <TableHead>Product</TableHead>
               <TableHead>User</TableHead>
+              <TableHead className='text-center'>Initial stock</TableHead>
               <TableHead className='text-center'>Original</TableHead>
               <TableHead className='text-center'>Review</TableHead>
             </TableRow>
@@ -96,6 +106,9 @@ async function InventoryPage({
                 <TableRow key={row.product}>
                   <TableCell>{row.product}</TableCell>
                   <TableCell>{row.user}</TableCell>
+                  <TableCell className='text-center'>
+                    {row.initialStock}
+                  </TableCell>
                   <TableCell className='text-center'>{row.original}</TableCell>
                   <TableCell className='text-center'>{row.review}</TableCell>
                 </TableRow>
