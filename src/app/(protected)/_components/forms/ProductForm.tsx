@@ -63,6 +63,7 @@ function ProductForm({ type }: ProductFormProps) {
 
     form.reset({
       name: '',
+      currentStock: 0,
       imageUrl: '',
       batchTracking: true,
       severity: '' as any,
