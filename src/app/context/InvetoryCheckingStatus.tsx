@@ -39,5 +39,5 @@ interface InventoryCheckingStatusProviderProps {
 export const InvetoryCheckingStatusProvider = ({
   children,
 }: InventoryCheckingStatusProviderProps) => {
-  return <Context.Provider value={}>{children}</Context.Provider>;
+  return <Context.Provider value={null}>{children}</Context.Provider>;
 };

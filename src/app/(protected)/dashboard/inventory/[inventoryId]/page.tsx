@@ -1,16 +1,9 @@
 import { getInventoryDetailById } from '@/actions/inventory';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
 import Title from '@/app/(protected)/_components/forms/Title';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
+import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
 
-interface TableRow {
+export interface DataRow {
   product?: string;
   user?: string;
   initialStock?: number;
@@ -21,7 +14,7 @@ interface TableRow {
 // Util for formatting response from the server action into simple table
 const getTableFormattedData = (
   invetoryDetails: Awaited<ReturnType<typeof getInventoryDetailById>>
-): TableRow[] => {
+): DataRow[] => {
   const productList: { id: string; name: string; initialStock: number }[] = [];
 
   invetoryDetails.data?.products.forEach((item) => {
@@ -33,7 +26,7 @@ const getTableFormattedData = (
   });
 
   return productList.map((item) => {
-    const rowData: Partial<TableRow> = {
+    const rowData: Partial<DataRow> = {
       product: item.name,
       initialStock: item.initialStock,
     };
@@ -60,13 +53,11 @@ async function InventoryPage({
   params: { inventoryId: string };
 }) {
   const inventoryDetails = await getInventoryDetailById(inventoryId);
-  console.log(JSON.stringify(inventoryDetails, undefined, 2));
-  let displayMsg: string;
 
+  let displayMsg: string | undefined;
   if (inventoryDetails.error) {
     displayMsg = 'An error occured while retrieving data';
   }
-
   if (!inventoryDetails.data) {
     displayMsg = 'This inventory has no data';
   }
@@ -81,40 +72,11 @@ async function InventoryPage({
       </Title>
 
       <section>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead></TableHead>
-              <TableHead></TableHead>
-              <TableHead></TableHead>
-              <TableHead colSpan={2} className='text-center bg-slate-100/20'>
-                Rounds
-              </TableHead>
-            </TableRow>
-            <TableRow>
-              <TableHead>Product</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead className='text-center'>Initial stock</TableHead>
-              <TableHead className='text-center'>Original</TableHead>
-              <TableHead className='text-center'>Review</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {!inventoryDetails.error &&
-              inventoryDetails.data &&
-              formattedData.map((row) => (
-                <TableRow key={row.product}>
-                  <TableCell>{row.product}</TableCell>
-                  <TableCell>{row.user}</TableCell>
-                  <TableCell className='text-center'>
-                    {row.initialStock}
-                  </TableCell>
-                  <TableCell className='text-center'>{row.original}</TableCell>
-                  <TableCell className='text-center'>{row.review}</TableCell>
-                </TableRow>
-              ))}
-          </TableBody>
-        </Table>
+        {!displayMsg ? (
+          <InventoryCheckingTable data={formattedData} />
+        ) : (
+          <p className='mt-6 text-neutral-50/80'>{displayMsg}</p>
+        )}
       </section>
     </InnerDashboardContainer>
   );
