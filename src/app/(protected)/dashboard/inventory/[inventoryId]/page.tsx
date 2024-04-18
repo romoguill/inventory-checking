@@ -1,11 +1,18 @@
 import { getInventoryDetailById } from '@/actions/inventory';
+import { getProductsThreshold } from '@/actions/products';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
 import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
 
 export interface DataRow {
-  product?: string;
-  user?: string;
+  product: {
+    id: string;
+    name: string;
+  };
+  user: {
+    id: string;
+    name: string;
+  };
   initialStock?: number;
   original?: number | null;
   review?: number | null;
@@ -27,7 +34,10 @@ const getTableFormattedData = (
 
   return productList.map((item) => {
     const rowData: Partial<DataRow> = {
-      product: item.name,
+      product: {
+        id: item.id,
+        name: item.name,
+      },
       initialStock: item.initialStock,
     };
 
@@ -37,14 +47,17 @@ const getTableFormattedData = (
       );
       if (invDetail.name === 'ORIGINAL') {
         rowData.original = search?.currentStock;
-        rowData.user = search?.user.name || '';
+        rowData.user = {
+          id: search?.user.id || '',
+          name: search?.user.name || '',
+        };
       } else {
         rowData.review = search?.currentStock;
       }
     });
 
     return rowData;
-  });
+  }) as DataRow[];
 };
 
 async function InventoryPage({
@@ -64,6 +77,10 @@ async function InventoryPage({
 
   const formattedData = getTableFormattedData(inventoryDetails);
 
+  const productThresholds = await getProductsThreshold(
+    inventoryDetails.data?.products.map((product) => product.productId) || []
+  );
+
   return (
     <InnerDashboardContainer>
       <Title size='lg' className='mb-2'>
@@ -73,7 +90,10 @@ async function InventoryPage({
 
       <section>
         {!displayMsg ? (
-          <InventoryCheckingTable data={formattedData} />
+          <InventoryCheckingTable
+            data={formattedData}
+            productsThreshold={productThresholds.data}
+          />
         ) : (
           <p className='mt-6 text-neutral-50/80'>{displayMsg}</p>
         )}

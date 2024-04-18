@@ -8,11 +8,30 @@ import {
 } from '@/components/ui/table';
 import { DataRow } from '../../dashboard/inventory/[inventoryId]/page';
 
+type CheckingState =
+  | {
+      status: 'ok';
+      delta: null;
+    }
+  | {
+      status: 'passed';
+      delta: number;
+    }
+  | { status: 'reject'; delta: number };
+
+const productCheckingState: CheckingState = {};
+
 interface InventoryCheckingTableProps {
   data: DataRow[];
+  productsThreshold: { id: string; threshold: number }[];
 }
 
-function InventoryCheckingTable({ data }: InventoryCheckingTableProps) {
+function InventoryCheckingTable({
+  data,
+  productsThreshold,
+}: InventoryCheckingTableProps) {
+  console.log(data);
+  console.log(productsThreshold);
   return (
     <Table>
       <TableHeader>
