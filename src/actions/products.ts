@@ -61,3 +61,28 @@ export const findProductsByName = async (name: string) => {
 
   return { data: response, error: null };
 };
+
+export const getProductsThreshold = async (productIds: string[]) => {
+  const response = await db.product.findMany({
+    where: {
+      id: {
+        in: productIds,
+      },
+    },
+    select: {
+      id: true,
+      policy: {
+        select: {
+          threshold: true,
+        },
+      },
+    },
+  });
+
+  const data = response.map((item) => ({
+    id: item.id,
+    threshold: item.policy.threshold,
+  }));
+
+  return { data, error: null };
+};
