@@ -3,6 +3,7 @@ import { getProductsThreshold } from '@/actions/products';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
 import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
+import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
 
 export interface DataRow {
   product: {
@@ -83,10 +84,16 @@ async function InventoryPage({
 
   return (
     <InnerDashboardContainer>
-      <Title size='lg' className='mb-2'>
-        Inventory
-        <span className='italic text-lg font-semibold'> ({inventoryId})</span>
-      </Title>
+      <div className='flex flex-start items-center mb-6'>
+        <Title size='lg' className='mb-2'>
+          Inventory
+          <span className='italic text-lg font-semibold lowercase'>
+            {' '}
+            ({inventoryId})
+          </span>
+        </Title>
+        <StartReviewRoundButton className='ml-auto' />
+      </div>
 
       <section>
         {!displayMsg ? (

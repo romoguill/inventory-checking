@@ -1,10 +1,71 @@
 'use server';
 
-import { Presets } from '@/app/(protected)/_components/CreateNewInventory';
-import { Product } from '@prisma/client';
-import { getWorkingOrganization } from './organization';
-import { db } from '@/lib/db';
 import { getServerAuthSession } from '@/auth/auth.config';
+import { db } from '@/lib/db';
+import { getWorkingOrganization } from './organization';
+
+// To check if the round is finished, for now only check if some item still has current inventory = null.
+export const isRoundFinished = async (roundId: string) => {
+  const response = await db.inventoryRound.findFirst({
+    where: {
+      id: roundId,
+    },
+    include: {
+      round_product_user: {
+        where: {
+          currentStock: {
+            not: null,
+          },
+        },
+      },
+    },
+  });
+
+  return Boolean(response);
+};
+
+export const getRoundSummary = async (roundId: string) => {
+  const response = await db.inventoryRound.findUnique({
+    where: {
+      id: roundId,
+    },
+    select: {
+      inventory: {
+        include: {
+          products: {
+            select: {
+              initalStock: true,
+            },
+          },
+        },
+      },
+      round_product_user: {
+        select: {
+          currentStock: true,
+          user: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+          product: {
+            select: {
+              id: true,
+              name: true,
+              policy: {
+                select: {
+                  threshold: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return response;
+};
 
 interface InventoryItem {
   productId: string;
@@ -67,6 +128,113 @@ export const createInventory = async (inventoryItem: InventoryItem[]) => {
   });
 
   return { data: response, error: null };
+};
+
+export const createReviewRound = async (inventoryId: string) => {
+  const { data: currentOrganization } = await getWorkingOrganization();
+
+  if (!currentOrganization) {
+    return { data: null, error: { message: 'Unauthorized' } };
+  }
+
+  const existingInventory = await db.inventory.findUnique({
+    where: {
+      id: inventoryId,
+    },
+  });
+
+  if (!existingInventory) {
+    return {
+      data: null,
+      error: { message: 'No inventory with that ID exists' },
+    };
+  }
+
+  const existingRounds = await db.inventoryRound.findMany({
+    where: {
+      inventoryId,
+    },
+  });
+
+  // Check if inventory has original round created and also check if review round exists
+  if (!existingRounds.find((round) => round.name === 'ORIGINAL')) {
+    return {
+      data: null,
+      error: {
+        message:
+          "Can't create a review round for an inventory that has no original round created",
+      },
+    };
+  }
+
+  if (existingRounds.find((round) => round.name === 'REVIEW')) {
+    return {
+      data: null,
+      error: { message: 'Inventory has already an active review round' },
+    };
+  }
+
+  const originalRoundStatus = await isRoundFinished('asd');
+
+  console.log(existingRounds.find((round) => round.name === 'ORIGINAL')?.id);
+  const roundSummary = await getRoundSummary(
+    existingRounds.find((round) => round.name === 'ORIGINAL')?.id || ''
+  );
+  console.log(JSON.stringify(roundSummary, undefined, 2));
+
+  // const response = await db.inventoryRound.create({
+  //   data: {
+  //     name: 'REVIEW',
+  //     round_product_user: {
+  //       create: {
+  //         product: {
+  //           connect: {
+
+  //           }
+  //         }
+  //       }
+  //     }
+  //   }
+  // })
+
+  // const response = await db.inventory.create({
+  //   data: {
+  //     finished: false,
+  //     organizationId: currentOrganization.id,
+  //     products: {
+  //       create: inventoryItem.map((item, i) => ({
+  //         product: {
+  //           connect: {
+  //             id: item.productId,
+  //           },
+  //         },
+  //         initalStock: currentStocks[i].currentStock,
+  //         reconciledStock: 0,
+  //       })),
+  //     },
+  //     round: {
+  //       create: {
+  //         name: 'ORIGINAL',
+  //         round_product_user: {
+  //           create: inventoryItem.map((item) => ({
+  //             product: {
+  //               connect: {
+  //                 id: item.productId,
+  //               },
+  //             },
+  //             user: {
+  //               connect: {
+  //                 id: item.userId,
+  //               },
+  //             },
+  //           })),
+  //         },
+  //       },
+  //     },
+  //   },
+  // });
+
+  // return { data: response, error: null };
 };
 
 // If user is specified, get only inventories with that user participating in at least 1 round.
@@ -154,26 +322,6 @@ export const getInventoryDetailById = async (id: string) => {
   });
 
   return { data: response, error: null };
-};
-
-// To check if the round is finished, for now only check if some item still has current inventory = null.
-export const isRoundFinished = async (roundId: string) => {
-  const response = await db.inventoryRound.findFirst({
-    where: {
-      id: roundId,
-    },
-    include: {
-      round_product_user: {
-        where: {
-          currentStock: {
-            not: null,
-          },
-        },
-      },
-    },
-  });
-
-  return Boolean(response);
 };
 
 export const getInventoryRoundDetails = async (
