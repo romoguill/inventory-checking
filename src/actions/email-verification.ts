@@ -9,7 +9,6 @@ export const generateEmailVerification = async (
   name: string | null
 ) => {
   const verificationToken = await generateVerificationToken(email);
-  console.log({ verificationToken });
 
   await sendEmailVerification(email, name, verificationToken.token);
 };

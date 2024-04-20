@@ -54,7 +54,6 @@ export const authConfig = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
       profile(profile: GoogleProfile) {
-        console.log(profile);
         // Set fields for prisma adapter when creating user
         return {
           id: profile.sub,

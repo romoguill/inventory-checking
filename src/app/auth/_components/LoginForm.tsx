@@ -36,12 +36,10 @@ function LoginForm() {
   const onSubmit: SubmitHandler<LoginSchema> = async (data) => {
     setIsPending(true);
 
-    console.log('sign in init');
     const { error, ok } = (await signIn('credentials', {
       redirect: false,
       ...data,
     })) as SignInResponse;
-    console.log('sign in finish');
 
     if (error) {
       if (error === 'CredentialsSignin') {

@@ -204,7 +204,6 @@ export const createReviewRound = async (inventoryId: string) => {
   const roundSummary = await getRoundSummary(
     existingRounds.find((round) => round.name === 'ORIGINAL')?.id || ''
   );
-  // console.log(JSON.stringify(roundSummary, undefined, 2));
 
   if (!roundSummary) {
     return {

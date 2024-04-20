@@ -97,7 +97,6 @@ function PolicyForm({ type, policy, handleDialogOpenChange }: PolicyFormProps) {
                       type='number'
                       {...field}
                       onChange={(e) => {
-                        console.log(e.target.value);
                         field.onChange(restrictPercentIntput(e));
                       }}
                       className='basis-20 ml-auto flex-grow-0'

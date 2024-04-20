@@ -43,10 +43,6 @@ export const getProductState = (
       delta: null,
     };
   } else if (Math.abs(initialStock - roundStock) <= initialStock * threshold) {
-    console.log({
-      diff: initialStock - roundStock,
-      permitted: initialStock * threshold,
-    });
     return {
       status: 'passed',
       delta: roundStock - initialStock,

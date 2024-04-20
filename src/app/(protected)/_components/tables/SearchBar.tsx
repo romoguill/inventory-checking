@@ -52,8 +52,6 @@ function SearchBar<T extends { id: string }>({
         autoComplete='off'
         onFocus={() => setIsDropdownOpen(true)}
         onBlur={(e) => {
-          // console.log(commandRef.current?.contains(e.target));
-          // console.log(e);
           setIsDropdownOpen(false);
         }}
       />

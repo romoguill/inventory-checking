@@ -32,10 +32,7 @@ function ProductSearchItem({ item, onSelect }: ProductSearcItemProps) {
           inventoryItems
         ),
       })}
-      onSelect={() => {
-        console.log('run');
-        onSelect('hola');
-      }}
+      onSelect={() => {}}
       onMouseDown={(e) => {
         e.preventDefault();
         e.stopPropagation();

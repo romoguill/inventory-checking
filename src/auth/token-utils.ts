@@ -55,8 +55,6 @@ export const generateVerificationToken = async (email: string) => {
   // No need to store old tokens. Delete the old one linked to that email
   const dbVerificationToken = await getVerificationTokenByEmail(email);
 
-  console.log({ dbVerificationToken });
-
   if (dbVerificationToken) {
     await db.verificationToken.delete({
       where: {
@@ -77,18 +75,13 @@ export const generateVerificationToken = async (email: string) => {
 export const validateVerificationToken = async (
   token: string
 ): Promise<{ error: 'invalid' | 'expired' | null }> => {
-  console.log({ token });
   const dbVerificationToken = await getVerificationTokenByToken(token);
-
-  console.log({ dbVerificationToken });
 
   if (!dbVerificationToken) return { error: 'invalid' };
 
   if (dbVerificationToken.expires < new Date()) return { error: 'expired' };
 
   const dbUser = await getUserByEmail(dbVerificationToken.email);
-
-  console.log({ dbUser });
 
   if (!dbUser || dbVerificationToken.email !== dbUser.email)
     return { error: 'invalid' };

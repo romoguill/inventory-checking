@@ -46,7 +46,6 @@ function ProductForm({ type }: ProductFormProps) {
   });
 
   const onSubmit: SubmitHandler<ProductSchema> = async (data) => {
-    console.log(data);
     const response = await fetch(`/api/products`, {
       method: 'POST',
       body: JSON.stringify(data),

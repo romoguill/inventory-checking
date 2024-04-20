@@ -56,8 +56,6 @@ function ProductsToBeInventoriedList() {
     });
   };
 
-  console.log(inventoryItems);
-
   return (
     <section>
       <table className='w-full border-separate border-spacing-y-4'>
