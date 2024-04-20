@@ -92,7 +92,7 @@ async function InventoryPage({
             ({inventoryId})
           </span>
         </Title>
-        <StartReviewRoundButton className='ml-auto' />
+        <StartReviewRoundButton className='ml-auto w-32' />
       </div>
 
       <section>
