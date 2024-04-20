@@ -64,7 +64,20 @@ export const getRoundSummary = async (roundId: string) => {
     },
   });
 
-  return response;
+  const parsedResponse = {
+    inventoryId: response?.inventory.id,
+    roundItem:
+      response?.round_product_user.map((item) => ({
+        ...item,
+        product: {
+          id: item.product.id,
+          name: item.product.name,
+          threshold: item.product.policy.threshold,
+        },
+      })) || [],
+  };
+
+  return parsedResponse;
 };
 
 interface InventoryItem {
