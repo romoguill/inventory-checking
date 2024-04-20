@@ -65,10 +65,14 @@ export const getRoundSummary = async (roundId: string) => {
     },
   });
 
+  if (!response) {
+    return null;
+  }
+
   const parsedResponse = {
-    inventoryId: response?.inventory.id,
+    inventoryId: response.inventory.id,
     roundItem:
-      response?.round_product_user.map((item, i) => ({
+      response.round_product_user.map((item, i) => ({
         user: { ...item.user },
         product: {
           id: item.product.id,
@@ -77,7 +81,7 @@ export const getRoundSummary = async (roundId: string) => {
           initialStock: response.inventory.products[i].initalStock,
           roundStock: item.currentStock,
         },
-        get status() {
+        get roundState() {
           return getProductState(
             this.product.initialStock,
             this.product.roundStock,
@@ -200,61 +204,49 @@ export const createReviewRound = async (inventoryId: string) => {
   const roundSummary = await getRoundSummary(
     existingRounds.find((round) => round.name === 'ORIGINAL')?.id || ''
   );
-  console.log(JSON.stringify(roundSummary, undefined, 2));
+  // console.log(JSON.stringify(roundSummary, undefined, 2));
 
-  // const response = await db.inventoryRound.create({
-  //   data: {
-  //     name: 'REVIEW',
-  //     round_product_user: {
-  //       create: {
-  //         product: {
-  //           connect: {
+  if (!roundSummary) {
+    return {
+      data: null,
+      error: {
+        message: 'There was an error calculating the previous round summary',
+      },
+    };
+  }
 
-  //           }
-  //         }
-  //       }
-  //     }
-  //   }
-  // })
+  try {
+    const response = await db.inventoryRound.create({
+      data: {
+        name: 'REVIEW',
+        inventoryId: roundSummary.inventoryId || '',
+        round_product_user: {
+          create: roundSummary.roundItem
+            .filter((item) => item.roundState?.status === 'rejected')
+            .map((itemFiltered) => ({
+              product: {
+                connect: {
+                  id: itemFiltered.product.id,
+                },
+              },
+              user: {
+                connect: {
+                  id: itemFiltered.user.id,
+                },
+              },
+            })),
+        },
+      },
+    });
 
-  // const response = await db.inventory.create({
-  //   data: {
-  //     finished: false,
-  //     organizationId: currentOrganization.id,
-  //     products: {
-  //       create: inventoryItem.map((item, i) => ({
-  //         product: {
-  //           connect: {
-  //             id: item.productId,
-  //           },
-  //         },
-  //         initalStock: currentStocks[i].currentStock,
-  //         reconciledStock: 0,
-  //       })),
-  //     },
-  //     round: {
-  //       create: {
-  //         name: 'ORIGINAL',
-  //         round_product_user: {
-  //           create: inventoryItem.map((item) => ({
-  //             product: {
-  //               connect: {
-  //                 id: item.productId,
-  //               },
-  //             },
-  //             user: {
-  //               connect: {
-  //                 id: item.userId,
-  //               },
-  //             },
-  //           })),
-  //         },
-  //       },
-  //     },
-  //   },
-  // });
-
-  // return { data: response, error: null };
+    return { data: response, error: null };
+  } catch (error) {
+    console.log(error);
+    return {
+      data: null,
+      error: { message: 'There was a problem creating the review round' },
+    };
+  }
 };
 
 // If user is specified, get only inventories with that user participating in at least 1 round.
