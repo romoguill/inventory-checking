@@ -3,6 +3,7 @@
 import { getServerAuthSession } from '@/auth/auth.config';
 import { db } from '@/lib/db';
 import { getWorkingOrganization } from './organization';
+import { getProductState } from '@/lib/utils';
 
 // To check if the round is finished, for now only check if some item still has current inventory = null.
 export const isRoundFinished = async (roundId: string) => {
@@ -67,12 +68,21 @@ export const getRoundSummary = async (roundId: string) => {
   const parsedResponse = {
     inventoryId: response?.inventory.id,
     roundItem:
-      response?.round_product_user.map((item) => ({
-        ...item,
+      response?.round_product_user.map((item, i) => ({
+        user: { ...item.user },
         product: {
           id: item.product.id,
           name: item.product.name,
           threshold: item.product.policy.threshold,
+          initialStock: response.inventory.products[i].initalStock,
+          roundStock: item.currentStock,
+        },
+        get status() {
+          return getProductState(
+            this.product.initialStock,
+            this.product.roundStock,
+            this.product.threshold
+          );
         },
       })) || [],
   };
@@ -187,9 +197,6 @@ export const createReviewRound = async (inventoryId: string) => {
     };
   }
 
-  const originalRoundStatus = await isRoundFinished('asd');
-
-  console.log(existingRounds.find((round) => round.name === 'ORIGINAL')?.id);
   const roundSummary = await getRoundSummary(
     existingRounds.find((round) => round.name === 'ORIGINAL')?.id || ''
   );

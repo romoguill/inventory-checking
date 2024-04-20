@@ -7,44 +7,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DataRow } from '../../dashboard/inventory/[inventoryId]/page';
-import { cn } from '@/lib/utils';
-
-type ProductCheckingState =
-  | {
-      status: 'ok';
-      delta: null;
-    }
-  | {
-      status: 'passed';
-      delta: number;
-    }
-  | { status: 'rejected'; delta: number };
-
-const getProductState = (
-  initialStock: number | undefined,
-  roundResult: number | undefined | null,
-  threshold: number | undefined
-): ProductCheckingState | null => {
-  if (!initialStock || !roundResult || !threshold) {
-    return null;
-  }
-  if (initialStock === roundResult) {
-    return {
-      status: 'ok',
-      delta: null,
-    };
-  } else if (Math.abs(initialStock - roundResult) <= initialStock * threshold) {
-    return {
-      status: 'passed',
-      delta: roundResult - initialStock,
-    };
-  } else {
-    return {
-      status: 'rejected',
-      delta: roundResult - initialStock,
-    };
-  }
-};
+import { cn, getProductState } from '@/lib/utils';
 
 const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
   if (round === 'original') {

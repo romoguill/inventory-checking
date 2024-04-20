@@ -17,3 +17,44 @@ export const getCurrentInventoryRound = (
 
   return roundInReview ? 'REVIEW' : 'ORIGINAL';
 };
+
+export type ProductCheckingState =
+  | {
+      status: 'ok';
+      delta: null;
+    }
+  | {
+      status: 'passed';
+      delta: number;
+    }
+  | { status: 'rejected'; delta: number };
+
+export const getProductState = (
+  initialStock: number | undefined,
+  roundStock: number | undefined | null,
+  threshold: number | undefined | null
+): ProductCheckingState | null => {
+  if (!initialStock || !roundStock || !threshold) {
+    return null;
+  }
+  if (initialStock === roundStock) {
+    return {
+      status: 'ok',
+      delta: null,
+    };
+  } else if (Math.abs(initialStock - roundStock) <= initialStock * threshold) {
+    console.log({
+      diff: initialStock - roundStock,
+      permitted: initialStock * threshold,
+    });
+    return {
+      status: 'passed',
+      delta: roundStock - initialStock,
+    };
+  } else {
+    return {
+      status: 'rejected',
+      delta: roundStock - initialStock,
+    };
+  }
+};
