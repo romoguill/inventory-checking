@@ -418,3 +418,31 @@ export const updateUserCheckingRound = async (
     };
   }
 };
+
+export const getRounds = async (
+  state: 'all' | 'ongoing' | 'finished' = 'all',
+  userId?: string
+) => {
+  const rounds = await db.inventoryRound.findMany({
+    where: {
+      round_product_user: {
+        some: {
+          userId: userId || undefined,
+        },
+      },
+    },
+  });
+
+  if (state === 'all') {
+    return { data: rounds, error: null };
+  } else {
+    const filteredRounds = Promise.all(
+      rounds.filter((round) =>
+        state === 'ongoing'
+          ? !isRoundFinished(round.id)
+          : isRoundFinished(round.id)
+      )
+    );
+    return { data: filteredRounds, error: null };
+  }
+};
