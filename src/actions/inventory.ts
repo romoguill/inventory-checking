@@ -7,13 +7,11 @@ import { getProductState } from '@/lib/utils';
 
 // To check if the round is finished, for now only check if some item still has current inventory = null.
 export const isRoundFinished = async (roundId: string) => {
-  const response = await db.inventoryRound.findFirst({
+  const response = await db.inventoryRound.findUnique({
     where: {
       id: roundId,
-    },
-    include: {
       round_product_user: {
-        where: {
+        every: {
           currentStock: {
             not: null,
           },
@@ -420,8 +418,8 @@ export const updateUserCheckingRound = async (
 };
 
 export const getRounds = async (
-  state: 'all' | 'ongoing' | 'finished' = 'all',
-  userId?: string
+  userId?: string,
+  state: 'all' | 'ongoing' | 'finished' = 'all'
 ) => {
   const rounds = await db.inventoryRound.findMany({
     where: {
@@ -436,13 +434,17 @@ export const getRounds = async (
   if (state === 'all') {
     return { data: rounds, error: null };
   } else {
-    const filteredRounds = Promise.all(
-      rounds.filter((round) =>
-        state === 'ongoing'
-          ? !isRoundFinished(round.id)
-          : isRoundFinished(round.id)
-      )
+    const boolArray = await Promise.all(
+      rounds.map((round) => {
+        return isRoundFinished(round.id);
+      })
     );
-    return { data: filteredRounds, error: null };
+
+    return {
+      data: rounds.filter((_, i) =>
+        state === 'ongoing' ? !boolArray[i] : boolArray[i]
+      ),
+      error: null,
+    };
   }
 };
