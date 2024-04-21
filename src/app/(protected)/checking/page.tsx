@@ -133,12 +133,7 @@ async function CheckingPage() {
               finishedRounds.data.map((round) => (
                 <TableRow key={round.id}>
                   <TableCell className='p-2 md:p-4 overflow-hidden truncate'>
-                    <Link
-                      href={`/checking/${round.id}`}
-                      className='hover:underline'
-                    >
-                      {round.id}
-                    </Link>
+                    {round.id}
                   </TableCell>
                   <TableCell className='p-2 md:p-4 capitalize text-center'>
                     {round.name.toLowerCase()}

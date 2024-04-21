@@ -333,14 +333,11 @@ export const getInventoryDetailById = async (id: string) => {
   return { data: response, error: null };
 };
 
-export const getInventoryRoundDetails = async (
-  inventoryId: string,
-  userId?: string
-) => {
+export const getInventoryRoundDetails = async (id: string, userId?: string) => {
   // If inventory has a review round, it must be in that stage. Else return the original
   const response = await db.inventoryRound.findMany({
     where: {
-      inventoryId,
+      id,
     },
     include: {
       round_product_user: {
