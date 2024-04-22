@@ -6,6 +6,7 @@ import InventoryCheckingTable from '@/app/(protected)/_components/tables/Invento
 import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
 
 export interface DataRow {
+  roundId?: string[];
   product: {
     id: string;
     name: string;
@@ -21,11 +22,11 @@ export interface DataRow {
 
 // Util for formatting response from the server action into simple table
 const getTableFormattedData = (
-  invetoryDetails: Awaited<ReturnType<typeof getInventoryDetailById>>
+  inventoryDetails: Awaited<ReturnType<typeof getInventoryDetailById>>
 ): DataRow[] => {
   const productList: { id: string; name: string; initialStock: number }[] = [];
 
-  invetoryDetails.data?.products.forEach((item) => {
+  inventoryDetails.data?.products.forEach((item) => {
     productList.push({
       id: item.productId,
       name: item.product.name,
@@ -42,7 +43,7 @@ const getTableFormattedData = (
       initialStock: item.initialStock,
     };
 
-    invetoryDetails.data?.round.forEach((invDetail) => {
+    inventoryDetails.data?.round.forEach((invDetail) => {
       const search = invDetail.round_product_user.find(
         (rpu) => rpu.product.id === item.id
       );
@@ -56,6 +57,8 @@ const getTableFormattedData = (
         rowData.review = search?.currentStock;
       }
     });
+
+    rowData.roundId = inventoryDetails.data?.round.map((round) => round.id);
 
     return rowData;
   }) as DataRow[];
@@ -92,7 +95,10 @@ async function InventoryPage({
             ({inventoryId})
           </span>
         </Title>
-        <StartReviewRoundButton className='ml-auto w-32' />
+        <StartReviewRoundButton
+          className='ml-auto w-32'
+          inventoryId={inventoryId}
+        />
       </div>
 
       <section>

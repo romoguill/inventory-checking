@@ -7,18 +7,20 @@ import { useState } from 'react';
 import { toast } from 'sonner';
 
 interface StartReviewRoundButtonProps {
+  inventoryId: string;
   className?: string;
 }
 
-function StartReviewRoundButton({ className }: StartReviewRoundButtonProps) {
+function StartReviewRoundButton({
+  inventoryId,
+  className,
+}: StartReviewRoundButtonProps) {
   const [isPending, setIsPending] = useState(false);
 
   const launchReview = async () => {
     setIsPending(true);
 
-    const { data, error } = await createReviewRound(
-      'clul48ufs0011qeyoiza9cka5'
-    );
+    const { data, error } = await createReviewRound(inventoryId);
     if (error) {
       toast.error(error.message);
     } else {

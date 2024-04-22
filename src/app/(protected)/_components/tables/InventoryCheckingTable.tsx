@@ -8,14 +8,15 @@ import {
 } from '@/components/ui/table';
 import { DataRow } from '../../dashboard/inventory/[inventoryId]/page';
 import { cn, getProductState } from '@/lib/utils';
+import { getRounds } from '@/actions/inventory';
 
-const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
-  if (round === 'original') {
-    return data.every((item) => Boolean(item.original));
-  } else {
-    return data.every((item) => Boolean(item.review));
-  }
-};
+// const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
+//   if (round === 'original') {
+//     return data.every((item) => Boolean(item.original));
+//   } else {
+//     return data.every((item) => Boolean(item.review));
+//   }
+// };
 
 interface InventoryCheckingTableProps {
   data: DataRow[];

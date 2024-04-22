@@ -16,6 +16,7 @@ import { Input } from '@/components/ui/input';
 import { RoundCheck } from '@/schemas/checking.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
+import { revalidatePath } from 'next/cache';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
@@ -56,6 +57,7 @@ function RoundCheckingForm({ roundDetails }: RoundCheckingFormProps) {
     );
 
     if (!error) {
+      revalidatePath('/checking');
       router.push('/checking');
       toast.success('Round confirmed successfully');
     } else {
