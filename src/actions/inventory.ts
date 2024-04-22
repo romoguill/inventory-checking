@@ -445,3 +445,21 @@ export const getRounds = async (
     };
   }
 };
+
+export const getRoundsFromInventory = async (inventoryId: string) => {
+  const response = await db.inventory.findUnique({
+    where: {
+      id: inventoryId,
+    },
+    select: {
+      round: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
+  });
+
+  return { data: response ? [...response.round] : [], error: null };
+};

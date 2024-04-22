@@ -6,7 +6,6 @@ import InventoryCheckingTable from '@/app/(protected)/_components/tables/Invento
 import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
 
 export interface DataRow {
-  roundId?: string[];
   product: {
     id: string;
     name: string;
@@ -58,8 +57,6 @@ const getTableFormattedData = (
       }
     });
 
-    rowData.roundId = inventoryDetails.data?.round.map((round) => round.id);
-
     return rowData;
   }) as DataRow[];
 };
@@ -104,6 +101,7 @@ async function InventoryPage({
       <section>
         {!displayMsg ? (
           <InventoryCheckingTable
+            inventoryId={inventoryId}
             data={formattedData}
             productsThreshold={productThresholds.data}
           />

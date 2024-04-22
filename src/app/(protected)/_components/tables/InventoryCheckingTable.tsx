@@ -8,7 +8,11 @@ import {
 } from '@/components/ui/table';
 import { DataRow } from '../../dashboard/inventory/[inventoryId]/page';
 import { cn, getProductState } from '@/lib/utils';
-import { getRounds } from '@/actions/inventory';
+import {
+  getRounds,
+  getRoundsFromInventory,
+  isRoundFinished,
+} from '@/actions/inventory';
 
 // const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
 //   if (round === 'original') {
@@ -19,11 +23,13 @@ import { getRounds } from '@/actions/inventory';
 // };
 
 interface InventoryCheckingTableProps {
+  inventoryId: string;
   data: DataRow[];
   productsThreshold: { id: string; threshold: number }[];
 }
 
-function InventoryCheckingTable({
+async function InventoryCheckingTable({
+  inventoryId,
   data,
   productsThreshold,
 }: InventoryCheckingTableProps) {
@@ -53,6 +59,12 @@ function InventoryCheckingTable({
     },
   }));
 
+  const { data: rounds } = await getRoundsFromInventory(inventoryId);
+
+  const roundsWithFinished = await Promise.all(
+    rounds.map((round) => ({ ...round, isFinished: isRoundFinished(round.id) }))
+  );
+
   return (
     <Table>
       <TableHeader>
@@ -68,13 +80,25 @@ function InventoryCheckingTable({
           <TableHead>Product</TableHead>
           <TableHead>User</TableHead>
           <TableHead className='text-center'>Initial stock</TableHead>
-          <TableHead className='text-center flex flex-col items-center'>
-            Original
-            <span>{isRoundComplete('original', data) && '(finished)'}</span>
+          <TableHead className='text-center'>
+            <div className='flex flex-col items-center'>
+              Original
+              <span>
+                {roundsWithFinished.find(
+                  (round) => round.name === 'ORIGINAL' && round.isFinished
+                ) && '(finished)'}
+              </span>
+            </div>
           </TableHead>
           <TableHead className='text-center'>
-            Review
-            <span>{isRoundComplete('review', data) && '(finished)'}</span>
+            <div className='flex flex-col items-center'>
+              Review
+              <span>
+                {roundsWithFinished.find(
+                  (round) => round.name === 'REVIEW' && round.isFinished
+                ) && '(finished)'}
+              </span>
+            </div>
           </TableHead>
         </TableRow>
       </TableHeader>
