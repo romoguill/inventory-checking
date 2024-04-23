@@ -9,6 +9,9 @@ import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
 import StartReconciliationButton from '@/app/(protected)/_components/tables/StartReconciliationButton';
 import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
+import { buttonVariants } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import Link from 'next/link';
 
 export interface DataRow {
   product: {
@@ -95,12 +98,6 @@ async function InventoryPage({
       isFinished: await isRoundFinished(round.id),
     }))
   );
-  console.log(roundsWithFinishedInfo);
-  console.log(
-    roundsWithFinishedInfo.find(
-      (round) => round.name === 'ORIGINAL' && round.isFinished
-    )
-  );
 
   // Display button of lunch review or close whole inventroy based on the round state
   let action: JSX.Element | null = null;
@@ -116,23 +113,28 @@ async function InventoryPage({
     ) {
       action = (
         <StartReviewRoundButton
-          className='ml-auto w-32'
+          className='md:ml-auto w-32'
           inventoryId={inventoryId}
         />
       );
     } else {
       action = (
-        <StartReconciliationButton
-          className='ml-auto w-36'
-          inventoryId={inventoryId}
-        />
+        <Link
+          className={cn(
+            buttonVariants({ variant: 'default' }),
+            'md:ml-auto w-36'
+          )}
+          href={`/dashboard/inventory/${inventoryId}/reconciliation`}
+        >
+          Start Reconciliation
+        </Link>
       );
     }
   }
 
   return (
     <InnerDashboardContainer>
-      <div className='flex flex-start items-center mb-6'>
+      <div className='flex flex-col md:flex-row md:flex-start md:items-center mb-6'>
         <Title size='lg' className='mb-2'>
           Inventory
           <span className='italic text-lg font-semibold lowercase'>

@@ -32,6 +32,7 @@ interface InventoryCheckingTableProps {
     name: Round;
   }[];
   productsThreshold: { id: string; threshold: number }[];
+  reconciliationPhase?: boolean;
 }
 
 async function InventoryCheckingTable({
@@ -39,6 +40,7 @@ async function InventoryCheckingTable({
   data,
   rounds,
   productsThreshold,
+  reconciliationPhase = false,
 }: InventoryCheckingTableProps) {
   // Add threshold to table data. Aux for next function
   const dataWithThreshold = data.map((item) => ({
@@ -70,6 +72,7 @@ async function InventoryCheckingTable({
     <Table>
       <TableHeader>
         <TableRow>
+          {reconciliationPhase && <TableHead></TableHead>}
           <TableHead></TableHead>
           <TableHead></TableHead>
           <TableHead></TableHead>
@@ -78,6 +81,7 @@ async function InventoryCheckingTable({
           </TableHead>
         </TableRow>
         <TableRow>
+          {reconciliationPhase && <TableHead>Reconciliation</TableHead>}
           <TableHead>Product</TableHead>
           <TableHead>User</TableHead>
           <TableHead className='text-center'>Initial stock</TableHead>
