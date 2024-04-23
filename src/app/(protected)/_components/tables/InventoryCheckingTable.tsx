@@ -13,6 +13,7 @@ import {
   getRoundsFromInventory,
   isRoundFinished,
 } from '@/actions/inventory';
+import { Round } from '@prisma/client';
 
 // const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
 //   if (round === 'original') {
@@ -25,12 +26,18 @@ import {
 interface InventoryCheckingTableProps {
   inventoryId: string;
   data: DataRow[];
+  rounds: {
+    id: string;
+    isFinished: boolean;
+    name: Round;
+  }[];
   productsThreshold: { id: string; threshold: number }[];
 }
 
 async function InventoryCheckingTable({
   inventoryId,
   data,
+  rounds,
   productsThreshold,
 }: InventoryCheckingTableProps) {
   // Add threshold to table data. Aux for next function
@@ -59,12 +66,6 @@ async function InventoryCheckingTable({
     },
   }));
 
-  const { data: rounds } = await getRoundsFromInventory(inventoryId);
-
-  const roundsWithFinished = await Promise.all(
-    rounds.map((round) => ({ ...round, isFinished: isRoundFinished(round.id) }))
-  );
-
   return (
     <Table>
       <TableHeader>
@@ -84,7 +85,7 @@ async function InventoryCheckingTable({
             <div className='flex flex-col items-center'>
               Original
               <span>
-                {roundsWithFinished.find(
+                {rounds.find(
                   (round) => round.name === 'ORIGINAL' && round.isFinished
                 ) && '(finished)'}
               </span>
@@ -94,7 +95,7 @@ async function InventoryCheckingTable({
             <div className='flex flex-col items-center'>
               Review
               <span>
-                {roundsWithFinished.find(
+                {rounds.find(
                   (round) => round.name === 'REVIEW' && round.isFinished
                 ) && '(finished)'}
               </span>

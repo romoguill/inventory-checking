@@ -1,8 +1,13 @@
-import { getInventoryDetailById } from '@/actions/inventory';
+import {
+  getInventoryDetailById,
+  getRoundsFromInventory,
+  isRoundFinished,
+} from '@/actions/inventory';
 import { getProductsThreshold } from '@/actions/products';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
 import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
+import StartReconciliationButton from '@/app/(protected)/_components/tables/StartReconciliationButton';
 import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
 
 export interface DataRow {
@@ -82,6 +87,49 @@ async function InventoryPage({
     inventoryDetails.data?.products.map((product) => product.productId) || []
   );
 
+  const { data: rounds } = await getRoundsFromInventory(inventoryId);
+
+  const roundsWithFinishedInfo = await Promise.all(
+    rounds.map(async (round) => ({
+      ...round,
+      isFinished: await isRoundFinished(round.id),
+    }))
+  );
+  console.log(roundsWithFinishedInfo);
+  console.log(
+    roundsWithFinishedInfo.find(
+      (round) => round.name === 'ORIGINAL' && round.isFinished
+    )
+  );
+
+  // Display button of lunch review or close whole inventroy based on the round state
+  let action: JSX.Element | null = null;
+  if (
+    roundsWithFinishedInfo.find(
+      (round) => round.name === 'ORIGINAL' && round.isFinished
+    )
+  ) {
+    if (
+      roundsWithFinishedInfo.find(
+        (round) => round.name === 'REVIEW' && !round.isFinished
+      )
+    ) {
+      action = (
+        <StartReviewRoundButton
+          className='ml-auto w-32'
+          inventoryId={inventoryId}
+        />
+      );
+    } else {
+      action = (
+        <StartReconciliationButton
+          className='ml-auto w-36'
+          inventoryId={inventoryId}
+        />
+      );
+    }
+  }
+
   return (
     <InnerDashboardContainer>
       <div className='flex flex-start items-center mb-6'>
@@ -92,10 +140,7 @@ async function InventoryPage({
             ({inventoryId})
           </span>
         </Title>
-        <StartReviewRoundButton
-          className='ml-auto w-32'
-          inventoryId={inventoryId}
-        />
+        {action}
       </div>
 
       <section>
@@ -103,6 +148,7 @@ async function InventoryPage({
           <InventoryCheckingTable
             inventoryId={inventoryId}
             data={formattedData}
+            rounds={roundsWithFinishedInfo}
             productsThreshold={productThresholds.data}
           />
         ) : (
