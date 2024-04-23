@@ -6,8 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataRow } from '../../dashboard/inventory/[inventoryId]/page';
-import { cn, getProductState } from '@/lib/utils';
+import { DataRow, cn, getProductState } from '@/lib/utils';
 import {
   getRounds,
   getRoundsFromInventory,

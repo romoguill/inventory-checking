@@ -1,4 +1,7 @@
-import { getOngoingInventories } from '@/actions/inventory';
+import {
+  getInventoryDetailById,
+  getOngoingInventories,
+} from '@/actions/inventory';
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
@@ -53,4 +56,60 @@ export const getProductState = (
       delta: roundStock - initialStock,
     };
   }
+};
+
+export interface DataRow {
+  product: {
+    id: string;
+    name: string;
+  };
+  user: {
+    id: string;
+    name: string;
+  };
+  initialStock?: number;
+  original?: number | null;
+  review?: number | null;
+}
+
+// Util for formatting response from the server action into simple table
+export const getTableFormattedData = (
+  inventoryDetails: Awaited<ReturnType<typeof getInventoryDetailById>>
+): DataRow[] => {
+  const productList: { id: string; name: string; initialStock: number }[] = [];
+
+  inventoryDetails.data?.products.forEach((item) => {
+    productList.push({
+      id: item.productId,
+      name: item.product.name,
+      initialStock: item.initalStock,
+    });
+  });
+
+  return productList.map((item) => {
+    const rowData: Partial<DataRow> = {
+      product: {
+        id: item.id,
+        name: item.name,
+      },
+      initialStock: item.initialStock,
+    };
+
+    inventoryDetails.data?.round.forEach((invDetail) => {
+      const search = invDetail.round_product_user.find(
+        (rpu) => rpu.product.id === item.id
+      );
+      if (invDetail.name === 'ORIGINAL') {
+        rowData.original = search?.currentStock;
+        rowData.user = {
+          id: search?.user.id || '',
+          name: search?.user.name || '',
+        };
+      } else {
+        rowData.review = search?.currentStock;
+      }
+    });
+
+    return rowData;
+  }) as DataRow[];
 };
