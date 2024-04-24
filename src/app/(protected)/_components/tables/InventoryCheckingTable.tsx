@@ -13,6 +13,7 @@ import {
   isRoundFinished,
 } from '@/actions/inventory';
 import { Round } from '@prisma/client';
+import ReconciliationDropdown from './ReconciliationDropdown';
 
 // const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
 //   if (round === 'original') {
@@ -121,7 +122,11 @@ async function InventoryCheckingTable({
       <TableBody>
         {dataToDisplay.map((row) => (
           <TableRow key={row.product.id}>
-            {reconciliationPhase && <TableCell>Rec type</TableCell>}
+            {reconciliationPhase && (
+              <TableCell className='w-[140px]'>
+                <ReconciliationDropdown />
+              </TableCell>
+            )}
             <TableCell>{row.product.name}</TableCell>
             {!reconciliationPhase && <TableCell>{row.user.name}</TableCell>}
             <TableCell className='text-center'>{row.initialStock}</TableCell>
