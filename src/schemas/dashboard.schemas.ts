@@ -40,3 +40,13 @@ export const MemberSchema = z.object({
 });
 
 export type MemberSchema = z.infer<typeof MemberSchema>;
+
+export const ReconciliationSchema = z.object({
+  reconciliation: z.array(
+    z.object({
+      stock: z.number(),
+    })
+  ),
+});
+
+export type ReconciliationSchema = z.infer<typeof ReconciliationSchema>;

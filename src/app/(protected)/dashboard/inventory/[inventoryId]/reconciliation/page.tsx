@@ -5,6 +5,7 @@ import {
 } from '@/actions/inventory';
 import { getProductsThreshold } from '@/actions/products';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
+import ReconciliationForm from '@/app/(protected)/_components/forms/ReconciliationForm';
 import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
 import { getTableFormattedData } from '@/lib/utils';
@@ -53,13 +54,15 @@ async function ReconciliationPage({
 
       <section>
         {!displayMsg ? (
-          <InventoryCheckingTable
-            inventoryId={inventoryId}
-            data={formattedData}
-            rounds={roundsWithFinishedInfo}
-            productsThreshold={productThresholds.data}
-            reconciliationPhase
-          />
+          <ReconciliationForm data={roundsWithFinishedInfo}>
+            <InventoryCheckingTable
+              inventoryId={inventoryId}
+              data={formattedData}
+              rounds={roundsWithFinishedInfo}
+              productsThreshold={productThresholds.data}
+              reconciliationPhase
+            />
+          </ReconciliationForm>
         ) : (
           <p className='mt-6 text-neutral-50/80'>{displayMsg}</p>
         )}
