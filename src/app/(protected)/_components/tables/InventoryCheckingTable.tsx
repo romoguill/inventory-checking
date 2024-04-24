@@ -84,7 +84,6 @@ async function InventoryCheckingTable({
     <Table>
       <TableHeader>
         <TableRow>
-          {reconciliationPhase && <TableHead></TableHead>}
           <TableHead></TableHead>
           <TableHead></TableHead>
           <TableHead></TableHead>
@@ -95,7 +94,7 @@ async function InventoryCheckingTable({
         <TableRow>
           {reconciliationPhase && <TableHead>Reconciliation</TableHead>}
           <TableHead>Product</TableHead>
-          <TableHead>User</TableHead>
+          {!reconciliationPhase && <TableHead>User</TableHead>}
           <TableHead className='text-center'>Initial stock</TableHead>
           <TableHead className='text-center'>
             <div className='flex flex-col items-center'>
@@ -122,8 +121,9 @@ async function InventoryCheckingTable({
       <TableBody>
         {dataToDisplay.map((row) => (
           <TableRow key={row.product.id}>
+            {reconciliationPhase && <TableCell>Rec type</TableCell>}
             <TableCell>{row.product.name}</TableCell>
-            <TableCell>{row.user.name}</TableCell>
+            {!reconciliationPhase && <TableCell>{row.user.name}</TableCell>}
             <TableCell className='text-center'>{row.initialStock}</TableCell>
             <TableCell
               className={cn('text-center', {
