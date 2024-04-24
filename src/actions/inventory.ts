@@ -463,3 +463,41 @@ export const getRoundsFromInventory = async (inventoryId: string) => {
 
   return { data: response ? [...response.round] : [], error: null };
 };
+
+// export const getInventoryDetailsForReconciliation = async (
+//   inventoryId: string
+// ) => {
+//   const inventory = await db.inventory.findUnique({
+//     where: { id: inventoryId },
+//     include: {
+//       products: true,
+//       round: true,
+//     },
+//   });
+
+//   if (!inventory) {
+//     return { data: null, error: { message: 'Inventory not found' } };
+//   }
+
+//   const thresholds = await db.product.findMany({
+//     where: {
+//       id: {
+//         in: inventory.products.map((product) => product.productId),
+//       },
+//     },
+//     select: {
+//       id: true,
+//       policy: {
+//         select: {
+//           threshold: true,
+//         },
+//       },
+//     },
+//   });
+
+//   const res = await db.$queryRaw`
+//     SELECT * FROM public."Inventory"
+//   `;
+
+//   return res;
+// };

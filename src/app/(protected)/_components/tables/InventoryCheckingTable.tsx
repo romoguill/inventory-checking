@@ -67,6 +67,19 @@ async function InventoryCheckingTable({
     },
   }));
 
+  let dataToDisplay: typeof dataWithState;
+
+  // For reconciliation show only products that have been rejected twice
+  if (!reconciliationPhase) {
+    dataToDisplay = dataWithState;
+  } else {
+    dataToDisplay = dataWithState.filter(
+      (row) =>
+        row.product.stateOriginal?.status === 'rejected' &&
+        row.product?.stateReview?.status === 'rejected'
+    );
+  }
+
   return (
     <Table>
       <TableHeader>
@@ -107,7 +120,7 @@ async function InventoryCheckingTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {dataWithState.map((row) => (
+        {dataToDisplay.map((row) => (
           <TableRow key={row.product.id}>
             <TableCell>{row.product.name}</TableCell>
             <TableCell>{row.user.name}</TableCell>

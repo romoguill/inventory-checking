@@ -7,10 +7,7 @@ import { getProductsThreshold } from '@/actions/products';
 import InnerDashboardContainer from '@/app/(protected)/_components/InnerDashboardContainer';
 import Title from '@/app/(protected)/_components/forms/Title';
 import InventoryCheckingTable from '@/app/(protected)/_components/tables/InventoryCheckingTable';
-import StartReviewRoundButton from '@/app/(protected)/_components/tables/StartReviewRoundButton';
-import { buttonVariants } from '@/components/ui/button';
-import { cn, getTableFormattedData } from '@/lib/utils';
-import Link from 'next/link';
+import { getTableFormattedData } from '@/lib/utils';
 
 async function ReconciliationPage({
   params: { inventoryId },
@@ -42,39 +39,6 @@ async function ReconciliationPage({
     }))
   );
 
-  // Display button of lunch review or close whole inventroy based on the round state
-  let action: JSX.Element | null = null;
-  if (
-    roundsWithFinishedInfo.find(
-      (round) => round.name === 'ORIGINAL' && round.isFinished
-    )
-  ) {
-    if (
-      roundsWithFinishedInfo.find(
-        (round) => round.name === 'REVIEW' && !round.isFinished
-      )
-    ) {
-      action = (
-        <StartReviewRoundButton
-          className='md:ml-auto w-32'
-          inventoryId={inventoryId}
-        />
-      );
-    } else {
-      action = (
-        <Link
-          className={cn(
-            buttonVariants({ variant: 'default' }),
-            'md:ml-auto w-36'
-          )}
-          href={`/dashboard/inventory/${inventoryId}/reconciliation`}
-        >
-          Start Reconciliation
-        </Link>
-      );
-    }
-  }
-
   return (
     <InnerDashboardContainer>
       <div className='flex flex-col md:flex-row md:flex-start md:items-center mb-6'>
@@ -85,7 +49,6 @@ async function ReconciliationPage({
             ({inventoryId})
           </span>
         </Title>
-        {action}
       </div>
 
       <section>
@@ -95,6 +58,7 @@ async function ReconciliationPage({
             data={formattedData}
             rounds={roundsWithFinishedInfo}
             productsThreshold={productThresholds.data}
+            reconciliationPhase
           />
         ) : (
           <p className='mt-6 text-neutral-50/80'>{displayMsg}</p>
