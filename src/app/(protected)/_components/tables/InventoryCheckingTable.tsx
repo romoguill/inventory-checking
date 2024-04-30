@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Table,
   TableBody,
@@ -6,7 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { DataRow, cn, getProductState } from '@/lib/utils';
+import {
+  DataRow,
+  ProductCheckingState,
+  addStateToTableData,
+  addThresholdToTableData,
+  cn,
+  getProductState,
+} from '@/lib/utils';
 import {
   getRounds,
   getRoundsFromInventory,
@@ -14,6 +23,16 @@ import {
 } from '@/actions/inventory';
 import { Round } from '@prisma/client';
 import ReconciliationDropdown from './ReconciliationSelect';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { FormControl, FormField, FormItem } from '@/components/ui/form';
+import { Control } from 'react-hook-form';
+import { ReconciliationSchema } from '@/schemas/dashboard.schemas';
 
 // const isRoundComplete = (round: 'original' | 'review', data: DataRow[]) => {
 //   if (round === 'original') {
@@ -25,7 +44,12 @@ import ReconciliationDropdown from './ReconciliationSelect';
 
 interface InventoryCheckingTableProps {
   inventoryId: string;
-  data: DataRow[];
+  data: (DataRow & { threshold: number | undefined } & {
+    product: {
+      stateOriginal: ProductCheckingState | null;
+      stateReview: ProductCheckingState | null;
+    };
+  })[];
   rounds: {
     id: string;
     isFinished: boolean;
@@ -33,6 +57,7 @@ interface InventoryCheckingTableProps {
   }[];
   productsThreshold: { id: string; threshold: number }[];
   reconciliationPhase?: boolean;
+  formControl?: Control<ReconciliationSchema>;
 }
 
 function InventoryCheckingTable({
@@ -41,46 +66,8 @@ function InventoryCheckingTable({
   rounds,
   productsThreshold,
   reconciliationPhase = false,
+  formControl,
 }: InventoryCheckingTableProps) {
-  // Add threshold to table data. Aux for next function
-  const dataWithThreshold = data.map((item) => ({
-    ...item,
-    threshold: productsThreshold.find(
-      (product) => product.id === item.product.id
-    )?.threshold,
-  }));
-
-  // To the product property add the State for each round. Used for populating more easily data in table
-  const dataWithState = dataWithThreshold.map((item) => ({
-    ...item,
-    product: {
-      ...item.product,
-      stateOriginal: getProductState(
-        item.initialStock,
-        item.original,
-        item.threshold
-      ),
-      stateReview: getProductState(
-        item.initialStock,
-        item.review,
-        item.threshold
-      ),
-    },
-  }));
-
-  let dataToDisplay: typeof dataWithState;
-
-  // For reconciliation show only products that have been rejected twice
-  if (!reconciliationPhase) {
-    dataToDisplay = dataWithState;
-  } else {
-    dataToDisplay = dataWithState.filter(
-      (row) =>
-        row.product.stateOriginal?.status === 'rejected' &&
-        row.product?.stateReview?.status === 'rejected'
-    );
-  }
-
   return (
     <Table>
       <TableHeader>
@@ -120,11 +107,33 @@ function InventoryCheckingTable({
         </TableRow>
       </TableHeader>
       <TableBody>
-        {dataToDisplay.map((row) => (
+        {data.map((row, i) => (
           <TableRow key={row.product.id}>
             {reconciliationPhase && (
               <TableCell className='w-[140px]'>
-                {/* <ReconciliationDropdown /> */}
+                <FormField
+                  control={formControl}
+                  name={`reconciliation.${i}.method`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className='bg-dashboard-dark text-dashboard-foreground'>
+                            <SelectValue placeholder='Method...' />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value='ORIGINAL'>Original</SelectItem>
+                          <SelectItem value='REVIEW'>Review</SelectItem>
+                          <SelectItem value='AVERAGE'>Average</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
               </TableCell>
             )}
             <TableCell>{row.product.name}</TableCell>

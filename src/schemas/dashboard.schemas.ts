@@ -44,7 +44,7 @@ export type MemberSchema = z.infer<typeof MemberSchema>;
 export const ReconciliationSchema = z.object({
   reconciliation: z.array(
     z.object({
-      stock: z.number(),
+      method: z.enum(['ORIGINAL', 'REVIEW', 'AVERAGE']),
     })
   ),
 });

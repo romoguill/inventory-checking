@@ -113,3 +113,42 @@ export const getTableFormattedData = (
     return rowData;
   }) as DataRow[];
 };
+
+// Add threshold to table data. Aux for next function
+export const addThresholdToTableData = (
+  data: DataRow[],
+  productsThreshold: { id: string; threshold: number }[]
+) => {
+  const dataWithThreshold = data.map((item) => ({
+    ...item,
+    threshold: productsThreshold.find(
+      (product) => product.id === item.product.id
+    )?.threshold,
+  }));
+
+  return dataWithThreshold;
+};
+
+// To the product property add the State for each round. Used for populating more easily data in table
+export const addStateToTableData = (
+  data: (DataRow & { threshold: number | undefined })[]
+) => {
+  const dataWithState = data.map((item) => ({
+    ...item,
+    product: {
+      ...item.product,
+      stateOriginal: getProductState(
+        item.initialStock,
+        item.original,
+        item.threshold
+      ),
+      stateReview: getProductState(
+        item.initialStock,
+        item.review,
+        item.threshold
+      ),
+    },
+  }));
+
+  return dataWithState;
+};

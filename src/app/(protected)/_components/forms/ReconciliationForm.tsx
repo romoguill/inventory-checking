@@ -5,7 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Round } from '@prisma/client';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import InventoryCheckingTable from '../tables/InventoryCheckingTable';
-import { DataRow } from '@/lib/utils';
+import {
+  DataRow,
+  addStateToTableData,
+  addThresholdToTableData,
+} from '@/lib/utils';
 import { useParams } from 'next/navigation';
 import { Form } from '@/components/ui/form';
 
@@ -28,11 +32,24 @@ function ReconciliationForm({
   rounds,
 }: ReconciliationFormProps) {
   const { inventoryId } = useParams();
+  const dataWithThreshold = addThresholdToTableData(data, productThresholds);
+
+  // To the product property add the State for each round. Used for populating more easily data in table
+  const dataWithState = addStateToTableData(dataWithThreshold);
+
+  // Filter data to get only rows that have been rejected twice
+
+  const dataToDisplay = dataWithState.filter(
+    (row) =>
+      row.product.stateOriginal?.status === 'rejected' &&
+      row.product?.stateReview?.status === 'rejected'
+  );
+
   const form = useForm<ReconciliationSchema>({
     resolver: zodResolver(ReconciliationSchema),
     defaultValues: {
-      reconciliation: new Array(data.length).fill({
-        stock: '-',
+      reconciliation: new Array(dataToDisplay.length).fill({
+        method: '',
       }),
     },
   });
@@ -43,18 +60,25 @@ function ReconciliationForm({
   });
 
   const onSubmit: SubmitHandler<ReconciliationSchema> = async (data) => {
+    console.log('submitted');
     console.log(data);
   };
 
+  console.log(form.getValues());
+
   return (
     <Form {...form}>
-      <InventoryCheckingTable
-        data={data}
-        inventoryId={inventoryId.toString()}
-        productsThreshold={productThresholds}
-        rounds={rounds}
-        reconciliationPhase
-      />
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <InventoryCheckingTable
+          data={dataToDisplay}
+          inventoryId={inventoryId.toString()}
+          productsThreshold={productThresholds}
+          rounds={rounds}
+          reconciliationPhase
+          formControl={form.control}
+        />
+        <button type='submit'>Send</button>
+      </form>
     </Form>
   );
 }
