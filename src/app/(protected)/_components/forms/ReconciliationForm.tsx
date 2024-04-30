@@ -3,18 +3,31 @@
 import { ReconciliationSchema } from '@/schemas/dashboard.schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Round } from '@prisma/client';
-import { Form, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import InventoryCheckingTable from '../tables/InventoryCheckingTable';
+import { DataRow } from '@/lib/utils';
+import { useParams } from 'next/navigation';
+import { Form } from '@/components/ui/form';
 
 interface ReconciliationFormProps {
-  data: {
+  data: DataRow[];
+  productThresholds: {
+    id: string;
+    threshold: number;
+  }[];
+  rounds: {
     id: string;
     isFinished: boolean;
     name: Round;
   }[];
-  children: React.ReactNode;
 }
 
-function ReconciliationForm({ children, data }: ReconciliationFormProps) {
+function ReconciliationForm({
+  data,
+  productThresholds,
+  rounds,
+}: ReconciliationFormProps) {
+  const { inventoryId } = useParams();
   const form = useForm<ReconciliationSchema>({
     resolver: zodResolver(ReconciliationSchema),
     defaultValues: {
@@ -33,7 +46,17 @@ function ReconciliationForm({ children, data }: ReconciliationFormProps) {
     console.log(data);
   };
 
-  return <Form>{children}</Form>;
+  return (
+    <Form {...form}>
+      <InventoryCheckingTable
+        data={data}
+        inventoryId={inventoryId.toString()}
+        productsThreshold={productThresholds}
+        rounds={rounds}
+        reconciliationPhase
+      />
+    </Form>
+  );
 }
 
 export default ReconciliationForm;

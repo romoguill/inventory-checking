@@ -1,4 +1,3 @@
-import { DropdownMenu } from '@/components/ui/dropdown-menu';
 import {
   Select,
   SelectContent,
@@ -7,7 +6,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-function ReconciliationDropdown() {
+function ReconciliationSelect() {
   return (
     <Select>
       <SelectTrigger className='bg-dashboard-dark text-dashboard-foreground'>
@@ -22,4 +21,4 @@ function ReconciliationDropdown() {
   );
 }
 
-export default ReconciliationDropdown;
+export default ReconciliationSelect;

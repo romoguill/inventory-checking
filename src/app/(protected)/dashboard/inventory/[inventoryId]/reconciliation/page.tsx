@@ -27,7 +27,7 @@ async function ReconciliationPage({
 
   const formattedData = getTableFormattedData(inventoryDetails);
 
-  const productThresholds = await getProductsThreshold(
+  const { data: productThresholds } = await getProductsThreshold(
     inventoryDetails.data?.products.map((product) => product.productId) || []
   );
 
@@ -54,15 +54,11 @@ async function ReconciliationPage({
 
       <section>
         {!displayMsg ? (
-          <ReconciliationForm data={roundsWithFinishedInfo}>
-            <InventoryCheckingTable
-              inventoryId={inventoryId}
-              data={formattedData}
-              rounds={roundsWithFinishedInfo}
-              productsThreshold={productThresholds.data}
-              reconciliationPhase
-            />
-          </ReconciliationForm>
+          <ReconciliationForm
+            data={formattedData}
+            productThresholds={productThresholds}
+            rounds={roundsWithFinishedInfo}
+          />
         ) : (
           <p className='mt-6 text-neutral-50/80'>{displayMsg}</p>
         )}
