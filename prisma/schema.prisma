@@ -189,6 +189,19 @@ model InventoryRoundProductUser {
   @@unique([inventoryRoundId, userId, productId])
 }
 
+model InventoryProduct {
+  inventoryId String
+  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  initalStock     Int
+  reconciledStock Int
+
+  @@unique([inventoryId, productId])
+}
+
 // model InventoryRoundUser {
 //   inventoryRoundId String
 //   inventoryRound   InventoryRound @relation(fields: [inventoryRoundId], references: [id])
@@ -208,16 +221,3 @@ model InventoryRoundProductUser {
 
 //   @@unique([inventoryRoundId, productId])
 // }
-
-model InventoryProduct {
-  inventoryId String
-  inventory   Inventory @relation(fields: [inventoryId], references: [id], onDelete: Cascade)
-
-  productId String
-  product   Product @relation(fields: [productId], references: [id])
-
-  initalStock     Int
-  reconciledStock Int
-
-  @@unique([inventoryId, productId])
-}

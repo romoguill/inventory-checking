@@ -12,6 +12,7 @@ import {
 } from '@/lib/utils';
 import { useParams } from 'next/navigation';
 import { Form } from '@/components/ui/form';
+import { inventoryReconciliation } from '@/actions/inventory';
 
 interface ReconciliationFormProps {
   data: DataRow[];
@@ -60,11 +61,18 @@ function ReconciliationForm({
   });
 
   const onSubmit: SubmitHandler<ReconciliationSchema> = async (data) => {
-    console.log('submitted');
-    console.log(data);
-  };
+    const payload = dataToDisplay.map((item, i) => ({
+      productId: item.product.id,
+      method: data.reconciliation[i].method,
+    }));
 
-  console.log(form.getValues());
+    const response = await inventoryReconciliation(
+      inventoryId.toString(),
+      payload
+    );
+
+    console.log(response);
+  };
 
   return (
     <Form {...form}>

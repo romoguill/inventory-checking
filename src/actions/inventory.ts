@@ -464,40 +464,218 @@ export const getRoundsFromInventory = async (inventoryId: string) => {
   return { data: response ? [...response.round] : [], error: null };
 };
 
-// export const getInventoryDetailsForReconciliation = async (
-//   inventoryId: string
-// ) => {
-//   const inventory = await db.inventory.findUnique({
-//     where: { id: inventoryId },
-//     include: {
-//       products: true,
-//       round: true,
-//     },
-//   });
+type RejectedProduct = {
+  productId: string;
+  method: 'ORIGINAL' | 'REVIEW' | 'AVERAGE';
+};
 
-//   if (!inventory) {
-//     return { data: null, error: { message: 'Inventory not found' } };
-//   }
+type ReconciliationResponse = {
+  productId: string;
+  reconciledStock: number;
+}[];
 
-//   const thresholds = await db.product.findMany({
-//     where: {
-//       id: {
-//         in: inventory.products.map((product) => product.productId),
-//       },
-//     },
-//     select: {
-//       id: true,
-//       policy: {
-//         select: {
-//           threshold: true,
+export const inventoryReconciliation = async (
+  inventoryId: string,
+  rejectedProducts: RejectedProduct[]
+) => {
+  const inventory = await db.inventory.findUnique({
+    where: { id: inventoryId },
+  });
+
+  if (!inventory) {
+    return { data: null, error: { message: 'Inventory not found' } };
+  }
+
+  // Just to be certain check first if the inventory has all rounds complete
+  const { data: rounds } = await getRoundsFromInventory(inventoryId);
+
+  const areAllRoundsFinished = (
+    await Promise.all(rounds.map((round) => isRoundFinished(round.id)))
+  ).every(Boolean);
+
+  if (!areAllRoundsFinished) {
+    return {
+      data: null,
+      error: { message: 'Inventory has rounds still unfinished.' },
+    };
+  }
+
+  const roundsDetail = await db.inventoryRound.findMany({
+    where: {
+      id: {
+        in: rounds.map((round) => round.id),
+      },
+    },
+    select: {
+      name: true,
+      round_product_user: {
+        select: {
+          productId: true,
+          currentStock: true,
+        },
+      },
+    },
+  });
+
+  // Start reconciliation calculation
+  // Util func to get the method of reconciling rejected products and returing the final stock, either the original stock, review stock or an average between those
+  function getReconciledStockForRejectedProducts(
+    rejectedProducts: RejectedProduct[],
+    rounds: typeof roundsDetail
+  ): ReconciliationResponse {
+    return rejectedProducts.map((rejectedProduct) => {
+      const originalStock = rounds.find(
+        (round) =>
+          round.name === 'ORIGINAL' &&
+          round.round_product_user.find(
+            (rpu) => rpu.productId === rejectedProduct.productId
+          )
+      )?.round_product_user[0].currentStock;
+
+      const reviewStock = rounds.find(
+        (round) =>
+          round.name === 'REVIEW' &&
+          round.round_product_user.find(
+            (rpu) => rpu.productId === rejectedProduct.productId
+          )
+      )?.round_product_user[0].currentStock;
+
+      // This SHOULD NEVER HAPPEN. Just in case and to please TS
+      if (!originalStock || !reviewStock) {
+        throw new Error(
+          "Confirmed stocks for this products are null. Can't proceed with reconciliation"
+        );
+      }
+
+      if (rejectedProduct.method === 'ORIGINAL')
+        return {
+          productId: rejectedProduct.productId,
+          reconciledStock: originalStock,
+        };
+
+      if (rejectedProduct.method === 'REVIEW')
+        return {
+          productId: rejectedProduct.productId,
+          reconciledStock: reviewStock,
+        };
+
+      return {
+        productId: rejectedProduct.productId,
+        reconciledStock: (originalStock + reviewStock) / 2,
+      };
+    });
+  }
+
+  const reconciliation: ReconciliationResponse =
+    getReconciledStockForRejectedProducts(rejectedProducts, roundsDetail);
+
+  console.log('rejected reconciliation', reconciliation);
+
+  const allProductsFromInventory = await db.inventoryProduct.findMany({
+    where: {
+      inventoryId,
+    },
+    select: {
+      productId: true,
+    },
+  });
+
+  // Check for all products that belong to that inventory:
+  //  1. If its already in reconciliation (meaning that is was rejected twice and dealt with) ingore it and keep config
+  //  2. If it has a review round pick that stock (meaning that is was rejected in original round but passed in review)
+  //  3. Else use the original round (meaning inventory checking was ok in the first try)
+  allProductsFromInventory.forEach((product) => {
+    if (
+      !reconciliation.find(
+        (reconciledProduct) => reconciledProduct.productId === product.productId
+      )
+    ) {
+      const originalRound = roundsDetail.find(
+        (round) =>
+          round.name === 'ORIGINAL' &&
+          round.round_product_user.find(
+            (rpu) => rpu.productId === product.productId
+          )
+      );
+
+      const reviewRound = roundsDetail.find(
+        (round) =>
+          round.name === 'REVIEW' &&
+          round.round_product_user.find(
+            (rpu) => rpu.productId === product.productId
+          )
+      );
+
+      if (reviewRound) {
+        reconciliation.push({
+          productId: product.productId,
+          reconciledStock: reviewRound.round_product_user.find(
+            (rpu) => rpu.productId === product.productId
+          )!.currentStock as number,
+        }); // cast it because is checked in reviewRound
+      } else if (originalRound) {
+        reconciliation.push({
+          productId: product.productId,
+          reconciledStock: originalRound.round_product_user.find(
+            (rpu) => rpu.productId === product.productId
+          )!.currentStock as number,
+        }); // cast it because is checked in reviewRound
+      }
+    }
+  });
+
+  // Finally save reconciled to database
+  try {
+    await db.$transaction(async (tx) => {
+      for (const product of reconciliation) {
+        await tx.inventoryProduct.update({
+          where: {
+            inventoryId_productId: {
+              inventoryId,
+              productId: product.productId,
+            },
+          },
+          data: {
+            reconciledStock: product.reconciledStock,
+          },
+        });
+      }
+
+      await tx.inventory.update({
+        where: {
+          id: inventoryId,
+        },
+        data: {
+          finished: true,
+        },
+      });
+    });
+    return { data: null, error: null };
+  } catch (error) {
+    return { data: null, error };
+  }
+};
+
+// await db.$transaction(
+//   async (tx) => {
+//     for (const item of data) {
+//       await tx.inventoryRoundProductUser.update({
+//         where: {
+//           inventoryRoundId_userId_productId: {
+//             inventoryRoundId: roundId,
+//             productId: item.productId,
+//             userId: session.user.id,
+//           },
 //         },
-//       },
-//     },
-//   });
-
-//   const res = await db.$queryRaw`
-//     SELECT * FROM public."Inventory"
-//   `;
-
-//   return res;
-// };
+//         data: {
+//           currentStock: item.stock,
+//         },
+//       });
+//     }
+//   },
+//   {
+//     maxWait: 5000,
+//     timeout: 10000,
+//     isolationLevel: 'Serializable',
+//   }
+// );
