@@ -696,3 +696,22 @@ export const getStockDeltaFromInventory = async (inventoryId: string) => {
     error: null,
   };
 };
+
+export const getLastInventory = async () => {
+  const { data: currentOrg, error } = await getWorkingOrganization();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  const inventory = await db.inventory.findFirst({
+    where: {
+      organizationId: currentOrg.id,
+    },
+    orderBy: {
+      updatedAt: 'desc',
+    },
+  });
+
+  return { data: inventory, error: null };
+};

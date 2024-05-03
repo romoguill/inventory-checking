@@ -19,16 +19,16 @@ async function DashboardPage() {
         </article>
         <Suspense
           fallback={
-            <Skeleton className='bg-dashboard-dark rounded-xl col-start-5 col-span-9 flex flex-grow overflow-hidden p-2' />
+            <Skeleton className='bg-dashboard-dark rounded-xl col-start-5 col-span-9 flex flex-grow overflow-hidden p-4' />
           }
         >
-          <article className='bg-dashboard-dark rounded-xl col-start-5 col-span-9 flex flex-grow overflow-hidden p-2'>
+          <article className='bg-dashboard-dark rounded-xl col-start-5 col-span-9 flex flex-grow overflow-hidden p-4'>
             <OngoingInventories />
           </article>
         </Suspense>
 
         <Suspense fallback={<Skeleton className='' />}>
-          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-2'>
+          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4'>
             <DeltaSummary />
           </article>
         </Suspense>
