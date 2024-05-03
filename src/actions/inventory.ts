@@ -656,26 +656,43 @@ export const inventoryReconciliation = async (
   }
 };
 
-// await db.$transaction(
-//   async (tx) => {
-//     for (const item of data) {
-//       await tx.inventoryRoundProductUser.update({
-//         where: {
-//           inventoryRoundId_userId_productId: {
-//             inventoryRoundId: roundId,
-//             productId: item.productId,
-//             userId: session.user.id,
-//           },
-//         },
-//         data: {
-//           currentStock: item.stock,
-//         },
-//       });
-//     }
-//   },
-//   {
-//     maxWait: 5000,
-//     timeout: 10000,
-//     isolationLevel: 'Serializable',
-//   }
-// );
+export const getStockDeltaFromInventory = async (inventoryId: string) => {
+  const productsData = await db.inventory.findUnique({
+    where: {
+      id: inventoryId,
+    },
+    select: {
+      finished: true,
+      products: {
+        select: {
+          product: {
+            select: {
+              id: true,
+              price: true,
+            },
+          },
+          initalStock: true,
+          reconciledStock: true,
+        },
+      },
+    },
+  });
+
+  if (!productsData) {
+    return { data: null, error: { message: 'Inventory not found' } };
+  }
+
+  if (!productsData.finished) {
+    return { data: null, error: { message: 'Inventory not completed yet' } };
+  }
+
+  return {
+    data: productsData.products.map((product) => ({
+      id: product.product.id,
+      deltaStock: product.reconciledStock - product.initalStock,
+      deltaValue:
+        (product.reconciledStock - product.initalStock) * product.product.price,
+    })),
+    error: null,
+  };
+};
