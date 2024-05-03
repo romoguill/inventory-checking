@@ -39,6 +39,7 @@ function ProductForm({ type }: ProductFormProps) {
     defaultValues: {
       name: '',
       currentStock: 0,
+      price: 0,
       imageUrl: '',
       batchTracking: true,
       severity: '' as any,
@@ -63,6 +64,7 @@ function ProductForm({ type }: ProductFormProps) {
     form.reset({
       name: '',
       currentStock: 0,
+      price: 0,
       imageUrl: '',
       batchTracking: true,
       severity: '' as any,
@@ -75,6 +77,12 @@ function ProductForm({ type }: ProductFormProps) {
   const handleImageUrlAfterUpload = (url: string) => {
     form.setValue('imageUrl', url);
     setIsUrlReady(true);
+  };
+
+  // Regex for allowwing prices with 2 decimals
+  const restrictPriceExpression = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const regex = /\d+(\.\d{1,2})?/;
+    return e.target.value.match(regex)?.[0];
   };
 
   return (
@@ -105,7 +113,30 @@ function ProductForm({ type }: ProductFormProps) {
                   <Input
                     placeholder='Product current stock'
                     variant='form'
+                    type='number'
                     {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name='price'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder=''
+                    variant='form'
+                    type='number'
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(restrictPriceExpression(e));
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
