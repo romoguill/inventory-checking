@@ -6,6 +6,8 @@ import OngoingInventories from '../_components/OngoingInventories';
 import { Suspense } from 'react';
 import { Skeleton } from '@/components/ui/skeleton';
 import DeltaSummary from '../_components/DeltaSummary';
+import RankingProducts from '../_components/RankingProducts';
+import RankingPeople from '../_components/RankingPeople';
 
 async function DashboardPage() {
   return (
@@ -27,9 +29,33 @@ async function DashboardPage() {
           </article>
         </Suspense>
 
-        <Suspense fallback={<Skeleton className='' />}>
-          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4'>
+        <Suspense
+          fallback={
+            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-4 flex flex-grow overflow-hidden p-4' />
+          }
+        >
+          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-4 flex flex-grow overflow-hidden p-4'>
             <DeltaSummary />
+          </article>
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4' />
+          }
+        >
+          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-5 col-span-4 flex flex-grow overflow-hidden p-4'>
+            <RankingProducts />
+          </article>
+        </Suspense>
+
+        <Suspense
+          fallback={
+            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4' />
+          }
+        >
+          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-9 col-span-4 flex flex-grow overflow-hidden p-4'>
+            <RankingPeople />
           </article>
         </Suspense>
       </div>
