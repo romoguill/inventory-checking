@@ -1,4 +1,5 @@
 import { getProductDeltaRanking } from '@/actions/inventory';
+import RankingChart from './RankingChart';
 
 async function RankingProducts() {
   const { data: ranking, error } = await getProductDeltaRanking();
@@ -9,13 +10,10 @@ async function RankingProducts() {
   if (!ranking) return <p>No data to rank</p>;
 
   return (
-    <ul>
-      {ranking.map((item) => (
-        <li key={item.productId}>
-          {item.productId}, {item.stock_delta.toString()}
-        </li>
-      ))}
-    </ul>
+    <div className='flex flex-col w-full'>
+      <h4 className='text-xl font-semibold mb-2'>Delta Ranking</h4>
+      <RankingChart data={ranking} />
+    </div>
   );
 }
 

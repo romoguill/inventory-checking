@@ -41,21 +41,11 @@ async function DashboardPage() {
 
         <Suspense
           fallback={
-            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4' />
+            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 row-span-2  col-start-5 col-span-full flex flex-grow overflow-hidden p-4' />
           }
         >
-          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-5 col-span-4 flex flex-grow overflow-hidden p-4'>
+          <article className='bg-dashboard-dark rounded-xl row-start-2 row-span-2 col-start-5 col-span-full flex flex-grow overflow-hidden p-4'>
             <RankingProducts />
-          </article>
-        </Suspense>
-
-        <Suspense
-          fallback={
-            <Skeleton className='bg-dashboard-dark rounded-xl row-start-2 col-start-1 col-span-6 flex flex-grow overflow-hidden p-4' />
-          }
-        >
-          <article className='bg-dashboard-dark rounded-xl row-start-2 col-start-9 col-span-4 flex flex-grow overflow-hidden p-4'>
-            <RankingPeople />
           </article>
         </Suspense>
       </div>

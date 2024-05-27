@@ -1,5 +1,5 @@
 function RankingPeople() {
-  return <div>RankingPeople</div>;
+  return <></>;
 }
 
 export default RankingPeople;

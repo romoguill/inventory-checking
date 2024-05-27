@@ -737,7 +737,7 @@ export const getProductDeltaRanking = async () => {
     SELECT 
       "InventoryProduct"."productId",
       "Product"."name" as product_name,
-      SUM("InventoryProduct"."reconciledStock" - "InventoryProduct"."initalStock") AS stock_delta
+      SUM(("InventoryProduct"."reconciledStock" - "InventoryProduct"."initalStock") * "Product"."price") AS stock_delta
     FROM 
       "InventoryProduct"
     INNER JOIN 
