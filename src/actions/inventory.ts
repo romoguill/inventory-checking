@@ -715,3 +715,38 @@ export const getLastInventory = async () => {
 
   return { data: inventory, error: null };
 };
+
+type ProductsDeltaRanking = [productId: string, deltaStock: number];
+
+// Ranking based on the last 6 months. For now it's a good starting point
+export const getProductDeltaRanking = async () => {
+  const { data: currentOrg, error } = await getWorkingOrganization();
+
+  if (error) {
+    return { data: null, error };
+  }
+
+  const sixMonthWindowDate = (date: Date) => {
+    date.setMonth(date.getMonth() - 6);
+    return date;
+  };
+
+  const productsDeltaRanking = await db.$queryRaw<ProductsDeltaRanking>`
+    SELECT 
+      "InventoryProduct"."productId",
+      SUM("InventoryProduct"."reconciledStock" - "InventoryProduct"."initalStock") AS stock_delta
+    FROM 
+      "InventoryProduct"
+    INNER JOIN 
+      "Inventory" ON "Inventory"."id" = "InventoryProduct"."inventoryId"
+    WHERE 
+      "Inventory"."createdAt" >= CURRENT_DATE - INTERVAL '6 months'
+      "Inventory"."finished" = true
+    GROUP BY 
+      "InventoryProduct"."productId"
+    ORDER BY 
+      stock_delta DESC;
+  `;
+
+  return { data: productsDeltaRanking, error: null };
+};
