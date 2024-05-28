@@ -716,7 +716,7 @@ export const getLastInventory = async () => {
   return { data: inventory, error: null };
 };
 
-type ProductsDeltaRanking = [
+export type ProductsDeltaRanking = [
   { productId: string; product_name: string; stock_delta: number }
 ];
 
