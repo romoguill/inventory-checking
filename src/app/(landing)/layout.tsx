@@ -1,7 +1,5 @@
 import { PropsWithChildren } from 'react';
 import Header from './_components/Header';
-import bgStripes from '../../../public/vanishing-stripes.svg';
-import Image from 'next/image';
 
 function LandingLayout({ children }: PropsWithChildren) {
   return (

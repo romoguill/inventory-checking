@@ -8,7 +8,7 @@ import './globals.css';
 import AuthProvider from './context/AuthProvider';
 
 const globalFont = Roboto({
-  weight: '400',
+  weight: ['400', '500', '700', '900'],
   subsets: ['latin'],
 });
 
